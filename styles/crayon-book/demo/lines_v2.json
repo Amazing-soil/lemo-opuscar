@@ -1,0 +1,44 @@
+[
+ {
+  "id": "n1",
+  "text": "The moon could not sleep.",
+  "voice": "bf_emma",
+  "speed": 0.86
+ },
+ {
+  "id": "n2",
+  "text": "It tossed, and it turned, and it counted sheep.",
+  "voice": "bf_emma",
+  "speed": 0.88
+ },
+ {
+  "id": "n3",
+  "text": "Down below, someone else was awake, too.",
+  "voice": "bf_emma",
+  "speed": 0.86
+ },
+ {
+  "id": "n4",
+  "text": "So she climbed up, up, up, onto the roof,",
+  "voice": "bf_emma",
+  "speed": 0.88
+ },
+ {
+  "id": "n5",
+  "text": "and sang the softest song she knew.",
+  "voice": "bf_emma",
+  "speed": 0.84
+ },
+ {
+  "id": "n6",
+  "text": "And at last, the moon fell asleep.",
+  "voice": "bf_emma",
+  "speed": 0.82
+ },
+ {
+  "id": "n7",
+  "text": "Night, night.",
+  "voice": "bf_emma",
+  "speed": 0.82
+ }
+]

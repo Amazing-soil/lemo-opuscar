@@ -1,0 +1,164 @@
+node_modules/
+.venv/
+__pycache__/
+.DS_Store
+# 模型与大素材（运行说明里给下载地址）
+core/tts/*.onnx
+core/tts/*.bin
+core/assets/polyhaven/*.hdr
+# 渲染中间产物
+styles/*/demo/stills/t_*.jpg
+styles/*/demo/out/
+styles/*/demo/voices/*.wav
+styles/*/demo/music/*.mp3
+styles/*/demo/music/*.wav
+styles/*/demo/music/*.npy
+styles/*/demo/mix.wav
+# 成片走 GitHub Releases
+styles/*/*.mp4
+# 2026-09-26 收录已有作品后补充
+styles/*/demo/stills/t_*.png
+styles/*/demo/stills/dbg/
+styles/*/demo/out_*/
+styles/*/demo/chk/
+styles/*/demo/node_modules
+styles/*/demo/assets/*.hdr
+styles/*/demo/tts/*.onnx
+styles/*/demo/tts/*.bin
+styles/*/demo/music.wav
+*.log
+# 喊词是输入素材（只能在 macOS 上近似重建），要提交
+!styles/game-show/demo/voices/*.wav
+# 赛事官方图，只作参考、不分发（片中标识怎么处理开源前再定）
+styles/pictogram-motion/demo/ref/
+styles/*/demo/music/src/
+# 这两个风格的 stills/ 里是调试静帧，只提交风格帧
+styles/hd-2d/demo/stills/*
+!styles/hd-2d/demo/stills/styleframe.jpg
+styles/pictogram-motion/demo/stills/*
+!styles/pictogram-motion/demo/stills/styleframe.jpg
+
+# ---- 2026-09-26 GitHub 发布前补充 ----
+# 内部工作文件（不公开）
+/promo/
+/batch/
+/TODO.md
+/STYLES.md
+styles/*/HANDOFF.md
+# 配乐分轨、混音、拟音：build.sh 会重新生成
+styles/*/demo/**/stems*/
+styles/*/demo/**/music_stems/
+styles/*/demo/**/mix*.wav
+styles/*/demo/audio/*.wav
+core/audio/*.wav
+# 大素材走 Releases 的 assets 包，./setup.sh 下载（清单见 assets.json）
+core/audio/instruments/
+styles/*/demo/fonts/**/*.ttf
+styles/*/demo/fonts/**/*.otf
+# 发布暂存 / Pages 构建产物
+/.release/
+/_site/
+
+# 静帧只提交风格帧和文档里引用到的（其余是调试帧）；以后新增引用后重跑 tools/release.py 前记得补一行
+styles/*/demo/stills/*
+!styles/art-deco/demo/stills/frame_v1_lobby.jpg
+!styles/art-deco/demo/stills/frame_v1_roof.jpg
+!styles/art-deco/demo/stills/frame_v2_lobby.jpg
+!styles/art-deco/demo/stills/frame_v2_roof.jpg
+!styles/art-deco/demo/stills/kit_v1.jpg
+!styles/art-deco/demo/stills/kit_v2.jpg
+!styles/art-deco/demo/stills/modelsheet_v1.jpg
+!styles/art-deco/demo/stills/modelsheet_v2.jpg
+!styles/art-deco/demo/stills/styleframe.jpg
+!styles/ascii-crt/demo/stills/styleframe.jpg
+!styles/backrooms/demo/stills/styleframe.jpg
+!styles/blueprint/demo/stills/styleframe.jpg
+!styles/brick-toy/demo/stills/styleframe.jpg
+!styles/cel-anime-80s/demo/stills/styleframe.jpg
+!styles/crayon-book/demo/stills/modelsheet_v1.jpg
+!styles/crayon-book/demo/stills/modelsheet_v1_moon.jpg
+!styles/crayon-book/demo/stills/modelsheet_v2_moon.jpg
+!styles/crayon-book/demo/stills/styleframe.jpg
+!styles/dark-keynote/demo/stills/styleframe.jpg
+!styles/dataviz/demo/stills/engine_demo.jpg
+!styles/dataviz/demo/stills/frame_v1_0_animatic.jpg
+!styles/dataviz/demo/stills/frame_v1_1_first_summer.jpg
+!styles/dataviz/demo/stills/frame_v1_2_century.jpg
+!styles/dataviz/demo/stills/frame_v1_3_line_to_stripes.jpg
+!styles/dataviz/demo/stills/styleframe.jpg
+!styles/game-show/demo/stills/styleframe.jpg
+!styles/game-show/demo/stills/t_125.png
+!styles/glass-product/demo/stills/styleframe.jpg
+!styles/halftone-dossier/demo/stills/styleframe.jpg
+!styles/hd-2d/demo/stills/styleframe.jpg
+!styles/hd-2d/demo/stills/styleframe_notilt_old.jpg
+!styles/impasto/demo/stills/styleframe.jpg
+!styles/ink-wash/demo/stills/modelsheet_v1.jpg
+!styles/ink-wash/demo/stills/styleframe.jpg
+!styles/iso-infographic/demo/stills/engine_shape.jpg
+!styles/iso-infographic/demo/stills/frame_v1_hillside.jpg
+!styles/iso-infographic/demo/stills/frame_v1_port.jpg
+!styles/iso-infographic/demo/stills/frame_v1_route.jpg
+!styles/iso-infographic/demo/stills/frame_v2_hands.jpg
+!styles/iso-infographic/demo/stills/styleframe.jpg
+!styles/living-screencast/demo/stills/styleframe.jpg
+!styles/lowpoly-island/demo/stills/styleframe.jpg
+!styles/microgame/demo/stills/modelsheet_v2.jpg
+!styles/microgame/demo/stills/modelsheet_v2_styles.jpg
+!styles/microgame/demo/stills/styleframe.jpg
+!styles/one-line/demo/stills/frame_v1_face.jpg
+!styles/one-line/demo/stills/frame_v1_hand.jpg
+!styles/one-line/demo/stills/frame_v1_love.jpg
+!styles/one-line/demo/stills/styleframe.jpg
+!styles/paper-lantern/demo/stills/dbg
+!styles/paper-lantern/demo/stills/poster.jpg
+!styles/paper-lantern/demo/stills/sheet
+!styles/paper-lantern/demo/stills/styleframe.jpg
+!styles/paper-popup/demo/stills/styleframe.jpg
+!styles/paper-popup/demo/stills/t_126.jpg
+!styles/papercut-red/demo/stills/styleframe.jpg
+!styles/pictogram-motion/demo/stills/cover34_ej.png
+!styles/pictogram-motion/demo/stills/cover_ej.png
+!styles/pictogram-motion/demo/stills/lab_ath.png
+!styles/pictogram-motion/demo/stills/styleframe.jpg
+!styles/pixel-rpg/demo/stills/modelsheet_v1.jpg
+!styles/pixel-rpg/demo/stills/styleframe.jpg
+!styles/pop-art/demo/stills/engine_test.jpg
+!styles/pop-art/demo/stills/modelsheet_v2.jpg
+!styles/pop-art/demo/stills/styleframe.jpg
+!styles/risograph/demo/stills/modelsheet_v2.jpg
+!styles/risograph/demo/stills/styleframe.jpg
+!styles/rubber-hose/demo/stills/styleframe.jpg
+!styles/scifi-toon/demo/stills/styleframe.jpg
+!styles/shadow-puppet/demo/stills/hands_test_v1.jpg
+!styles/shadow-puppet/demo/stills/styleframe.jpg
+!styles/silent-film/demo/stills/frame_v1_cards.jpg
+!styles/silent-film/demo/stills/frame_v2_tender.jpg
+!styles/silent-film/demo/stills/modelsheet_v2.jpg
+!styles/silent-film/demo/stills/redraw_v1.jpg
+!styles/silent-film/demo/stills/styleframe.jpg
+!styles/spy-titles/demo/stills/frame_v1_airport.jpg
+!styles/spy-titles/demo/stills/frame_v1_title.jpg
+!styles/spy-titles/demo/stills/frame_v1_train.jpg
+!styles/spy-titles/demo/stills/modelsheet_v1.jpg
+!styles/spy-titles/demo/stills/styleframe.jpg
+!styles/stained-glass/demo/stills/styleframe.jpg
+!styles/swiss-motion/demo/stills/styleframe.jpg
+!styles/tilt-shift/demo/stills/styleframe.jpg
+!styles/ukiyoe/demo/stills/styleframe.jpg
+!styles/urban-sketch/demo/stills/styleframe.jpg
+!styles/watercolor/demo/stills/styleframe.jpg
+!styles/whiteboard/demo/stills/styleframe.jpg
+!styles/woodcut/demo/stills/engine_example.jpg
+!styles/woodcut/demo/stills/filter_v1.jpg
+!styles/woodcut/demo/stills/frame_v1_pour.jpg
+!styles/woodcut/demo/stills/frame_v1_village.jpg
+!styles/woodcut/demo/stills/modelsheet_v1.jpg
+!styles/woodcut/demo/stills/styleframe.jpg
+
+# 用户自己的片子（agent 输出）
+/films/
+
+
+# 制作日志是内部幕后记录，不公开
+styles/*/PRODUCTION_LOG*

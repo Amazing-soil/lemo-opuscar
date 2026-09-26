@@ -1,0 +1,9 @@
+# Python tools in core/ (audio, voice, review). Install: uv venv && uv pip install -r requirements.txt
+numpy
+scipy
+soundfile
+soxr
+librosa
+pillow
+kokoro-onnx
+faster-whisper

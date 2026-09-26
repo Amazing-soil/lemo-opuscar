@@ -1,0 +1,12 @@
+{
+  "name": "lemo-opuscar",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "30–60s style demos directed by Claude Opus 5.5 — each style ships a prompt, a toolkit and a code-rendered film.",
+  "license": "MIT",
+  "dependencies": {
+    "playwright-core": "^1.63.0",
+    "three": "^0.170.0"
+  }
+}

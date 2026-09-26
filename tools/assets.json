@@ -1,0 +1,216 @@
+{
+ "repo": "lemomo-ai/lemo-opuscar",
+ "tag": "assets",
+ "packs": {
+  "voice": {
+   "file": "voice.tar",
+   "size": 353761280,
+   "sha256": "6bc6536c9bc3283150a3bfd1859a9841c39ab4ee05e3df35933d9ab38ce327af"
+  },
+  "instruments": {
+   "file": "instruments.tar",
+   "size": 1418014720,
+   "sha256": "d0ba9ebb83ae1d51b2696fa88bfc82f281281ed91fe7e0d9cc5c3c95ad1fa08f"
+  },
+  "hdri": {
+   "file": "hdri.tar",
+   "size": 12533760,
+   "sha256": "3b1c41d5ef0b26f7dbdab4fff7bab4ed9a63daa701943375821229dd73029499"
+  },
+  "demo-art-deco": {
+   "file": "demo-art-deco.tar",
+   "size": 29306880,
+   "sha256": "f199b848e11f24e48f29b5113300b0b092fae0f697cd6c59a2eb83d0edee63bf"
+  },
+  "demo-ascii-crt": {
+   "file": "demo-ascii-crt.tar",
+   "size": 23992320,
+   "sha256": "b1e0cb8017016fdd786afa194e53c73f34ba71f90fb77b1e37322c2611513cc7"
+  },
+  "demo-backrooms": {
+   "file": "demo-backrooms.tar",
+   "size": 25712640,
+   "sha256": "bcb026158a19c7156ebb61c80442f5b9586e84b75ff7c91a24441a4de6e91f1a"
+  },
+  "demo-blueprint": {
+   "file": "demo-blueprint.tar",
+   "size": 24412160,
+   "sha256": "0026c3346d83057a5ca7facccdf1313034fa9f6cd51243199a3e216e9dd9f6eb"
+  },
+  "demo-brick-toy": {
+   "file": "demo-brick-toy.tar",
+   "size": 73738240,
+   "sha256": "f32a567054b8595ba8ab965196ca22af2a149538c36ec060fa100a054fbbb0e2"
+  },
+  "demo-cel-anime-80s": {
+   "file": "demo-cel-anime-80s.tar",
+   "size": 38103040,
+   "sha256": "55cc520dca077ccac569c0d66edc2e5fd3f92eb47f1e698cd3ff79132d4d2c26"
+  },
+  "demo-crayon-book": {
+   "file": "demo-crayon-book.tar",
+   "size": 37488640,
+   "sha256": "e96e22a4e0f466e8d7d345aa42bc4f24dc342889c7b9d0690856f2dc3b1322db"
+  },
+  "demo-dark-keynote": {
+   "file": "demo-dark-keynote.tar",
+   "size": 21688320,
+   "sha256": "01eb204c9e2501cefe6bc457982cf5adb9d3f60fe5717432f9a11a5bf340cf57"
+  },
+  "demo-dataviz": {
+   "file": "demo-dataviz.tar",
+   "size": 21637120,
+   "sha256": "3a6599793ab5580b95ebaef645354f90c2408097a2894240b06330cd5863bb18"
+  },
+  "demo-game-show": {
+   "file": "demo-game-show.tar",
+   "size": 26255360,
+   "sha256": "d6ba66ff52833e5f62e096c5d0ab5143dad8c404b57285d100eeb8273fe06559"
+  },
+  "demo-glass-product": {
+   "file": "demo-glass-product.tar",
+   "size": 24842240,
+   "sha256": "1e4da598653784c5d7d451156130e85a984edfcb8c659e0dda9f356a27ade225"
+  },
+  "demo-halftone-dossier": {
+   "file": "demo-halftone-dossier.tar",
+   "size": 5304320,
+   "sha256": "e876564adcd01fcd508c085e53d5d4c9064ee66abdd32849bea2562108830931"
+  },
+  "demo-hd-2d": {
+   "file": "demo-hd-2d.tar",
+   "size": 57446400,
+   "sha256": "66f3cb197d35daec31b07cd44572fc5446cc88a81951e1a692adf183cb9f5605"
+  },
+  "demo-impasto": {
+   "file": "demo-impasto.tar",
+   "size": 15411200,
+   "sha256": "90ed4e74ed95f679cf8155cabf496199fbde10522b55d8d77ef43afad9af6a03"
+  },
+  "demo-ink-wash": {
+   "file": "demo-ink-wash.tar",
+   "size": 41768960,
+   "sha256": "8e85b746c8653cc4acf6f99631320e30a53f392f3d51c277e8a646f0d1699543"
+  },
+  "demo-iso-infographic": {
+   "file": "demo-iso-infographic.tar",
+   "size": 23531520,
+   "sha256": "f75e6c2cfc7afbda9ed2a3dd24ca1db0fbb94e3108b0353da17333521873843c"
+  },
+  "demo-living-screencast": {
+   "file": "demo-living-screencast.tar",
+   "size": 15319040,
+   "sha256": "853c66da23820270c5980dfd3c7f99e9f9360d3c3f70ddf7be40916d41dd1999"
+  },
+  "demo-lowpoly-island": {
+   "file": "demo-lowpoly-island.tar",
+   "size": 26030080,
+   "sha256": "e01913d080ff090ba87811ac28bb826d217031716042f0b81807ce31c15c4ba5"
+  },
+  "demo-microgame": {
+   "file": "demo-microgame.tar",
+   "size": 25026560,
+   "sha256": "78c557007b8a870203eb4926b11f05808705a953461bc93e016c1366f1ec7de9"
+  },
+  "demo-one-line": {
+   "file": "demo-one-line.tar",
+   "size": 19630080,
+   "sha256": "58f4a8e0adfb98f280108fb516e74ab0f2decd8f1bd0ccb080005ed08be28fbc"
+  },
+  "demo-paper-lantern": {
+   "file": "demo-paper-lantern.tar",
+   "size": 82667520,
+   "sha256": "246c6c80effa71499c01960c38cfb304e4b1f5ea33d53ec444ba4cbbfe6ea6e0"
+  },
+  "demo-paper-popup": {
+   "file": "demo-paper-popup.tar",
+   "size": 238172160,
+   "sha256": "1d10ab4f9f30bf29a6d4a44b89358f7e9729c4d62f8c71e3a40a5ec88d6cd2af"
+  },
+  "demo-papercut-red": {
+   "file": "demo-papercut-red.tar",
+   "size": 25896960,
+   "sha256": "3529a2d79625250886efe3fefae193af4b40723d8aa0a2039f5a44cde0036504"
+  },
+  "demo-pictogram-motion": {
+   "file": "demo-pictogram-motion.tar",
+   "size": 169410560,
+   "sha256": "6ddefef34fc1528251fe7bf6f8900dc9daa6896646e1cba81eab6e756ec2033c"
+  },
+  "demo-pixel-rpg": {
+   "file": "demo-pixel-rpg.tar",
+   "size": 37314560,
+   "sha256": "4905ecf9a5074d581cf697a6fb92789726eac7149d9c1ad5d3e833dd1bf494a6"
+  },
+  "demo-risograph": {
+   "file": "demo-risograph.tar",
+   "size": 16599040,
+   "sha256": "5908486eaf3aee6ebdca7b0b1de60bda8460b78c2e21199be6d0ad96eba58cda"
+  },
+  "demo-rubber-hose": {
+   "file": "demo-rubber-hose.tar",
+   "size": 25169920,
+   "sha256": "d34b6ca804f6fc26c078e412fda57086bbe1c040ecfbb3d1216d15737747d4da"
+  },
+  "demo-scifi-toon": {
+   "file": "demo-scifi-toon.tar",
+   "size": 24248320,
+   "sha256": "2a6770d6b470499e867c9c350629ccc4a967c17e0db408623d12c4f6ac32bbb2"
+  },
+  "demo-shadow-puppet": {
+   "file": "demo-shadow-puppet.tar",
+   "size": 39424000,
+   "sha256": "253235be861db5590f526d891caa0bbac5a69ba26ed8e06fea2b1d96b08d1f95"
+  },
+  "demo-silent-film": {
+   "file": "demo-silent-film.tar",
+   "size": 27822080,
+   "sha256": "699e1d8463a9baa1827319bab0876134462564480935804585137ae2cbf4ef71"
+  },
+  "demo-spy-titles": {
+   "file": "demo-spy-titles.tar",
+   "size": 22599680,
+   "sha256": "98ab47f8d7bdb8e7f77e54b68351bb9974a0ec730ad0efad458122e676dc9615"
+  },
+  "demo-stained-glass": {
+   "file": "demo-stained-glass.tar",
+   "size": 35440640,
+   "sha256": "7d8a0efc3c5173b4c4cdfc9a6b1e5b4866231ad21f0b6980cf26814c650e5b59"
+  },
+  "demo-swiss-motion": {
+   "file": "demo-swiss-motion.tar",
+   "size": 31406080,
+   "sha256": "a650d91a91936d29147681d3bebda5b8a671704b1cfdf21f6f5630e5363cdf41"
+  },
+  "demo-tilt-shift": {
+   "file": "demo-tilt-shift.tar",
+   "size": 15718400,
+   "sha256": "fbda5e63199870aee345a5cd20a5e6ef651aef4646d90fc428b2221de8142c9d"
+  },
+  "demo-ukiyoe": {
+   "file": "demo-ukiyoe.tar",
+   "size": 42086400,
+   "sha256": "7bc459ede528501f71a00e1e6ea52a09115286c9dd1d94f2b43a067d21220856"
+  },
+  "demo-urban-sketch": {
+   "file": "demo-urban-sketch.tar",
+   "size": 44124160,
+   "sha256": "32a743b4e78aad241aa2e7df5368a1cd4db0d33ce5184f788eed897e04f69fe4"
+  },
+  "demo-watercolor": {
+   "file": "demo-watercolor.tar",
+   "size": 158412800,
+   "sha256": "f3b7d4b1b4f55fefef73ec08abbe69600f8fd92cbbc5fd52cfea1297b43db7c5"
+  },
+  "demo-whiteboard": {
+   "file": "demo-whiteboard.tar",
+   "size": 67645440,
+   "sha256": "78a640f47169d0cd7f6cd58390c75ae34d08ec333b4f7218daaf65cb247cb9dc"
+  },
+  "demo-woodcut": {
+   "file": "demo-woodcut.tar",
+   "size": 34908160,
+   "sha256": "d2c7031b104d64bcd9146d222fad918c3018f5f2d9758ccf0431dc2967a797ff"
+  }
+ }
+}
