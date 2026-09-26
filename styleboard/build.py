@@ -126,7 +126,8 @@ n_vid = sum(bool(s.get('video')) for s in styles)
 minutes = sum(s.get('dur', 0) for s in styles) / 60
 page = open(os.path.join(HERE, 'template.html'), encoding='utf-8').read()
 for k, v in {'{{LAUREL}}': laurel_symbol(), '{{SECTIONS}}': '\n'.join(sections), '{{TABS}}': ''.join(tabs),
-             '{{N_ALL}}': str(len(styles)), '{{N_VID}}': str(n_vid), '{{N_CAT}}': str(len(cats)), '{{MIN}}': f'{minutes:.0f}'}.items():
+             '{{N_ALL}}': str(len(styles)), '{{N_VID}}': str(n_vid), '{{N_CAT}}': str(len(cats)), '{{MIN}}': f'{minutes:.0f}',
+             '{{REPO_URL}}': f'https://github.com/{REPO}', '{{REPO}}': REPO}.items():
     page = page.replace(k, v)
 out_dir = site or HERE
 os.makedirs(out_dir, exist_ok=True)
