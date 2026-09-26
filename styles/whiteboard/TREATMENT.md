@@ -1,7 +1,7 @@
 # TREATMENT · Whiteboard Explainer v2 ·《Einstein in Your Pocket》
 
 > 111 秒 · 英文旁白（Kokoro bm_george，en-gb）· 1920×1080 / 24fps · 全片一块白板，**画面里没有手**
-> 2026-09-26 起为本风格正式 demo；旧版《Why Bread Rises》移到 `视频测试/Video Trail/opuscar-old-demos/whiteboard/`。
+> 2026-09-26 起为本风格正式 demo（替换了旧版《Why Bread Rises》）。
 
 ## 1. 对标（只学语法）
 

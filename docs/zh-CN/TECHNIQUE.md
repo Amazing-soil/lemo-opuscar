@@ -26,7 +26,6 @@
 sh tools/fetch.sh voice          # Kokoro 配音模型（约 340 MB）→ core/tts/
 sh tools/fetch.sh instruments    # CC0 / CC BY 采样库（约 1.35 GB）→ core/audio/instruments/
 sh tools/fetch.sh hdri           # 3D 风格用的 Poly Haven 环境光 → core/assets/polyhaven/
-sh tools/fetch.sh demo <slug>    # 重建我们某支样片所需的字体、配乐等输入
 ```
 
 ## 2. 画面是时间的函数
@@ -130,4 +129,4 @@ export const HIT  = { pratfall: ['chase', 6], ... };   // 段落 + 第几拍
 | 带景深和真实材质的 3D | `styles/brick-toy/`、`styles/paper-popup/` |
 | CRT / 录像带质感 | `core/post/crt.js`、`styles/ascii-crt/`、`styles/backrooms/` |
 
-每个风格 `STYLE.md` 的 §9 是这支样片的完整做法，`demo/build.sh` 可以从头重建它。
+每个风格 `STYLE.md` 的 §9 记录了这支样片是怎么做的。我们的样片是参考实现：读它们，看某个技法怎么实现，再写你自己的片子。它们不是用来重建我们原片的套件。

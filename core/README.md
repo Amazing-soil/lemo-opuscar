@@ -38,6 +38,6 @@ demo 是一个静态页面 `styles/<slug>/demo/index.html`（仓库根作为静�
 
 ## 参考实现
 - `styles/brick-toy/`：3D（three.js）+ 物理 + 景深，STYLE.md 是标准格式
-- `styles/scifi-toon/`：2D 矢量卡通、角色口型、原创配乐、build.sh 一键重现
+- `styles/scifi-toon/`：2D 矢量卡通、角色口型、原创配乐
 - `styles/cel-anime-80s/`：2D 赛璐璐、角色设定表流程、CRT 后期、配乐 fork 子 agent
 - 三者 `STYLE.md` 的 §8 记录了踩过的坑，开工前读

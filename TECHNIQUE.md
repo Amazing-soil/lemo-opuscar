@@ -26,7 +26,6 @@ Large assets are not in git. Fetch them when a step needs them:
 sh tools/fetch.sh voice          # Kokoro TTS model (~340 MB) → core/tts/
 sh tools/fetch.sh instruments    # CC0 / CC BY sample libraries (~1.35 GB) → core/audio/instruments/
 sh tools/fetch.sh hdri           # Poly Haven HDRIs for 3D styles → core/assets/polyhaven/
-sh tools/fetch.sh demo <slug>    # fonts, music and other inputs to rebuild one of our demos
 ```
 
 ## 2. The picture is a function of time
@@ -130,4 +129,4 @@ Only CC0, CC BY or OFL material, each listed in the film's `CREDITS` file with i
 | 3D with depth of field and real materials | `styles/brick-toy/`, `styles/paper-popup/` |
 | a CRT or VHS look | `core/post/crt.js`, `styles/ascii-crt/`, `styles/backrooms/` |
 
-Each style's `STYLE.md` §9 is the exact recipe for its demo, and `demo/build.sh` rebuilds it end to end.
+Each style's `STYLE.md` §9 shows how its demo was built. Treat our demos as reference implementations: read them to see how a technique works, then write your own film. They are not kits for rebuilding our films.
