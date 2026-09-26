@@ -32,7 +32,7 @@ Every film was directed, drawn, scored and mixed by an AI agent writing code: ca
 ```sh
 git clone https://github.com/lemomo-ai/lemo-opuscar.git
 cd lemo-opuscar
-claude            # or Codex, Cursor… any agent that reads AGENTS.md
+claude            
 ```
 
 Then just say what you want · 然后直接说：
