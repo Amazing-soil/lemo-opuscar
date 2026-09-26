@@ -62,7 +62,8 @@ for s in styles:
     has_poster = os.path.exists(os.path.join(ROOT, 'styles', slug, 'poster.jpg'))
     has_md = os.path.exists(os.path.join(ROOT, 'styles', slug, 'STYLE.md'))
     if site:
-        s['video'] = f'{FILMS_URL}/{slug}.mp4' if s['dur'] else ''
+        s['video'] = f'films/{slug}.mp4' if s['dur'] else ''          # 720p web cut, served by Pages as video/mp4 (Safari needs it)
+        s['full'] = f'{FILMS_URL}/{slug}.mp4' if s['dur'] else ''       # full quality on Releases
         s['poster'] = f'posters/{slug}.jpg' if has_poster else ''
         s['stylemd'] = f'{BLOB_URL}/styles/{slug}/STYLE.md' if has_md else ''
     else:
@@ -96,7 +97,7 @@ def card(s):
             f'aria-label="Play {esc(film)}"><i></i><span>{mmss(s["dur"])}</span></button>') if vid else ''
     uses = ''.join(f'<li>{esc(u)}</li>' for u in s.get('uses', []))
     links = []
-    if vid: links.append(f'<a class="watch" href="{esc(s["video"])}" data-play>Watch the film</a>')
+    if vid: links.append(f'<a class="watch" href="{esc(s.get("full") or s["video"])}" data-play>Watch the film</a>')
     if s.get('stylemd'): links.append(f'<a href="{esc(s["stylemd"])}" target="_blank" rel="noopener">STYLE.md</a>')
     return (f'<article class="nominee" data-slug="{esc(s["slug"])}" data-en="{esc(s["en"])}" data-cn="{esc(s["cn"])}" data-film="{esc(film)}">\n'
             f'  <div class="screen">{main}{play}</div>\n'
@@ -137,23 +138,30 @@ if site:   # Pages 站点：页面 + 风格帧 + 海报
         if s['poster']: shutil.copy(os.path.join(ROOT, 'styles', s['slug'], 'poster.jpg'), os.path.join(site, 'posters', s['slug'] + '.jpg'))
 
 
-def readme_list(zh):
-    """README 里 <!-- styles:start --> … <!-- styles:end --> 之间的风格清单。"""
+def readme_grid():
+    """README 里 <!-- styles:start --> … <!-- styles:end --> 之间：按类别的图片网格（docs/frames/<slug>.jpg），中英双语。"""
     out = []
     for cn, en in cats:
-        out.append(f'\n**{cn} · {en}**\n' if zh else f'\n**{en}**\n')
-        for s in (x for x in styles if x['cat'] == cn and x['stylemd']):
-            name = f'{s["cn"]} {s["en"]}' if zh and s['cn'] != s['en'] else s['en']
-            line = s['line_cn'] if zh else s['line']
-            film = f'《{s["film"]}》' if zh else f'*{s["film"]}*'
-            out.append(f'- [{name}](styles/{s["slug"]}/STYLE.md) · {film}: {line}')
+        group = [x for x in styles if x['cat'] == cn and x['stylemd']]
+        if not group: continue
+        out.append(f'\n### {en} · {cn}\n\n<table>')
+        for i in range(0, len(group), 3):
+            out.append('<tr>')
+            for s in group[i:i + 3]:
+                cn_name = f' · {s["cn"]}' if s['cn'] != s['en'] else ''
+                out.append(f'<td width="33%" valign="top"><a href="styles/{s["slug"]}/STYLE.md"><img src="docs/frames/{s["slug"]}.jpg" alt="{html.escape(s["en"])}"></a><br>'
+                           f'<b>{html.escape(s["en"])}</b>{html.escape(cn_name)}<br><i>{html.escape(s["film"])}</i><br>'
+                           f'<sub>{html.escape(s["line"])}<br>{html.escape(s["line_cn"])}</sub></td>')
+            out.append('</tr>')
+        out.append('</table>')
     return '\n'.join(out) + '\n'
 
-for fn, zh in (('README.md', False), ('README.zh-CN.md', True)):
+
+for fn in ('README.md',):
     p = os.path.join(ROOT, fn)
     if not os.path.exists(p) or site: continue
     t = open(p, encoding='utf-8').read()
-    t2 = re.sub(r'(<!-- styles:start -->\n).*?(<!-- styles:end -->)', lambda m: m.group(1) + readme_list(zh) + m.group(2), t, flags=re.S)
+    t2 = re.sub(r'(<!-- styles:start -->\n).*?(<!-- styles:end -->)', lambda m: m.group(1) + readme_grid() + m.group(2), t, flags=re.S)
     if t2 != t: open(p, 'w', encoding='utf-8').write(t2)
 
 print(f'{len(styles)} styles ({n_vid} with film, {minutes:.0f} min) → {os.path.relpath(os.path.join(out_dir, "index.html"), ROOT)}')

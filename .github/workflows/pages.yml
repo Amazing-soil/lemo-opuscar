@@ -1,5 +1,5 @@
 # Builds the style gallery (styleboard/) and publishes it to GitHub Pages on every push to main.
-# Films are streamed from the "films" release; nothing large lives in git.
+# Films: 720p cuts from the "web" release are copied into the site; full quality stays on the "films" release.
 name: gallery
 
 on:
@@ -26,6 +26,10 @@ jobs:
         with:
           python-version: '3.12'
       - run: python3 styleboard/build.py --site _site
+      # 720p cuts live on the "web" release; Pages serves them as video/mp4 (Safari won't play Release downloads)
+      - run: gh release download web --repo "$GITHUB_REPOSITORY" --pattern '*.mp4' --dir _site/films
+        env:
+          GH_TOKEN: ${{ github.token }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site

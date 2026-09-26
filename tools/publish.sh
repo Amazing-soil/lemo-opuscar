@@ -4,6 +4,7 @@
 set -e
 cd "$(dirname "$0")/.."
 python3 styleboard/build.py
+sh tools/web_cuts.sh
 python3 tools/release.py check
 python3 tools/release.py pack
 python3 tools/release.py upload

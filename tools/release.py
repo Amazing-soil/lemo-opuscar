@@ -6,7 +6,7 @@
 
 Needs the GitHub CLI (`gh auth login`) for upload. Usually run through tools/publish.sh.
 """
-import hashlib, json, os, re, subprocess, sys, tarfile, tempfile
+import glob, hashlib, json, os, re, subprocess, sys, tarfile, tempfile
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 REPO = 'lemomo-ai/lemo-opuscar'
@@ -104,13 +104,16 @@ def gh(*a, check=True):
 def upload():
     state_p = os.path.join(OUT, 'uploaded.json')
     state = json.load(open(state_p)) if os.path.exists(state_p) else {}
-    for tag, title in (('assets', 'Assets (fetched by tools/fetch.sh)'), ('films', 'Films (streamed by the gallery)')):
+    for tag, title in (('assets', 'Assets (fetched by tools/fetch.sh)'), ('films', 'Films (full quality)'), ('web', 'Web cuts (720p, copied into the gallery)')):
         if gh('release', 'view', tag, check=False).returncode:
             gh('release', 'create', tag, '--title', title, '--notes', 'Rolling release, updated by tools/publish.sh.', '--latest=false')
-    todo = [('assets', os.path.join(OUT, p['file']), p['sha256']) for p in json.load(open(MANIFEST))['packs'].values()]
+    todo = []   # films first: the gallery streams them
     for slug in sorted(os.listdir(os.path.join(ROOT, 'styles'))):
         mp4 = os.path.join(ROOT, 'styles', slug, slug + '.mp4')
         if os.path.isfile(mp4) and os.path.isfile(os.path.join(ROOT, 'styles', slug, 'STYLE.md')): todo.append(('films', mp4, None))   # unfinished styles stay private
+    for mp4 in sorted(glob.glob(os.path.join(OUT, 'web', '*.mp4'))):   # 720p cuts the gallery streams from Pages
+        if os.path.isfile(os.path.join(ROOT, 'styles', os.path.basename(mp4)[:-4], 'STYLE.md')): todo.append(('web', mp4, None))
+    todo += [('assets', os.path.join(OUT, p['file']), p['sha256']) for p in json.load(open(MANIFEST))['packs'].values()]
     for tag, path, digest in todo:
         key = f'{tag}/{os.path.basename(path)}'
         digest = digest or sha(path)
