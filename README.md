@@ -40,9 +40,6 @@ claude plugin marketplace add lemomo-ai/lemo-opuscar
 claude plugin install lemo-opuscar@lemolab
 ```
 
-Already inside Claude Code? Type `/plugin marketplace add lemomo-ai/lemo-opuscar`, then `/plugin install lemo-opuscar@lemolab`.<br>
-已经在 Claude Code 里了？输入 `/plugin marketplace add lemomo-ai/lemo-opuscar`，再输入 `/plugin install lemo-opuscar@lemolab`。
-
 Then use it from any folder. On first use it downloads the guides, tools and style prompts (about 60 MB) to `~/lemo-opuscar`, shared by all your films. Each film's project, from source to finished video, goes in the folder you started from. For other agents, copy [`plugin/skills/lemo-opuscar/`](plugin/skills/lemo-opuscar/) into their skills folder.
 
 之后在任何目录都能用。第一次使用时，它会把指南、工具和风格提示词（约 60 MB）下载到 `~/lemo-opuscar`，所有片子共用这一份；每支片子的工程，从源码到成片，都放在你发起时所在的文件夹里。其他 agent 可以把 [`plugin/skills/lemo-opuscar/`](plugin/skills/lemo-opuscar/) 复制到它们的 skills 目录。
