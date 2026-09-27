@@ -8,6 +8,8 @@ This repository is a library of film styles. Each style is a prompt (`styles/<sl
 2. [`TECHNIQUE.md`](TECHNIQUE.md): how to build it (render(t) pages, voice, music, mix, review).
 3. `styles/<slug>/STYLE.md` for the chosen style. §1–§8 define the style. §9 shows how our demo was built. The demo is a reference implementation: learn and reuse its techniques, but don't rebuild it or copy its story.
 
+**The style is fixed; the content is the user's.** From a `STYLE.md`, keep the look, the motion and camera language, the sound and music, and the directing craft. The content comes from the user's topic: the story and its shape, the characters, the settings, the data and how it is charted. Many choices in a `STYLE.md` were made for our demo's story, such as a line chart for a temperature series. When one doesn't fit the user's topic, use what fits, and don't bend the topic to match the demo.
+
 **Finding the style.** Users name a style by its gallery name in English or Chinese ("Impasto Oil Painting", "油画厚涂") or by its folder (`impasto`). Look it up in [`styles/README.md`](styles/README.md), which maps every name to its folder. If nothing matches clearly, show the closest two or three and ask.
 
 If the user hasn't picked a style:

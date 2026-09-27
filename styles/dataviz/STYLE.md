@@ -12,6 +12,21 @@ You are directing a 35–55 second film in the **Data Storytelling** style. The 
 
 **The chart is the film.** Nothing on screen is decoration: every mark is a real number, and every movement is a chart operation that means something. A point lands, an axis grows, the scale rescales, a series morphs into another encoding, a note gets pinned to a value. The data must be real and traceable. You change the framing and never the numbers.
 
+**Pick the chart the data asks for.** Our demo is a time series, so it is drawn as dots and a line that morph into stripes. That was one choice for one dataset, not the style. Choose the encoding that fits the user's data and story:
+
+| The data is about | Chart |
+|---|---|
+| comparing categories, rankings | bars, a ranked bar race |
+| a relationship between two measures | scatter or bubble chart (one dot can be a character) |
+| place | map, choropleth, dots on a map |
+| parts of a whole, counts of people | unit / waffle chart, proportional squares |
+| before → after | slope or dumbbell chart |
+| a distribution | histogram, beeswarm |
+| where things go | flow / Sankey |
+| change over time | line or dot series, stripes, area |
+
+What stays the same whatever the chart: cream paper, the pencil that draws every mark, notes pinned to real values, axes that grow with the story, chart operations instead of cuts, and sonification (pitch = value). `inkShape`, `pencilStroke` and `stripesFill` in `demo/engine.js` draw bars, areas and map shapes as readily as dots.
+
 Three layers make it a story rather than an infographic:
 1. **A human scale pinned to the data.** Personal, handwritten notes on specific points ("1926 — she is born.") turn an abstract series into a life.
 2. **A performer.** A physical pencil draws the series. It gives the style a body that can anticipate, hesitate, flinch and hand the story over.
@@ -31,7 +46,7 @@ Three layers make it a story rather than an infographic:
 
 **Story shape (proven in the demo).** A cold open on one point. Tender, sparse early points. A steady middle. Acceleration: the notes get denser, and the pencil hurries. The frame breaks, and the pencil flinches and flips to its red end. A rush. **Everything stops half a beat early; this is the only cut in the film, into silence.** Then the last data point, alone, followed by the whole series in one view. The morph into the other encoding comes next, then the longer record, then an empty cell for the next value ("Next summer?"). The end card lives inside that empty cell.
 
-Adapting any topic: pick one real series (60–150 points works). Pin 3 human notes to the early part and 2 record notes to the late part. Find the one frame-breaking moment in the data. Give the last point its own silence.
+Adapting any topic: pick one real dataset and the chart that fits it (§1); for a series, 60–150 points works. Pin 3 human notes to the first marks drawn and 2 record notes to the last. Find the one frame-breaking moment in the data. Give the last point its own silence.
 
 ## 3. Visual language
 
