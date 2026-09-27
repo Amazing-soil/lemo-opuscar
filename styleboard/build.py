@@ -179,8 +179,23 @@ def style_index():
     return '\n'.join(out)
 
 
+def style_list():
+    """AGENTS.md 里 <!-- style-list:start --> … <!-- style-list:end --> 之间：用户没选风格时，agent 原样给用户看的完整清单。"""
+    out = [f'All {sum(1 for x in styles if x["stylemd"])} styles · 全部风格:', '']
+    for cn, en in cats:
+        group = [x for x in styles if x['cat'] == cn and x['stylemd']]
+        if not group: continue
+        names = ', '.join(s['en'] if s['cn'] == s['en'] else f'{s["cn"]} {s["en"]}' for s in group)
+        out.append(f'- **{cn} {en}** ({len(group)}): {names}')
+    return '\n'.join(out) + '\n'
+
+
 if not site:
     open(os.path.join(ROOT, 'styles', 'README.md'), 'w', encoding='utf-8').write(style_index())
+    p = os.path.join(ROOT, 'AGENTS.md')
+    t = open(p, encoding='utf-8').read()
+    t2 = re.sub(r'(<!-- style-list:start -->\n).*?(<!-- style-list:end -->)', lambda m: m.group(1) + style_list() + m.group(2), t, flags=re.S)
+    if t2 != t: open(p, 'w', encoding='utf-8').write(t2)
 
 print(f'{len(styles)} styles ({n_vid} with film, {minutes:.0f} min) → {os.path.relpath(os.path.join(out_dir, "index.html"), ROOT)}')
 for s in styles:
