@@ -14,13 +14,20 @@ If the user hasn't picked a style, show them the list in `styles/README.md` (or 
 
 ## Workflow
 
-1. **Brief.** Take the user's style, topic and requirements. Fill every gap with a sensible default (DIRECTOR.md §1). Ask only what you truly can't decide.
-2. **Treatment and storyboard.** Write `films/<name>/TREATMENT.md` (DIRECTOR.md §4).
-   **Stop. Show the user a short summary and the storyboard, and wait for approval.**
-3. **Look.** Render a model sheet or 2–3 style frames with the real drawing code.
-   **Stop. Show the images, say what you're least sure about, and wait for approval.**
-4. **Produce.** Voice → check → score (can run in parallel) → animation → mix → render.
-5. **Self-check** (DIRECTOR.md §11), then deliver `films/<name>/<name>.mp4`, `.srt`, `poster.jpg` and the source with `build.sh`.
+1. **Brief.** Make sure the style and the topic are clear. Then ask the user once, in a single message (DIRECTOR.md §1). If the style is unclear, that question goes in the same message:
+   - anything about the topic you can't decide yourself (facts; names, logos or products that must appear);
+   - whether they have material of their own: a voice recording or a preferred voice, music, photos, logos, fonts. Whatever they don't provide, you make;
+   - whether they want to review a storyboard before production. The default is no: you go straight to the finished film.
+
+   Skip any question their request already answers. Wait for the reply, then fill every other gap with a sensible default, sum up the brief in a few lines, and start. Don't come back with more questions later.
+2. **Treatment.** Write `films/<name>/TREATMENT.md` (DIRECTOR.md §4).
+3. **Look.** Render a model sheet or style frames with the real drawing code and check them yourself against the `STYLE.md` (DIRECTOR.md §5).
+4. **Storyboard, only if the user asked for it.** Show the key shots rendered in the style, with durations and lines, plus the logline (DIRECTOR.md §5).
+   **Stop and wait for approval.** If they didn't ask for it, don't stop.
+5. **Produce.** Voice → check → score (can run in parallel) → animation → mix → render.
+6. **Self-check** (DIRECTOR.md §11), then deliver `films/<name>/<name>.mp4`, `.srt`, `poster.jpg` and the source with `build.sh`.
+
+A user's film carries no LemoLab credit and no watermark. The "LemoLab × Claude Opus 5.5" end card in the `STYLE.md` files belongs to our demos only.
 
 Report progress in the user's language. The film's own language is whatever the user asks for (default: the language they write in).
 
@@ -39,5 +46,7 @@ To add a new style:
 2. Add a card to `styleboard/cards.json`: film title, one-line story in English and Chinese, and use cases.
 3. Run `sh tools/publish.sh`. It checks the repo (no files over 5 MB, no absolute paths, no secrets), uploads new or changed films to GitHub Releases, and rebuilds the gallery data.
 4. Commit and push. The gallery (GitHub Pages) rebuilds itself.
+
+The skill in `plugin/skills/lemo-opuscar/` is a thin wrapper: it fetches this repo and sends the agent to this file. Keep the workflow here, not in `SKILL.md`.
 
 Rules: back up before revising (old versions move out of the repo, not into git); only CC0, CC BY or OFL assets; every film's end card carries "LemoLab × Claude Opus 5.5"; no watermark.

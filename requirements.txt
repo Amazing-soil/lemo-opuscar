@@ -6,4 +6,5 @@ soxr
 librosa
 pillow
 kokoro-onnx
+edge-tts
 faster-whisper

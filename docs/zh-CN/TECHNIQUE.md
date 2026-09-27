@@ -18,7 +18,7 @@
 |---|---|
 | Node 20+ 和 Google Chrome | 渲染页面（`npm install` 安装 `playwright-core` 和 `three`） |
 | ffmpeg | 编码、合成、响度、黑帧检查 |
-| Python 3.11+（我们用 [uv](https://docs.astral.sh/uv/)） | `uv venv && uv pip install -r requirements.txt`（numpy、scipy、soundfile、soxr、librosa、pillow、kokoro-onnx、faster-whisper） |
+| Python 3.11+（我们用 [uv](https://docs.astral.sh/uv/)） | `uv venv && uv pip install -r requirements.txt`（numpy、scipy、soundfile、soxr、librosa、pillow、kokoro-onnx、edge-tts、faster-whisper） |
 
 大文件不在 git 里，用到哪一步再下载：
 
@@ -69,7 +69,10 @@ export const HIT  = { pratfall: ['chase', 6], ... };   // 段落 + 第几拍
 
 ## 4. 配音
 
-- **TTS**：[Kokoro](https://github.com/thewh1teagle/kokoro-onnx) 在本地运行，英文声线好（`af_heart`、`bm_george`、`am_michael` 等）。`core/tts/tts.py lines.json out/` 每句输出一个 WAV 和时长表。数字在 TTS 文本里拼写成单词，字幕里写阿拉伯数字。
+- **TTS 只是默认素材**。用户给了录音或指定了声线，就用用户的。否则：
+  - **英文**：[Kokoro](https://github.com/thewh1teagle/kokoro-onnx) 在本地运行，声线好（`af_heart`、`bm_george`、`am_michael` 等）。`core/tts/tts.py lines.json out/` 每句输出一个 WAV 和时长表。
+  - **中文**：[edge-tts](https://github.com/rany2/edge-tts)，用微软的神经网络声线（`zh-CN-XiaoxiaoNeural`、`zh-CN-YunxiNeural` 等），需要联网。逐句语速和去首尾静音的写法见 `styles/paper-lantern/demo/tts.py`。音频要商用前，先看微软的使用条款。
+- 数字在 TTS 文本里拼写成单词，字幕里写阿拉伯数字。
 - **逐句校对**：`core/tts/asr_check.py` 用 faster-whisper 转写每个 WAV 并和脚本比对，不通过就重新生成，直到全部通过。它同时输出逐词时间戳，用来摆放台词和字幕。
 - **混音前**：TTS 峰均比很高，先压缩人声，再按 RMS 配平，人声比音乐高约 10 dB。
 

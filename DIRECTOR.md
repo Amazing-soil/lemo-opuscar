@@ -8,7 +8,15 @@ You are the director, not a tech demo. A film is judged in this order: **sound, 
 
 ## 1. Take the brief
 
-The user gives you a style and a topic, and sometimes more: length, language, voice, must-have shots, brand rules. Everything they don't specify is your decision. Ask only what you can't reasonably decide yourself (usually: the facts of their topic, and whether there are names, logos or products you must show). Sensible defaults:
+The user gives you a style and a topic, and sometimes more: length, language, voice, must-have shots, brand rules. Everything they don't specify is your decision.
+
+Before any work, make sure the style and the topic are clear, then ask **once, in a single message** (a question about the style, if any, goes in it too):
+
+- what you can't reasonably decide yourself (usually the facts of their topic, and names, logos or products you must show);
+- whether they have material of their own to use: a voice recording or a preferred voice, music, photos, logos, fonts;
+- whether they want to review a storyboard before production (default: no).
+
+Skip whatever their request already answers. Wait for the reply, sum up the brief in a few lines and start; don't come back with more questions. Sensible defaults:
 
 - Length **30–60 s**. Let the story decide; shorter and tight beats padded.
 - 1920×1080, 24 fps output.
@@ -44,20 +52,18 @@ Write `TREATMENT.md` before drawing anything:
 6. **Sound design table**: for each section, the ambience bed, the main foley and the music state.
 7. **Subtitle and title design**: the type is part of the style.
 
-### Checkpoint 1: stop and show the user
-
-Send a short summary of the treatment and storyboard (a few key frames or a text beat list) and **wait for approval**. Changing direction here costs minutes; after the full render it costs hours.
-
 ## 5. Prove the look
 
 - **With characters**: draw a model sheet (turnaround, 3–4 expressions, 2–3 key poses, palette) plus two style frames.
 - **Without characters**: three style frames from the film, one of them the signature shot.
 
-Render them with the real drawing code, not a mock-up.
+Render them with the real drawing code, not a mock-up, and check them yourself against the `STYLE.md` before going on.
 
-### Checkpoint 2: stop and show the user
+### The storyboard (only if the user asked for one)
 
-Send the images and name the thing you are least sure about. Continue only when the look is approved.
+Render 6–9 key shots with the real drawing code and tile them into one storyboard sheet (`core/render/sheet.py`), with the shot number, framing, duration and line or beat under each. Send it with the logline and the thing you are least sure about, and **wait for approval**. Changing direction here costs minutes; after the full render it costs hours.
+
+If the user didn't ask for a storyboard, don't stop: go on to the finished film.
 
 ## 6. Sound is half the film
 
@@ -74,7 +80,7 @@ Send the images and name the thing you are least sure about. Continue only when 
 - One action, one sound, one cut, but don't cut on every beat. Leave time to see.
 - **Pace for the viewer, not the clock**:
   - Hold every subtitle at least 1.8 s, and never shorter than the spoken line + 0.6 s.
-  - After text finishes animating in, hold it for roughly (characters ÷ 15 + 1.5) s.
+  - After text finishes animating in, hold it for roughly (letters ÷ 15 + 1.5) s in English, (characters ÷ 4.5 + 1.5) s in Chinese.
   - Hold a title card at least 4 s.
   - Give failures and gags enough time to be understood.
   - Fast is fine; make it fast with fewer words per screen, not by cutting before people finish reading.

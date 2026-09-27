@@ -18,7 +18,7 @@ mix (duck, compress, balance) ──► mux with ffmpeg, two-pass loudnorm −14
 |---|---|
 | Node 20+ and Google Chrome | page rendering (`npm install` pulls `playwright-core` and `three`) |
 | ffmpeg | encoding, muxing, loudness, black-frame checks |
-| Python 3.11+ (we use [uv](https://docs.astral.sh/uv/)) | `uv venv && uv pip install -r requirements.txt` (numpy, scipy, soundfile, soxr, librosa, pillow, kokoro-onnx, faster-whisper) |
+| Python 3.11+ (we use [uv](https://docs.astral.sh/uv/)) | `uv venv && uv pip install -r requirements.txt` (numpy, scipy, soundfile, soxr, librosa, pillow, kokoro-onnx, edge-tts, faster-whisper) |
 
 Large assets are not in git. Fetch them when a step needs them:
 
@@ -69,7 +69,10 @@ A small script (`tools/cuecheck.py` in several demos) compares every visual hit 
 
 ## 4. Voice
 
-- **TTS**: [Kokoro](https://github.com/thewh1teagle/kokoro-onnx) runs locally with good English voices (`af_heart`, `bm_george`, `am_michael`, and others). `core/tts/tts.py lines.json out/` writes one WAV per line and a durations file. Spell numbers out in the TTS text and write them as digits in the subtitles.
+- **TTS is only the default.** If the user brings a recording or names a voice, use that. Otherwise:
+  - **English**: [Kokoro](https://github.com/thewh1teagle/kokoro-onnx) runs locally with good voices (`af_heart`, `bm_george`, `am_michael`, and others). `core/tts/tts.py lines.json out/` writes one WAV per line and a durations file.
+  - **Chinese**: [edge-tts](https://github.com/rany2/edge-tts) with Microsoft's neural voices (`zh-CN-XiaoxiaoNeural`, `zh-CN-YunxiNeural`, and others). It needs a network connection. `styles/paper-lantern/demo/tts.py` shows per-line rate and silence trimming. Check Microsoft's terms before using the audio commercially.
+- Spell numbers out in the TTS text and write them as digits in the subtitles.
 - **Check every line**: `core/tts/asr_check.py` transcribes each WAV with faster-whisper and compares it with the script. Re-generate until every line passes. It also writes word timestamps, which you use to place lines and subtitles.
 - **Before mixing**: TTS has a high peak-to-average ratio. Compress the voice first, then balance by RMS: voice about 10 dB above the music.
 

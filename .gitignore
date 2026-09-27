@@ -162,3 +162,6 @@ styles/*/demo/stills/*
 
 # 制作日志是内部幕后记录，不公开
 styles/*/PRODUCTION_LOG*
+
+# 宣传物料（发帖用海报、预告片、教程片），只留本地，不上传 GitHub
+/docs/social/

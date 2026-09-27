@@ -2,7 +2,7 @@
 // 以仓库根为静态服务根，页面需暴露 window.READY 和 window.render(t)；页面报错立即退出（非 0）
 import { chromium } from 'playwright-core';
 import fs from 'fs'; import path from 'path'; import { fileURLToPath } from 'url';
-import { serve } from './serve.mjs';
+import { serve, pageURL } from './serve.mjs';
 import { EXE, ARGS } from './browser.mjs';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const args = process.argv.slice(2);
@@ -16,7 +16,7 @@ const browser = await chromium.launch({ executablePath: EXE, args: ARGS });
 const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1 });
 page.on('console', m => { if (m.type() === 'error' || m.type() === 'warning') console.error('[page]', m.text().slice(0, 300)); });
 page.on('pageerror', async e => { console.error('[pageerror]', e.message); await browser.close(); server.close(); process.exit(1); });
-await page.goto(`http://127.0.0.1:${port}/${path.relative(ROOT, path.resolve(dir))}/index.html${q ? '?' + q : ''}`);
+await page.goto(pageURL(ROOT, port, dir) + (q ? '?' + q : ''));
 await page.waitForFunction(() => window.READY === true, null, { timeout: 180000 });
 for (const ts of times) {
   const t0 = Date.now();

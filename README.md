@@ -49,9 +49,22 @@ The agent reads three guides and works like a small studio · agent 会读三份
 | [`TECHNIQUE.md`](TECHNIQUE.md) · [中文](docs/zh-CN/TECHNIQUE.md) | how to build: frame-by-frame rendering, voice, music, mixing<br>怎么做：逐帧渲染、配音、配乐、混音 |
 | `styles/<style>/STYLE.md` | what the style looks and sounds like, and how our demo was made<br>这个风格长什么样、听起来什么样，以及样片是怎么做的 |
 
-It stops twice for you: once to approve the **story and storyboard**, once to approve the **look**. Then it produces the film into `films/<name>/`. Prefer your own project? Point your agent at those three files.
+It asks you once, up front: anything it can't decide about your topic, whether you have your own **voice, music or other material**, and whether you want to see a **storyboard** first. Say yes and it stops once to show you the key shots in the real style; otherwise it goes straight to the finished film in `films/<name>/`. Prefer your own project? Point your agent at those three files.
 
-它会停下来找你两次：一次确认**故事和分镜**，一次确认**画面**，之后把成片做到 `films/<名字>/`。想在自己的项目里做？把这三个文件交给你的 agent 就行。
+它开工前只问你一次：主题里它定不了的事、你有没有自己的**配音、音乐或其他素材**、要不要先看**分镜故事板**。要看的话，它会停一次，给你看用真实风格画出来的关键镜头；不看就直接做完成片，放在 `films/<名字>/`。想在自己的项目里做？把这三个文件交给你的 agent 就行。
+
+### Or install it as a skill · 或者装成 skill
+
+Use it from any folder · 在任何目录都能用：
+
+```
+/plugin marketplace add lemomo-ai/lemo-opuscar
+/plugin install lemo-opuscar@lemolab
+```
+
+Then ask for a film in a named style, as above. On first use the skill downloads the guides, tools and style prompts (about 60 MB) to `~/lemo-opuscar`, shared by all your films. Each film's project, from source to finished video, goes in the folder you started from. For other agents, copy [`plugin/skills/lemo-opuscar/`](plugin/skills/lemo-opuscar/) into their skills folder.
+
+然后像上面一样，点名风格要一支片子就行。第一次使用时，skill 会把指南、工具和风格提示词（约 60 MB）下载到 `~/lemo-opuscar`，所有片子共用这一份；每支片子的工程，从源码到成片，都放在你发起时所在的文件夹里。其他 agent 可以把 [`plugin/skills/lemo-opuscar/`](plugin/skills/lemo-opuscar/) 复制到它们的 skills 目录。
 
 **Good to know · 提前知道**: a film takes an agent about 30–60 minutes and a fair amount of tokens. You need Node 20+, Chrome, ffmpeg and Python 3.11+; big assets (voice model, sample libraries) download only when a step needs them.<br>
 一支片子 agent 大约要工作 30–60 分钟，token 用量不小。需要 Node 20+、Chrome、ffmpeg 和 Python 3.11+；配音模型、采样库这类大文件用到时才下载。
