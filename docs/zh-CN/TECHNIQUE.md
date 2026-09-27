@@ -16,7 +16,7 @@
 
 | 工具 | 用途 |
 |---|---|
-| Node 20+ 和 Google Chrome | 渲染页面（`npm install` 安装 `playwright-core` 和 `three`） |
+| Node 20+ | 渲染页面：`npm install` 安装 `playwright-core` 和 `three`，再用 `npx playwright-core install chromium-headless-shell` 下载无头浏览器 |
 | ffmpeg | 编码、合成、响度、黑帧检查 |
 | Python 3.11+（我们用 [uv](https://docs.astral.sh/uv/)） | `uv venv && uv pip install -r requirements.txt`（numpy、scipy、soundfile、soxr、librosa、pillow、kokoro-onnx、edge-tts、faster-whisper） |
 

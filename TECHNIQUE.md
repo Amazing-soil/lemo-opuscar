@@ -16,7 +16,7 @@ mix (duck, compress, balance) ──► mux with ffmpeg, two-pass loudnorm −14
 
 | Tool | Used for |
 |---|---|
-| Node 20+ and Google Chrome | page rendering (`npm install` pulls `playwright-core` and `three`) |
+| Node 20+ | page rendering: `npm install` pulls `playwright-core` and `three`, then `npx playwright-core install chromium-headless-shell` fetches the headless browser |
 | ffmpeg | encoding, muxing, loudness, black-frame checks |
 | Python 3.11+ (we use [uv](https://docs.astral.sh/uv/)) | `uv venv && uv pip install -r requirements.txt` (numpy, scipy, soundfile, soxr, librosa, pillow, kokoro-onnx, edge-tts, faster-whisper) |
 
