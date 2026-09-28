@@ -122,12 +122,17 @@ for i, (cn, en) in enumerate(cats, 1):
         f'<svg class="lf"><use href="#laurel"/></svg></header>\n'
         f'  <div class="grid">\n' + '\n'.join(map(card, group)) + '\n  </div>\n</section>')
 
+# the feature presentation above the nominees: Opuscar 98 (the film lives in promo/, which is not in the repo;
+# the gallery streams the 720p web cut from Pages, the 1080p file is on the "films" release, the poster is styleboard/img)
+FEATURE = dict(poster='img/feature_opuscar98.jpg', dur='6:25',
+               src='films/opuscar98.mp4' if site else '../.release/web/opuscar98.mp4', full=f'{FILMS_URL}/opuscar98.mp4')
 n_vid = sum(bool(s.get('video')) for s in styles)
 minutes = sum(s.get('dur', 0) for s in styles) / 60
 page = open(os.path.join(HERE, 'template.html'), encoding='utf-8').read()
 for k, v in {'{{LAUREL}}': laurel_symbol(), '{{SECTIONS}}': '\n'.join(sections), '{{TABS}}': ''.join(tabs),
              '{{N_ALL}}': str(len(styles)), '{{N_VID}}': str(n_vid), '{{N_CAT}}': str(len(cats)), '{{MIN}}': f'{minutes:.0f}',
-             '{{REPO_URL}}': f'https://github.com/{REPO}', '{{REPO}}': REPO}.items():
+             '{{REPO_URL}}': f'https://github.com/{REPO}', '{{REPO}}': REPO,
+             '{{FEATURE_POSTER}}': FEATURE['poster'], '{{FEATURE_SRC}}': FEATURE['src'], '{{FEATURE_FULL}}': FEATURE['full'], '{{FEATURE_DUR}}': FEATURE['dur']}.items():
     page = page.replace(k, v)
 out_dir = site or HERE
 os.makedirs(out_dir, exist_ok=True)
