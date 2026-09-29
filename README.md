@@ -10,6 +10,8 @@ Pick a style, bring your own story, and let your coding agent direct the film.<b
 
 [**▶ Watch the gallery · 看图鉴**](https://lemomo-ai.github.io/lemo-opuscar/)
 
+**New · 新增：** Copperplate Engraving 铜版画 · Sci-fi Hologram HUD 科幻全息界面 · Mid-century Cartoon 50s 扁平卡通 · Silkscreen Travel Poster 丝印旅行海报
+
 </div>
 
 ## 🎬 Feature presentation · 特别放映：OPUSCAR 98
@@ -41,9 +43,9 @@ I'm **Lemomo** ([@lemomo-ai](https://github.com/lemomo-ai)). More about me on my
 
 ![All styles · 全部风格](docs/cover.jpg)
 
-Every film was directed, drawn, scored and mixed by an AI agent writing code: canvas and WebGL pages rendered frame by frame, original music from free sample libraries, local text-to-speech. No video generation, no stock footage.
+Every film was directed, drawn, scored and mixed by an AI agent writing code: canvas and WebGL pages rendered frame by frame, original music from free sample libraries, text-to-speech narration. No video generation, no stock footage.
 
-每一支片子都是 AI agent 写代码导演、作画、配乐、混音的：Canvas 和 WebGL 页面逐帧渲染，用免费采样库写原创配乐，本地 TTS 配音。不用视频生成，也不用素材库画面。
+每一支片子都是 AI agent 写代码导演、作画、配乐、混音的：Canvas 和 WebGL 页面逐帧渲染，用免费采样库写原创配乐，TTS 配音。不用视频生成，也不用素材库画面。
 
 ## How to use · 怎么用
 
@@ -58,9 +60,9 @@ claude plugin marketplace add lemomo-ai/lemo-opuscar
 claude plugin install lemo-opuscar@lemolab
 ```
 
-Then use it from any folder. On first use it downloads the guides, tools and style prompts (about 35 MB) to `~/lemo-opuscar`, shared by all your films. Each film's project, from source to finished video, goes in the folder you started from. For other agents, copy [`plugin/skills/lemo-opuscar/`](plugin/skills/lemo-opuscar/) into their skills folder.
+Then use it from any folder. On first use it downloads the guides, tools and style prompts (about 30 MB) to `~/lemo-opuscar`, shared by all your films. Each film's project, from source to finished video, goes in the folder you started from. For other agents, copy [`plugin/skills/lemo-opuscar/`](plugin/skills/lemo-opuscar/) into their skills folder.
 
-之后在任何目录都能用。第一次使用时，它会把指南、工具和风格提示词（约 35 MB）下载到 `~/lemo-opuscar`，所有片子共用这一份；每支片子的工程，从源码到成片，都放在你发起时所在的文件夹里。其他 agent 可以把 [`plugin/skills/lemo-opuscar/`](plugin/skills/lemo-opuscar/) 复制到它们的 skills 目录。
+之后在任何目录都能用。第一次使用时，它会把指南、工具和风格提示词（约 30 MB）下载到 `~/lemo-opuscar`，所有片子共用这一份；每支片子的工程，从源码到成片，都放在你发起时所在的文件夹里。其他 agent 可以把 [`plugin/skills/lemo-opuscar/`](plugin/skills/lemo-opuscar/) 复制到它们的 skills 目录。
 
 ### Option 2: clone the repo · 方式二：clone 仓库
 
