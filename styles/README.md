@@ -32,6 +32,8 @@ Users may name a style in English, in Chinese, or by its folder. Find it here, t
 | Risograph Print | Risograph 丝网印刷 | [`risograph`](risograph/STYLE.md) | *Sunday Ride* |
 | Halftone Dossier | 复古半调案卷 | [`halftone-dossier`](halftone-dossier/STYLE.md) | *Case File: Chubby* |
 | Woodcut Print | 木刻版画 | [`woodcut`](woodcut/STYLE.md) | *The Bell Founder* |
+| Copperplate Engraving | 铜版画 | [`engraving`](engraving/STYLE.md) | *The Honeybee, Plate VII* |
+| Silkscreen Travel Poster | 丝印旅行海报 | [`silkscreen-poster`](silkscreen-poster/STYLE.md) | *Three Trails* |
 
 ## Graphic & Type · 图形与排版
 
@@ -53,6 +55,7 @@ Users may name a style in English, in Chinese, or by its folder. Find it here, t
 | Isometric Infographic | 等距信息图 | [`iso-infographic`](iso-infographic/STYLE.md) | *From Bean to Cup* |
 | Dark Tech Keynote | 暗色科技发布 | [`dark-keynote`](dark-keynote/STYLE.md) | *Room to Think* |
 | Living Screencast | 活体实机录屏 | [`living-screencast`](living-screencast/STYLE.md) | *Clawd Moves In* |
+| Sci-fi Hologram HUD | 科幻全息界面 | [`hologram-hud`](hologram-hud/STYLE.md) | *Volt · Spec Scan* |
 
 ## Cartoon & Anime · 卡通与动画
 
@@ -61,6 +64,7 @@ Users may name a style in English, in Chinese, or by its folder. Find it here, t
 | 1930s Rubber Hose Cartoon | 1930s 橡皮管卡通 | [`rubber-hose`](rubber-hose/STYLE.md) | *Coffee Cup Chase* |
 | 80s Cel Anime | 80 年代赛璐璐动画 | [`cel-anime-80s`](cel-anime-80s/STYLE.md) | *City Lights, 1987* |
 | Sci-Fi Sitcom Toon | 科幻情景喜剧卡通 | [`scifi-toon`](scifi-toon/STYLE.md) | *Coffee Run* |
+| Mid-century Cartoon | 50s 扁平卡通 | [`midcentury-toon`](midcentury-toon/STYLE.md) | *Meet Pip* |
 
 ## Games · 游戏
 

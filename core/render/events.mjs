@@ -1,9 +1,12 @@
-// 导出音效事件：node core/render/events.mjs styles/<slug>/demo → <dir>/events.json
+// 导出音效事件：node core/render/events.mjs styles/<slug>/demo [--q 'content=content_alt.json'] [--out <file>]
+// 默认写 <demo>/events.json；换内容时用 --q 把参数传给页面，--out 写到别处，免得覆盖主片的事件表
 import fs from 'fs'; import path from 'path';
 import { openDemo, closeServer } from './page.mjs';
-const dir = process.argv[2];
-const { browser, page } = await openDemo(dir);
+const args = process.argv.slice(2), opt = (k, d) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : d; };
+const dir = args[0], Q = opt('--q', ''), out = opt('--out', path.join(dir, 'events.json'));
+const { browser, page } = await openDemo(dir, { q: Q });
 const ev = await page.evaluate(() => ({ dur: window.DUR, ev: window.EV || [] }));
-fs.writeFileSync(path.join(dir, 'events.json'), JSON.stringify(ev, null, 0));
-console.log('events', ev.ev.length, 'dur', ev.dur);
+fs.mkdirSync(path.dirname(path.resolve(out)), { recursive: true });
+fs.writeFileSync(out, JSON.stringify(ev, null, 0));
+console.log('events', ev.ev.length, 'dur', ev.dur, '→', out);
 await browser.close(); closeServer();

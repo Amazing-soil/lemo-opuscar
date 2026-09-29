@@ -12,7 +12,7 @@ CN = {'pixel-rpg': '16-bit 像素 RPG', 'brick-toy': '积木玩具', 'paper-popu
       'origami': '折纸', 'backrooms': '后室 / 新怪谈', 'blueprint': '蓝图 / 工程制图', 'microgame': '微游戏快闪（瓦里奥制造式）', 'synthwave': '霓虹合成波', 'swiss-motion': '瑞士动态排版', 'voxel': '体素', 'gameboy': 'Game Boy 四色',
       'cardboard': '瓦楞纸板', 'dunhuang': '敦煌壁画', 'papercut-red': '红色窗花剪纸', 'impasto': '油画厚涂', 'one-line': '一笔画',
       'stained-glass': '彩色玻璃窗', 'silent-film': '1920s 默片', 'spy-titles': '60s 间谍片头', 'ascii-crt': 'ASCII / CRT 终端',
-      'dataviz': '数据叙事', 'whiteboard': '白板讲解', 'iso-infographic': '等距信息图', 'hd-2d': 'HD-2D', 'urban-sketch': '钢笔淡彩', 'cel-anime-80s': '80 年代赛璐璐动画', 'scifi-toon': '科幻情景喜剧卡通', 'art-deco': '装饰艺术', 'woodcut': '木刻版画', 'pop-art': '波普漫画', 'paper-lantern': '纸雕灯影', 'pictogram-motion': '象形运动图形'}
+      'dataviz': '数据叙事', 'whiteboard': '白板讲解', 'iso-infographic': '等距信息图', 'hd-2d': 'HD-2D', 'urban-sketch': '钢笔淡彩', 'cel-anime-80s': '80 年代赛璐璐动画', 'scifi-toon': '科幻情景喜剧卡通', 'art-deco': '装饰艺术', 'woodcut': '木刻版画', 'pop-art': '波普漫画', 'paper-lantern': '纸雕灯影', 'pictogram-motion': '象形运动图形', 'midcentury-toon': '50s 扁平卡通', 'hologram-hud': '科幻全息界面', 'engraving': '铜版画', 'silkscreen-poster': '丝印旅行海报'}
 
 REPO = 'lemomo-ai/lemo-opuscar'                                   # GitHub 仓库
 FILMS_URL = f'https://github.com/{REPO}/releases/download/films'   # 成片放在 Release「films」里，文件名 <slug>.mp4

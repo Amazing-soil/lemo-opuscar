@@ -52,7 +52,10 @@ window.EV = [{t, type, ...}];      // 可选：给混音用的音效 / 卡点事
 node core/render/still.mjs <demo> 1.5 12 --range 0:50:2   # 审片静帧；页面报错立即退出
 node core/render/video.mjs <demo> --fps 24 --workers 3     # 渲全部帧 → out/video24.mp4
 node core/render/events.mjs <demo>                         # 导出 DUR + EV → events.json
+node core/render/readcheck.mjs <demo>                      # 画面上每段文字都停够阅读时间
 ```
+
+`video.mjs` 整机最多同时渲 3 支片，多了自动排队；分段文件放在 `--out` 旁边，所以同一个 demo 可以并行再渲一个版本。换内容渲另一版时把参数传给页面：`--q 'content=content_alt.json'`（`events.mjs` 同样支持，配合 `--out` 另存，不覆盖主片的事件表）。
 
 提速的关键：**截图用 JPEG**（比 PNG 快约 8 倍）；**每个 worker 各开一个浏览器**（共用一个浏览器几乎不并行）；**胶片颗粒在 ffmpeg 里加**，不要画在页面里，否则每一帧都压缩不动，很慢。
 

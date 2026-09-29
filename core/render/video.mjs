@@ -1,19 +1,23 @@
 // 渲视频：node core/render/video.mjs styles/<slug>/demo [--fps 24] [--workers 3] [--q 'k=v'] [--out out/video.mp4]
 // 多个片子并行制作时 workers 用 3（默认），单独渲染可开到 6
 // 每个 worker 独立浏览器，JPEG 截图经管道交给 ffmpeg；最后无损拼接
+// 整机最多同时 3 个整片渲染（slot.mjs，RENDER_SLOTS 可改），分段文件放在 --out 旁边的临时目录，同一个 demo 可以并行渲多个版本
 import fs from 'fs'; import path from 'path'; import { spawn, execFileSync } from 'child_process';
 import { openDemo, closeServer } from './page.mjs';
+import { acquire } from './slot.mjs';
 const args = process.argv.slice(2), opt = (k, d) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : d; };
 const dir = args[0], FPS = +opt('--fps', 24), WK = +opt('--workers', 3), Q = opt('--q', '');
-const outDir = path.join(dir, 'out'); fs.mkdirSync(outDir, { recursive: true });
-const out = opt('--out', path.join(outDir, 'video.mp4'));
+const out = path.resolve(opt('--out', path.join(dir, 'out', 'video.mp4')));
+const segDir = path.join(path.dirname(out), `.${path.basename(out, path.extname(out))}_segs`);
+fs.mkdirSync(segDir, { recursive: true });
+const release = process.env.RENDER_SLOT_HELD ? () => {} : await acquire();
 const probe = await openDemo(dir, { q: Q }); const DUR = await probe.page.evaluate(() => window.DUR); await probe.browser.close();
 const TOTAL = Math.round(DUR * FPS), per = Math.ceil(TOTAL / WK), t0 = Date.now();
 await Promise.all([...Array(WK)].map(async (_, w) => {
   const a = w * per, b = Math.min(TOTAL, a + per); if (a >= b) return;
   const { browser, page } = await openDemo(dir, { q: Q });
   const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'mjpeg', '-i', '-',
-    '-c:v', 'libx264', '-preset', 'medium', '-crf', '14', '-pix_fmt', 'yuv420p', path.join(outDir, `seg_${w}.mp4`)]);
+    '-c:v', 'libx264', '-preset', 'medium', '-crf', '14', '-pix_fmt', 'yuv420p', path.join(segDir, `seg_${w}.mp4`)]);
   for (let f = a; f < b; f++) {
     await page.evaluate(t => window.render(t), f / FPS);
     const buf = await page.screenshot({ type: 'jpeg', quality: 95 });
@@ -22,8 +26,10 @@ await Promise.all([...Array(WK)].map(async (_, w) => {
   }
   ff.stdin.end(); await new Promise(r => ff.on('close', r)); await browser.close();
 }));
-const list = path.join(outDir, 'segs.txt');
+const list = path.join(segDir, 'segs.txt');
 fs.writeFileSync(list, [...Array(WK)].map((_, w) => `file 'seg_${w}.mp4'`).filter((_, w) => w * per < TOTAL).join('\n'));
 execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', list, '-c', 'copy', out]);
+fs.rmSync(segDir, { recursive: true, force: true });
+release();
 console.log('done', out, TOTAL, 'frames', ((Date.now() - t0) / 1000).toFixed(0) + 's');
 closeServer();

@@ -52,7 +52,10 @@ Capture (`core/render/`):
 node core/render/still.mjs <demo> 1.5 12 --range 0:50:2   # review stills; exits on page errors
 node core/render/video.mjs <demo> --fps 24 --workers 3     # all frames → out/video24.mp4
 node core/render/events.mjs <demo>                         # export DUR + EV → events.json
+node core/render/readcheck.mjs <demo>                      # every on-screen text stays long enough to read
 ```
+
+`video.mjs` renders at most three films at once on one machine and queues the rest, and it keeps its segments next to `--out`, so you can render a second version of the same demo in parallel. To render a version with other content, pass it to the page: `--q 'content=content_alt.json'` (the same flag works for `events.mjs`, with `--out` so the main event file is kept).
 
 What made capture fast: **JPEG screenshots** (about 8× faster than PNG), **one browser per worker** (pages sharing a browser barely parallelise), and **film grain added in ffmpeg**, not drawn in the page: grain makes every frame incompressible and slow.
 

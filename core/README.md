@@ -13,8 +13,10 @@ demo 是一个静态页面 `styles/<slug>/demo/index.html`（仓库根作为静�
 | 命令 | 作用 |
 |---|---|
 | `node core/render/still.mjs <demo> 1.5 3 [--range 0:50:2.5] [--q 'k=v'] [--prefix t_] [--out dir]` | 渲静帧；页面报错立即退出 |
-| `node core/render/video.mjs <demo> --fps 24 [--workers 3] [--q 'k=v'] [--out <demo>/out/video24.mp4]` | 逐帧渲视频。多片并行时 workers 保持 3 |
-| `node core/render/events.mjs <demo>` | 导出 `<demo>/events.json`（dur + EV） |
+| `node core/render/video.mjs <demo> --fps 24 [--workers 3] [--q 'k=v'] [--out <demo>/out/video24.mp4]` | 逐帧渲视频。多片并行时 workers 保持 3。整机最多 3 个整片同时渲染（超出自动排队）；分段文件放在 `--out` 旁的临时目录，渲完删除，同一个 demo 可以并行渲多个版本（例如换内容版用 `--q 'content=content_alt.json'`） |
+| `node core/render/events.mjs <demo> [--q 'content=content_alt.json'] [--out <file>]` | 导出 `<demo>/events.json`（dur + EV）；换内容时 `--q` 传参给页面、`--out` 另存，不覆盖主片的事件表 |
+| `node core/render/readcheck.mjs <demo> [--q 'k=v'] [--cps 12] [--min 1.5]` | 阅读时长自检：页面提供 `window.TEXTS(t)` → `[{id, text, x0, y0, x1, y1}]`（屏幕像素），每段文字从出现起连续完整在画的时长要 ≥ 字符数 / 12 + 1 s（且 ≥ 1.5 s）；有不达标的退出码为 1 |
+| `node core/render/slot.mjs -- <command…>` | 整机渲染限流（`video.mjs` 已自动使用）：最多 `RENDER_SLOTS`（默认 3）个整片同时渲染，空闲内存低于 `RENDER_MIN_FREE`%（默认 30）时排队 |
 | `.venv/bin/python core/render/sheet.py out.jpg img... [--cols 4] [--w 480]` | 缩略图总览（审片） |
 | `.venv/bin/python core/render/srt.py cues.json out.srt` | 字幕导出（cues = [{t0,t1,text}]） |
 | `sh core/render/mux.sh video.mp4 mix.wav out.mp4 24 [grain]` | 合成成片：两遍 loudnorm −14 LUFS；grain 默认 2，0 = 不加颗粒；结尾打印 ebur128 实测 |
