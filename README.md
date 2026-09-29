@@ -102,7 +102,7 @@ The agent reads three guides and works like a small studio · agent 会读三份
 - You need Node 20+, ffmpeg and Python 3.11+ (or [uv](https://docs.astral.sh/uv/)); the agent installs the rest. · 需要 Node 20+、ffmpeg 和 Python 3.11+（或 uv），其余由 agent 安装。
 - Disk: about 350 MB for the core tools, more only when a film needs a voice or sampled instruments. Default output 1920×1080, 24 fps; other sizes on request. · 磁盘：核心工具约 350 MB，片子需要配音或采样乐器时才再下载。默认 1920×1080、24 fps，其他尺寸可以指定。
 
-Update the skill with `claude plugin update lemo-opuscar@lemolab`; uninstall with `claude plugin uninstall lemo-opuscar@lemolab` and delete `~/lemo-opuscar`. If a step stays stuck, [open an issue](https://github.com/lemomo-ai/lemo-opuscar/issues). · 更新：`claude plugin update lemo-opuscar@lemolab`；卸载：`claude plugin uninstall lemo-opuscar@lemolab` 并删除 `~/lemo-opuscar`。一直卡住就[提个 issue](https://github.com/lemomo-ai/lemo-opuscar/issues)。
+Update: `claude plugin marketplace update lemolab && claude plugin update lemo-opuscar@lemolab`, then restart Claude Code (the library in `~/lemo-opuscar` updates itself on the next film); uninstall with `claude plugin uninstall lemo-opuscar@lemolab` and delete `~/lemo-opuscar`. If a step stays stuck, [open an issue](https://github.com/lemomo-ai/lemo-opuscar/issues). · 更新：`claude plugin marketplace update lemolab && claude plugin update lemo-opuscar@lemolab`，然后重启 Claude Code（`~/lemo-opuscar` 里的库会在下一次做片时自动更新）；卸载：`claude plugin uninstall lemo-opuscar@lemolab` 并删除 `~/lemo-opuscar`。一直卡住就[提个 issue](https://github.com/lemomo-ai/lemo-opuscar/issues)。
 
 ## The styles · 风格
 
