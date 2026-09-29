@@ -1,136 +1,119 @@
 # Sci-Fi Sitcom Toon — Style Prompt
 
-> Adult-animation sci-fi sitcom: thick boiling outlines, flat color, a jaded genius and a nervous sidekick, a glowing green portal, and one color palette per parallel universe.
-> Demo: *Coffee Run* (57.5 s) · `scifi-toon.mp4` · source in `demo/`
-> Inspired by adult-swim-era sci-fi sitcom cartoons. Borrow the *grammar*, never the characters.
+> Adult-animation sci-fi sitcom: thick boiling outlines, flat colour, a duo whose reactions don't match, a glowing portal, and one palette per world.
+> References (grammar only): adult-swim-era sci-fi sitcom cartoons (dialogue-driven comedy, reaction close-ups, boiling line, sci-fi hardware as household junk). Borrow the *grammar*, never the characters.
 
-You are directing a 30–60 second film in the **Sci-Fi Sitcom Toon** style. The user gives you a topic (and maybe a story). You decide everything else — premise, jokes, cast, shots, timing, music, sound — and deliver a finished film without asking for approval. Follow this guide.
+## 1. Essence, and what it is not
+
+Hand-drawn-looking 2D TV animation for adults: **uniform thick dark outlines that boil**, **flat fills with hard-edged shadow shapes (no gradients)**, **big white eyes with tiny pupils**, **elastic mouths**, grotesque-but-cute creatures, and sci-fi hardware treated like household junk. The comedy is **dialogue-driven**: improvised-feeling talk, interruptions, awkward pauses, reaction shots, escalation, and a last-second reversal. The genre's engine is **a tiny, mundane goal pursued with absurdly large sci-fi means**: whoever could solve anything uses it for something petty, and someone else pays the emotional price.
+
+Not a kids' cartoon (dry humour, long pauses), not anime (no sparkly eyes), not a vector explainer (lines boil).
+
+**Copyright red lines (non-negotiable):**
+- Never reproduce any existing show's characters, silhouettes or colour combos (e.g. a spiky-blue-haired old man in a lab coat + a kid in a yellow shirt), names, catchphrases, burp gags, logos, or the look of any existing portal gun.
+- Invent your own cast, props and portal device. Never write the source show's name in the film or docs; one line "inspired by adult-swim-era sci-fi sitcom cartoons" is enough.
+
+## 2. Materials & rendering
+
+- **Line**: near-black (a slightly purple black reads best), ~7 px for characters and props, 4–6 px for background detail, round joins. **Line width is constant in screen space**: close-ups are "redrawn" at the same weight, never scaled up (transform points to screen, then stroke with an identity transform).
+- **Line boil**: resample every outline in screen space (~7 px steps) and displace along the normal with low-frequency noise, amplitude ~1.7 px; cycle **3 boil drawings at 12 fps**. Everything boils, including held poses and backgrounds: a still frame is never dead.
+- **Fill**: flat colours only. Shadows are hard-edged darker shapes clipped inside the fill (one per form, away from the light). Glows are 1–2 flat translucent rings, not gradients. Skies are **flat colour bands**.
+- **Faces**: big white eyes (touching in 3/4 view), 4–5 px pupils, heavy lids for deadpan, eye bags. Parametric mouths (open, width, curl, skew) with interior, teeth, tongue. Brows carry the emotion.
+- **Cast design**: silhouettes must read in solid black. Give each lead one absurd costume idea. Avoid white lab coat + spiky hair.
+- **Creatures**: every world may get one creature that is disgusting *and* adorable; keep it non-verbal (sound effects) so the film stays a dialogue between the leads. Check that anything behind furniture still shows face and upper body.
+- **The portal** (or whatever device moves between worlds): the only thing that glows. A lumpy rim with a thick outline, rotating spiral arms, a pale core, orbiting sparks, drips, a flat translucent wash over the scene while it's open. Open with a gentle overshoot (~12 %, back-ease ~0.3 s); a springy overshoot covers the actors.
+- **Screen graphics**: a retro-terminal tag (VT323) typed in, coloured per world.
+
+## 3. Colour logic
+
+- **One palette per world**, 3–5 colours, maximally different from the previous world in hue *and* value, so the audience reads "we jumped" from colour alone.
+- Line colour and eye white never change between worlds; everything else may.
+- Glow colour belongs to the travel device only: nothing else in any world may use it.
+- A deliberately bland palette (beige, brown) is itself a joke: use it for the world that is "suspiciously normal".
+- Examples of a sequence of worlds: sage lab → magenta and lime jelly → orange and teal; or grey office → ultraviolet and gold → mint and coral → beige. Our demo's values are in DEMO.md.
+
+## 4. Type & subtitles
+
+- **Subtitles**: bottom centre, a rounded heavy sans (Baloo 2 ExtraBold ~50 px), white with a ~11 px black outline, so they look like the cartoon's own captions, with a small **speaker pill** in the character's colour (boiling outline) on the left. Lines over ~1300 px wrap to two lines. Overlapping lines stack; the older one dims to ~70 %.
+- **Timing**: hold ≥ max(1.8 s, speech + 0.6 s) for narration; for rapid dialogue, `max(audio + 0.35 s, 0.9 s + chars / 17)`. Clip at world changes and **before a silent beat**, so the silence plays on a clean screen.
+- **Title**: chunky display lettering popped in on 12 fps steps on a musical hit. Choose a period look that is not the source genre's logo: **avoid acid green, slime drips and wobbly bubble lettering** together, which reads as a specific show.
+- Keep faces out of the subtitle band (bottom ~170 px) and the world tag clear of faces.
+
+## 5. Motion quality
+
+- **Characters on twos (12 fps)**: poses, mouths, blinks, walk cycles and boil step at 12 fps. **Camera moves, portal swirl, flying props and wipes on ones (24 fps)**.
+- **Acting over moving**: held poses with small changes (eye twitch, pupils sliding, a gulp, sweat drops). Idle life: breathing (±1 % squash), a nod driven by speech loudness.
+- **Anticipation → action** before every gesture.
+- **Squash & stretch** on landings (decaying cosine squash ~22 %), stretch while flying out of a portal; "sucked in" = scale toward the portal centre while stretching.
+- **Lip-sync from audio**: per line, RMS (open) and spectral centroid (wide vs round) at 24 Hz, sampled at the 12 fps drawing time. Exaggerate for screams (mouth ×1.5–1.9).
+- **Nervous jitter**: a 12 fps random offset of 3–6 px plus trembling pupils; amplitude grows with panic.
+- What never moves in a cold pause: everything but the boil.
+
+## 6. Camera grammar
+
+A vocabulary, not a route. Opening and ending come from the topic.
+
+| Move | What it expresses | Can serve |
+|---|---|---|
+| Medium two-shot | the relationship; who reacts how | dialogue; a standoff; a deal |
+| Hard cut to a close-up | an interruption, a face breaking | the cut-off line; the realisation; a lie |
+| Insert extreme close-up of an object | the absurd detail | a reveal; the problem itself; the wrong result |
+| Reaction close-up | the laugh lives on the face | after every absurd image |
+| Tight close-up + short shake on one word | panic | the key word; an alarm; a scream |
+| Rush zoom into the portal → swirl wipe | leaving a world | any jump between places, times or versions |
+| Same framing repeated across worlds | only the world changes | a montage; a comparison; a list |
+| Very slow push-in on a still two-shot | a cold silence | the pause after a reversal; a confession |
+| Wide with the device and both leads in frame | the whole situation at once | a callback; a trap; a fresh start |
+| Over-the-shoulder onto a screen | reading bad news | a message; a readout |
+| Whip pan between two faces | overlapping argument | a fight; a bet; a double take |
+
+Rule: every absurd image is followed by a **reaction close-up**. Transitions go through the travel device (swirl wipes) or hard cuts; no dissolves.
+
+## 7. Sound palette
+
+- **Synthesized score, no samples needed.** A **theremin**-like lead (sine + a little 2nd/3rd harmonic, legato portamento ~70 ms, vibrato fading in ~150 ms after each onset, spring reverb) over analog bass, a square-wave arpeggio and a retro drum machine. Minor modes and chromatic lines suit the main theme.
+- **Genre cues per world** (options): surf guitar; polka accordion; toy-piano lullaby; elevator bossa (Karplus–Strong nylon guitar); brushed swing with vibes; tuba + slide whistle; warm Rhodes + a vocal "aah"; tremolo strings for panic.
+- **Techniques (options)**: a cue's first beat is the cut; a tempo that snaps cuts to a grid; rule of three becoming machine-gun (same stinger, shorter each time).
+- **Silence is the punchline**: hard-cut the music, reverb tails included, on a reveal and for a cold pause. Leave only room tone (fluorescent hum, a clock tick, a fridge).
+- **Foley (synthesized)**: portal open (sub boom + down-swept noise + rising swirl), hum, close "fwump", swirl whoosh per wipe, pop/boing, wet glorp/squish, slurp, chomp, blink "blip", click-beep, kazoo sting, squeaky toy.
+- **Voices**: a two-hander with contrasting voices: low, flat and slow for the deadpan lead (light saturation + a ~180 Hz bump for gravel); higher and faster for the nervous one (presence boost). A tiny creature may say one or two words, pitched up. Compress, RMS-match, add short early reflections so voices sit in the room. Duck music ~−7 dB under dialogue. Master −14 LUFS.
+
+## 8. Native moves
+
+A menu: use the ones your story needs.
+
+- **Parallel worlds.** Each jump = new palette, new cue, new creature. *Fits content like:* versions of a product; careers you could have had; the same city in five eras.
+- **Duo contrast.** Deadpan vs panic: the joke is in the difference between reactions. *Fits content like:* a veteran and a new hire; a parent and a teenager; an AI and its user.
+- **Rule of three → machine-gun.** Two slow wrong answers, then one-second worlds cut on the beat with the same rejection word. *Fits content like:* failed prototypes; bad date ideas; tax forms.
+- **The suspiciously normal world.** The pattern breaks; the calm is the joke. *Fits content like:* the one boring answer that works; a quiet office after chaos; the real customer.
+- **Dead-air reversal.** A long silence after the twist, then one line revealing a character's values. *Fits content like:* a price reveal; a fine print clause; a gift that wasn't wanted.
+- **Hardware as junk.** World-bending tech used for a petty chore. *Fits content like:* a quantum computer used for a grocery list; a rocket to deliver a sandwich; a time machine to fix a typo.
+- **Callback button.** The last line repeats the first so the story loops. *Fits content like:* a catchphrase of a brand; a morning routine; a running complaint.
+
+## 9. Pitfalls of the medium
+
+- TTS reads hyphen stutters as words: write syllables ("buh, buh-broken"); respell words it mangles; pick names that survive a low voice.
+- Whisper mis-hears very short clips unless padded with ~0.6 s of silence.
+- A real interruption: generate the interrupted line *longer* than needed and truncate the audio where the other voice cuts in.
+- A springy overshoot swallows the actors: gentle back-ease.
+- Food and liquids need cues (surface detail, drips, steam) or they read as other objects.
+- Square-wave synth cymbals alias into harsh 8–20 kHz fizz: band-passed noise plus a little FM.
+- A sustained bass below ~40 Hz is rumble on laptop speakers: end an octave higher.
+- A cut music cue without its reverb tail cut is not dead silence.
+- `ffmpeg fps=1` contact sheets are offset up to 0.5 s: don't misdiagnose a shot boundary.
+
+## 10. Engine
+
+In `demo/`: `toon.js` (vector engine: matrix stack, screen-space boil, constant line width, flat shading), `chars.js` (parametric eyes, mouths, hands, noodle limbs), `worlds.js` (one function per world, creatures, the portal), `voice.py` (per-character processing + lip-sync envelopes), `asr.py` (padded whisper check), `music/score.py` (synthesized score from a cue list), `levels.py` (stem meters), `sheet.sh` / `strip.sh` (contact sheets, consecutive-frame strips). New shapes: build them with `toon.js` in world space; the stroke goes through the screen-space boil at constant weight.
+
+## 11. Variation space
+
+You decide the premise, the cast, the worlds, the jokes, the opening, the ending, the camera path, the pacing and the palettes. All far from our demo:
+
+- Structures: **one world, many clocks** (the duo stays home and a device skips them through times of day, each time worse); **the job interview** (a panel interviews candidates from other worlds, each a different genre cue); **the tech-support call** (split screen between two worlds, one voice guiding the other through a disaster).
+- Openings: **mid-disaster** (the portal is already open and something is coming through); **the instruction manual** (a terminal readout explains the device before we see anyone); **the wrong world** (we start in the absurd world and only later see home).
+- Endings: **stuck elsewhere** (the device breaks and they settle in, happily); **the audience** (a creature from one world watches the whole film on a screen and rates it); **the cost** (a quiet final shot of what the errand cost someone, no joke).
 
 ---
 
-## 1. What this style is
-
-Hand-drawn-looking 2D TV animation for adults: **uniform thick black outlines that boil**, **flat fills with hard-edged shadow shapes (no gradients)**, **big white eyes with tiny pupils**, **elastic mouths**, grotesque-but-cute aliens, and sci-fi hardware treated like household junk. The comedy is **dialogue-driven**: improvised-feeling talk, interruptions, awkward pauses, reaction shots, escalation, and a last-second reversal.
-
-**Copyright red lines (non-negotiable):**
-- Never reproduce any existing show's characters, silhouettes or color combos (e.g. a spiky-blue-haired old man in a lab coat + a kid in a yellow shirt), names, catchphrases, burp gags, logos, or the look of any existing portal gun.
-- Invent your own cast, props and portal device. Never write the source show's name in the film or docs; one line "inspired by adult-swim-era sci-fi sitcom cartoons" is enough.
-
-## 2. Story: what fits this style
-
-The engine of the genre is **a tiny, mundane goal + absurdly large sci-fi means**. The genius could solve anything and uses it for something petty; the sidekick pays the emotional price.
-
-| Native power | Story use |
-|---|---|
-| **Parallel universes** | Each jump = new palette, new music motif, new creature. The audience reads "we jumped" from color and sound alone. |
-| **Gross-cute creatures** | Every world gets one creature that is disgusting *and* adorable. Keep it non-verbal (sound effects), so the film stays a two-hander. |
-| **Duo contrast** | Deadpan, low-energy genius vs. panicking sidekick. The joke is in the *difference* between their reactions. |
-| **Portal as grammar** | The glowing portal is the only thing that glows, and every scene change goes through it. |
-| **Dialogue comedy** | Interruptions, stutters, overlaps, flat one-word answers, silence. |
-
-**Adapting any topic** — turn it into an errand:
-- Product launch → the genius crosses dimensions looking for a working version of the product; every universe has a worse one; the one they bring back has a twist.
-- A lesson / explainer → the sidekick asks a simple question; each universe is a wrong answer taken literally; the last one is right but has a cost.
-- A holiday / event → "we're out of X for the party" → universes of increasingly wrong X.
-
-**Beat sheet for 45–60 s** (proven in the demo):
-1. **Cold open (8–12 s)** — the mundane problem, shown not told (an empty pot, one last drip). Sidekick over-explains, genius cuts him off with one word. No music, no title yet.
-2. **Portal + title slam (2–3 s)** on a musical downbeat.
-3. **Jump 1 (6–8 s)** — slow: arrive, try, reveal the wrongness in an insert close-up, **cut the music**, reaction shot, one-word rejection.
-4. **Jump 2 (6–8 s)** — faster and worse; the sidekick loses it; same rejection word.
-5. **Montage (3 × 1 s)** — rule of three becomes machine-gun: one second per universe, same word each time, cuts on the beat.
-6. **The break (4–5 s)** — a universe that is *suspiciously normal*. The pattern breaks; the calm is the joke.
-7. **Home (12–16 s)** — relief → the reversal (what they brought back is wrong) → **2+ seconds of dead silence** → the genius reveals his value system in one line → button.
-8. **Button** — call back the opening line so the story loops.
-9. **End card (4–5 s).**
-
-Rule of thumb: every absurd image must be followed by a **reaction close-up**. The laugh lives on the face, not on the monster.
-
-## 3. Visual language
-
-- **Line**: near-black `#1b1422`, **7 px** for characters and props, 4–6 px for background detail, round joins. **Line width is constant in screen space** — close-ups are "redrawn" at the same weight, never scaled up. (Implementation: transform points to screen, then stroke with an identity transform.)
-- **Line boil**: resample every outline in screen space (~7 px steps) and displace along the normal with low-frequency noise, amplitude ~1.7 px; cycle **3 boil drawings at 12 fps**. Everything boils, including held poses and backgrounds — a still frame is never dead.
-- **Fill**: flat colors only. Shadows are hard-edged darker shapes clipped inside the fill (one per form, on the side away from the light). Glows are 1–2 flat translucent rings, not gradients. Skies are **flat color bands**, not gradients.
-- **Faces**: big white eyes (touching or overlapping in 3/4 view), pupils 4–5 px dots, heavy upper lids for the deadpan character, eye bags, stubble dots. Mouths are parametric (open, width, corner curl, skew) with dark interior, teeth strip and tongue. Brows carry most of the emotion.
-- **Cast design**: silhouettes must read in black. Give each lead one absurd costume idea (demo: genius in a bathrobe + fuzzy slippers + goggles; sidekick in a bike helmet + giant round glasses). Avoid white lab coat + spiky hair.
-- **Palettes — one per universe**, 3–5 colors each, maximally different from the previous world:
-  - Home lab: sage green `#a7c3b1`, olive floor, warm wood, one orange accent.
-  - Jelly world: magenta sky bands `#ff4f9a→#ff9bcb`, lime jelly `#b8f03c`, cyan `#52e0e0`.
-  - Mug world: orange sky `#ff7a2f→#ffb862`, teal hills `#2b9c98`, cream.
-  - Teeth world: red `#c3122f`, gum pink `#ff8fa6`, tooth white. Pigeon world: slate blue `#5f78a8`, grays. Clone world: inverted purple `#3b1f66` + yellow `#e8d84a`.
-  - "Normal" world: deliberately bland beige `#f1e3c6` and brown.
-- **The portal**: a vertical oval (x-scale ~0.74), lumpy goo rim `#3fd93a` with a 7–8 px outline, 5 spiral arms alternating `#b8ff5a`/`#21b33c` rotating **on ones**, a pale core, orbiting sparks, drips off the bottom, a flat green wash over the scene while it's open. Open with a ~12 % overshoot (back-ease 0.32 s) — springier overshoot covers the actors.
-- **Screen graphics**: a retro-terminal "universe readout" tag top-left (VT323, typed in, colored per world, faster typing for 1-second shots); title in a fat rounded display font with goo drips.
-
-## 4. Motion language
-
-- **Characters on twos (12 fps)**: poses, mouths, blinks, walk cycles and boil all step at 12 fps. **Camera moves, portal swirl, flying props and screen wipes on ones (24 fps)**.
-- **Acting over moving**: most comedy is held poses with small changes — an eye twitch, pupils sliding without the head moving, a gulp, sweat drops. Add idle life: breathing (±1 % vertical squash) and a head nod driven by speech loudness.
-- **Anticipation → action**: dip before raising the remote; wind the arm back before the toss.
-- **Squash & stretch** on landings (decaying cosine squash ~22 %), stretch while flying out of portals, "sucked in" = scale toward the portal center while stretching.
-- **Lip-sync from audio**: per line, compute RMS (open) and spectral centroid (wide vs. round) at 24 Hz; sample at the 12 fps drawing time. Exaggerate for screams (scale the mouth up 1.5–1.9×).
-- **Nervous character jitter**: 12 fps random offset of 3–6 px plus trembling pupils; escalate amplitude with panic.
-
-## 5. Camera language
-
-| Beat | Camera |
-|---|---|
-| Cold open | Static insert close-up of the problem object, a slow push |
-| Dialogue | Medium two-shot; **hard cut to a close-up on an interruption** |
-| Reveal of the absurd | Insert extreme close-up, then cut to a reaction close-up |
-| Panic | Tight close-up with a short camera shake on the key word |
-| Jumps | "Rush" zoom into the portal → full-screen swirl wipe → next world opens from a swirl |
-| Montage | Same framing in every world (duo left, creature right) so only the world changes |
-| Cold silence | Two-shot of the standoff, very slow push-in, nothing moves but the boil |
-| Button | Wide shot so the portal and both characters are in frame |
-
-Keep faces out of the subtitle band (bottom 170 px). Keep the universe tag clear of faces.
-
-## 6. Sound
-
-- **Score** (synthesized; no samples needed): 120 BPM so cuts snap to half-second beats. A **theremin** lead (sine + a little 2nd/3rd harmonic, legato portamento ~70 ms, vibrato fading in 150 ms after each note onset, spring reverb) over analog bass, 16th-note square arpeggio and a retro drum machine. Minor key for the main theme (demo: chromatic descent D–A–B♭–A–E–F–E–E♭–D).
-- **One motif per universe**, written as separate cues whose **first beat is the cut**: bouncy tuba + wobbly lead + slide whistle (jelly), brushed swing jazz with vibes (mug), 1-second stingers over a four-on-the-floor pulse (montage), elevator bossa with Karplus–Strong nylon guitar (the "normal" world), warm Rhodes + theremin "aah" (relief), rising tremolo strings (panic).
-- **Silence is the punchline**: hard-cut the music (including reverb tails) on the reveal insert and for the cold pause. Leave only room tone: fluorescent hum + clock ticks.
-- **Foley** (synthesized): portal open (sub boom + down-sweeping noise + rising swirl), portal hum, portal close "fwump", swirl whoosh on every wipe, cartoon pop/boing on spit-out and landing, wet glorp/squish/blink for slime creatures, straw slurp, teeth chomp, pigeon coo, shop bell, bubble bloops, cartoon blink "blip", remote click-beep.
-- **Voices**: two-hander. Deadpan genius = a low, flat voice (Kokoro `am_onyx`, speed 0.82–0.9, light saturation + 180 Hz bump for gravel). Sidekick = higher, faster (Kokoro `am_eric`, speed 1.1–1.15, presence boost). Creatures non-verbal; a tiny creature can say one or two words (Kokoro `af_sky` pitched +7 semitones). Compress, RMS-match, short early reflections so voices sit in the room. Duck music ~−7 dB under dialogue. Master −14 LUFS.
-
-## 7. Subtitles & titles
-
-- **Subtitles**: bottom center, **Baloo 2 ExtraBold 50 px, white with an 11 px black outline** (they look like the cartoon's own captions), with a small **speaker pill** in the character's color (boiling outline) on the left. Lines over ~1300 px wrap to two lines. Overlapping lines stack; the older one dims to 70 %.
-- **Timing**: on screen for `max(audio + 0.35 s, 0.9 s + chars / 17)`; clip at world changes and **before a silent beat** so the silence plays on a clean screen.
-- **Title**: a 1950s atomic-age TV title — chunky block letters (Bungee) in cream with a hard magenta offset shadow and thick ink outline, wrapped by a tilted cyan orbit ring with a coffee bean flying around it and a few twinkling four-point stars; popped in on 12 fps steps on the music downbeat. **Avoid acid green, slime drips and wobbly bubble lettering** — that combination reads as a specific show's logo.
-- **End card**: dark purple, a slow dimmed portal, title, style name in the terminal font, "LemoLab × Claude Opus 5.5", credits; a tiny post-credits gag in the portal is welcome.
-
-## 8. Pitfalls we hit
-
-- Kokoro + whisper: the name "Pim" in a deep voice reads as "Pam" — pick names that survive a low voice (Gary worked). Hyphen stutters ("b-broken") are read as "be broken"; write stutters as syllables ("buh, buh-broken", "Wh, wh, why"). "decaf" can come out "D-cuff"; "dee-caf" is reliable.
-- Whisper mis-hears very short clips unless you pad them with ~0.6 s of silence before transcribing.
-- To make an interruption real, generate the interrupted line *longer* than needed and truncate the audio where the other character cuts in.
-- A springy portal (lib `spring`) overshoots to ~135 % and swallows the actors; use a gentle back-ease.
-- A brown blob in a cup reads as a potato. Coffee needs a latte-art heart, drips over the rim and steam.
-- Characters placed behind counters vanish — check that creatures behind furniture still show their face and upper body.
-- Synth cymbals made of square waves alias into harsh 8–20 kHz fizz and beep-like lines on a spectrogram; use band-passed noise plus a little FM.
-- A sustained bass at D1 (37 Hz) is just rumble on laptop speakers; finish on D2.
-- When a music cue is cut, cut the reverb tail too, or the "dead silence" isn't dead.
-- Contact sheets from `ffmpeg fps=1` are offset by up to half a second — don't misdiagnose a shot boundary.
-
-## 9. Production recipe (this repo)
-
-```
-styles/scifi-toon/demo/
-  toon.js     vector engine: matrix stack, screen-space boil, constant line width, flat shading
-  chars.js    the cast (parametric eyes, mouths, hands, noodle limbs) + props
-  worlds.js   one function per universe + creatures + the portal
-  story.js    single source of truth: VO start times, shots, wipes, tags, key beats, music cues
-  main.js     acting per shot, cameras, wipes, tags, subtitles, title, end card, window.EV
-  lines.json  script (tts text, subtitle text, speaker, voice, pitch, cut)
-  voice.py    per-character processing + lip-sync envelopes   asr.py   padded whisper check
-  music/score.py  synthesized score from the cue list        mix.py   foley + voices + ducking + ambience
-  srt.mjs  build.sh  sheet.sh (contact sheets)  strip.sh (consecutive-frame strips)  levels.py (stem meters)
-```
-
-1. Write the treatment. Cast voices by generating test lines and measuring median f0 / pitch variance.
-2. `core/tts/tts.py lines.json out/raw` → `voice.py` → `asr.py` until every line passes.
-3. Put VO times, shots and cues in `story.js`; block shots in `main.js`; review with `sheet.sh` (1 frame/s) and `strip.sh` (consecutive frames) — at least two rounds.
-4. `core/render/events.mjs` → `music/score.py` → `mix.py` (check `levels.py` and a spectrogram).
-5. `sh demo/build.sh` reproduces everything: TTS → voices → events → score → mix → SRT → render (1380 frames ≈ 15 s with 4 workers) → mux at −14 LUFS. Full rebuild ≈ 1 minute on an M-series Mac.
+How our demo was made (story, shots, score, end card, build): [DEMO.md](DEMO.md). Read it after your treatment exists.

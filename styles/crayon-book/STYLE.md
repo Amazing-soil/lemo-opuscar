@@ -1,117 +1,107 @@
 # Crayon Picture Book — Style Prompt
 
-> A bedtime picture book drawn live in wax crayon on toothy paper, with one watercolour wash that reveals what the crayon was hiding.
-> Demo: *The Moon Can't Sleep* (52s) · `crayon-book.mp4` · source in `demo/`
+> A picture-book page drawn live in wax crayon on toothy paper, with a watercolour wash that reveals what the crayon was hiding.
+> References (grammar only): Raymond Briggs' *The Snowman* (1982) (hand-textured frames that breathe, wordless tenderness, a lyrical passage carried by one tune, still backgrounds with living figures). Copy none of its characters, song or imagery, and never name it in the film.
 
-You are directing a 30–60 second film in the **Crayon Picture Book** style. The user gives you a topic. You decide everything else — story, shots, timing, sound — and deliver a finished film. Follow this guide.
+## 1. Essence, and what it is not
+
+A children's picture book page **being drawn while you watch**: wax crayon on warm off-white paper, a limited box of crayons, child-logic perspective, colour that spills past the outline, and every line gently **boiling** because each frame is a fresh drawing. The tone is picture-book storytelling: tender, unhurried, music-led, a few lines of narration that are literally the words printed on the page. Any topic becomes **one page of a picture book that gets finished**: drawing and colouring are the plot.
+
+It is not "cute vector art with a crayon filter": the look comes from **material physics** (wax sticks only to the peaks of the paper tooth, pressure decides how much of the tooth it reaches, watercolour is repelled by wax). Not a whiteboard explainer (no marker, no hand), not a watercolour painting (the wash is a guest, the crayon the host), not a chalkboard.
+
+## 2. Materials & rendering
+
+- **Paper**: warm off-white (around `#f4efe3`). The tooth is **anchored to the page** (it pans with the camera; on zoom two octaves cross-fade so grains stay ~1 px on screen), never screen-fixed: three octaves of value noise plus a horizontal fibre term. A final pass embosses it (lit top-left), less where wax filled the tooth. Low mottling ±2 %, warm vignette.
+- **Wax adhesion (the core rule)**: every crayon layer is a canvas where RGB = colour and **A = pressure**; the shader deposits wax where `tooth > 1 − k·pressure` (soft edge). Light pressure = speckled peaks; heavy = almost solid, slightly darker.
+- **Strokes**: ribbons with a low-frequency hand wobble (1–2 px), width ±15 %, tapered ends, a denser core and 1–2 thin streaks. Characters and buildings get the heaviest outline; refined "adult" objects about half.
+- **Colouring**: back-and-forth zig-zag hatching with a visible gap, each pass at a slightly different pressure; **overshoot the outline by a few px**; a lighter cross-hatch pass on big areas.
+- **Watercolour wash**: a separate density canvas multiplied over the page. Pigment pools at edges (density minus blurred density), granulates in the deepest pits, blooms with noise, and is **resisted by wax** (density × (1 − ~0.9·wax coverage)). Brush strokes are wide bands with bristle streaks and a darker wet leading edge while moving.
+- **Occlusion**: a front part erases what is behind it inside its outline; characters "keep the paper white" behind them (a knock-out that restores paper and resets wax), the way a child draws the figure first and colours around it.
+- **Characters**: a skilled adult imitating a child: round head (≈2.5 heads tall), dot eyes with a white-wax catchlight, pink cheeks, tube limbs, mitten hands, bold hair shapes; objects with faces get big eyes and eyelids. **Child perspective**: gable front + slanted side wall; people bigger than doors.
+
+## 3. Colour logic
+
+- **A box of about a dozen crayons, never more.** Outlines in one dark colour (indigo, dark brown, plum), **never black**. One white crayon reserved for wax resist.
+- **At most one watercolour** per film, chosen for what it reveals (ultramarine for night, rose for dawn, sap green for rain). It never paints the characters.
+- Saturated crayon on lots of bare paper; value comes from pressure, not extra hues. One accent on a character may echo the story.
+- Example boxes: *seaside* — navy line, coral, sand, teal, turquoise, lemon, white; *orchard* — brown line, russet, apple red, mustard, olive, plum, cream, white.
+
+## 4. Type & subtitles
+
+- Subtitles are **the book's printed words**: a handwriting face (Patrick Hand, OFL), 50–56 px, in the outline colour, bottom-centre, each glyph tilted and offset, boiling on twos, written left→right in ~0.35 s, on a ragged knock-out patch of blank paper (never a dark box). Hold ≥ max(1.8 s, speech + 0.6 s); none during wordless music.
+- Titles are hand-lettered on the page (Gaegu Bold or similar), written letter by letter. You can't fade crayon: a title leaves by the camera moving off it, a page turn or being coloured over.
+
+## 5. Motion quality
+
+- **Everything drawn steps at 12 fps** (lines, colouring, characters, boil seed); camera, the wash's leading edge and twinkles run at 24 fps.
+- **Boil**: each stroke re-jitters offset (<1 px), wobble and hatching rows every 2 frames. Characters full, background lines ~0.6, background colouring still (it also halves the bitrate). Calm the boil to about half when the film goes quiet.
+- **Drawing on**: lines reveal along their length in 0.4–0.9 s; colouring row by row; text letter by letter.
+- **Acting**: substitution, a new drawing per pose on the beat; two key drawings alternate for a repeated action. Big simple poses; a child's drawing doesn't in-between.
+- **Colouring is an action**: being coloured in *is* doing (a coat scribbled on = putting it on; pink scribble = blushing; a wash = night falling).
+
+## 6. Camera grammar
+
+The camera moves over a large page. A vocabulary, not a route; every move needs a reason. Opening and ending come from the topic.
+
+| Move | What it expresses | Can serve |
+|---|---|---|
+| Locked full page | Paper before drawing; the whole picture | a beginning from nothing; a tableau; a reveal that needs the page |
+| Push toward a character | "This one" | a title giving way; a feeling arriving |
+| Locked medium close-up | Substitution poses act | comedy; a decision; a small failure |
+| Tilt along a gaze | We see what they see | discovery; longing; something huge |
+| Tight follow | The world draws itself ahead of the subject | a brave act; a path; building |
+| Held wide while the brush moves | The material is the motion | a wash reveal; weather; day or night falling |
+| Slow truck across the page | Reading left to right | a list; a sequence; a family |
+| Pull out past the page edge | The page is an object | a book on a table; a fridge drawing |
+| Page turn | New chapter, time jump | before/after; the next day |
+
+Key figures ≥ 1/4 of frame height in close shots; keep bare paper at the bottom for the printed words. Transitions: drawing on, colouring over, the wash, a pan or a page turn; never a dissolve.
+
+## 7. Sound palette
+
+- **Small wooden and metal-toothed instruments, no strings or grand piano**: ukulele or nylon guitar, clarinet or bassoon (bass, humour), music box (can wind down with a pitch droop), glockenspiel or celesta (a note per uncovered sparkle), toy piano (one note per counted thing), flute or recorder as the singing voice, shaker and woodblock. A simple lilt; one theme can be held back and heard in full once.
+- **Silence is a beat**: a full beat of nothing after a failure; a short breath before a wordless passage.
+- **Foley follows the material**: crayon = stick-slip band-passed noise whose grain follows stroke speed (colouring = rhythmic swishes); wet brush = soft low-passed noise with bristle grain, panned with the stroke; felt puffs, fabric swishes, a sharpener, a crayon set down, a page turn (lift / whoosh / flap). Ambience: faint crickets or birds, room tone, a distant clock.
+- **Mix**: music under narration, rising for wordless passages; metal voices get a gentle high lift. −14 LUFS.
+- **Voice**: a soft, warm storyteller, short lines with breaths. Compress before EQ, cut the highs, de-ess, a warm near-field reverb far under the dry voice; a few dB over the bed, never louder. Whisper-check every line, dry and on the final mix. Avoid famous-book phrases.
+
+## 8. Native moves
+
+A menu: use the ones your story needs.
+
+- **Wax resist.** White crayon is invisible until a wash passes; hide the payoff in plain sight from the first frame. *Fits content like:* a farewell message; a product's hidden feature; roots under a garden.
+- **Drawn live.** The world draws itself just ahead of the hero. *Fits content like:* a bridge plank by plank; a journey map; a company timeline.
+- **Colouring is an action.** *Fits content like:* a town lighting up window by window; a team putting on kit; fruit ripening.
+- **Boil.** A held frame is alive; calming it quiets the film. *Fits content like:* a pause for thought; grief; rest.
+- **Child logic.** Wrong perspective, faces on objects, numbers in the sky. *Fits content like:* a launch countdown; a talking house on insulation; a sun that clocks out.
+- **It is a book.** Pull back to the object; turn the page. *Fits content like:* a year in review; a "chapter two"; a thank-you card.
+
+## 9. Pitfalls of the medium
+
+- Gaps between wash bands leave white stripes → overlap bands and cover all intended paper.
+- Wavy band edges and wide light streaks read as hills → small high-frequency waviness, thin faint streaks (α ≤ 0.12).
+- Light-pressure colouring goes muddy under a wash → pressure ≥ 0.8 or cross-hatch wherever the wash crosses.
+- Text where the wash passes survives it (wax resists) → place it elsewhere or accept it.
+- Characters vanish under a wash → composite them *after* the wash.
+- Outlines over hair read as a headband → outline hair masses on their outer edge only.
+- Knock-out drawn into a plain layer shows as grey crayon → use a dummy canvas.
+- Page turn from rectangle strips shows a staircase → an affine transform per strip.
+- Double vignette/emboss at a page-to-object transition → page with vignette 0, ramp the outer scene's in.
+- Screen-fixed tooth bloats the file → anchor it, don't boil background fills, no ffmpeg grain.
+- Reverb IR from unit-variance noise is hugely loud → scale wet to ~18 dB under dry.
+
+## 10. Engine
+
+In `demo/`: `gl.js` (WebGL2 compositor: paper, wax adhesion, knock-out, watercolour + resist, emboss/vignette/lamp), `crayon.js` (`line` ribbons with taper, streaks, boil; `fill` hatching with overshoot; `text`; shapes), `rig.js` (occlusion + knock-out parts, limb tubes), `sheet.js` (model sheets, `?test=model&page=…`), `end.js` (page on a desk, page turn). Draw your own character's model sheet with them before any shot. File map and commands: [DEMO.md](DEMO.md#build-notes).
+
+## 11. Variation space
+
+You decide the structure, the characters (or none), the page, the opening, the ending, the camera path, the pacing, the crayon box and whether there is a wash. All far from our demo:
+
+- Structures: **a colouring-book page** (all outlines there from frame one; each idea colours one area); **a flip through several pages** (one stage per page, joined by turns); **two children, one page** (two crayon colours argue, then combine).
+- Openings: **a finished page rubbed out** to begin again; **a crayon tip in extreme close-up** mid-stroke, pulling back; **a crumpled page being flattened**.
+- Endings: **the page taped to a fridge** among others; **a last scribble** filling the frame with one colour; **a stray splash of water** finding the white-wax message.
 
 ---
 
-## 1. What this style is
-
-A children's picture book page that is **being drawn while you watch**: wax crayon on warm off-white drawing paper, a limited box of crayons, child-logic perspective, colour that spills past the outline, and every line gently **boiling** because each frame is a fresh drawing. The tone is a bedtime story: tender, slow, music-led, with a few lines of narration that are literally the words printed on the page.
-
-It is not "cute vector art with a crayon filter". The look comes from **material physics**: wax only sticks to the peaks of the paper tooth, pressure decides how much of the tooth it reaches, watercolour is repelled by wax. Reference for grammar only: Raymond Briggs' *The Snowman* (1982) — hand-textured frames that breathe, wordless tenderness, a lyrical passage where one song carries the film, a child at a lit window at night. Never copy its characters, song or imagery.
-
-## 2. Story: what fits this style
-
-Pick stories where **the act of drawing and colouring is the plot**. Crayon + watercolour have six native powers — use at least three, and put the strongest one at the emotional peak:
-
-| Native power | Story use |
-|---|---|
-| **Wax resist** — white crayon is invisible on white paper until a wash is brushed over it | The reveal. Hide the payoff in plain sight from the first frame (stars, a message, a path, a hidden friend) and let a sweep of watercolour uncover it at the climax. |
-| **Drawn live** — lines appear stroke by stroke, colour is scribbled in | Open on a blank page. The world helps the hero by drawing itself just ahead of them (a ladder that grows rungs under her hands, a bridge, a path). |
-| **Colouring is an action** | A character "does" something by being coloured in: pulling up a blanket = scribbling a quilt over the moon; blushing = pink scribble; night falling = a wash. |
-| **Boil** | Even a held frame is alive. Calm the boil (half amplitude) when the story goes to sleep. |
-| **Child logic** | Wrong perspective, faces on the moon, numbers written in the sky while counting sheep. Things a child would draw are allowed to happen. |
-| **It is a book** | End by pulling back to the physical book on a table, the crayons beside it; turn the page to "The End". A one-take film over one page is explained by that reveal. |
-
-Adapting any topic: turn it into **one page of a picture book that gets finished**. A product launch → the product is drawn in outline, coloured, and a wash reveals the hidden feature. A history lesson → a page of events coloured in one by one. A thank-you film → names written in white crayon, revealed by the wash.
-
-**Arc for 45–55s:** blank page → a character is drawn and wakes up (hook in 3s) → a small comic problem → a second character → a small brave act → the wash reveal on the song (peak, no narration) → everyone sleeps / resolves → pull back to the book, page turn.
-
-## 3. Visual language
-
-- **Paper**: warm off-white `#f4efe3`. The tooth is **anchored to the page** (it pans with the camera; on zoom, two octaves cross-fade so grains stay ~1 px on screen) — never screen-fixed. A procedural tooth height-field: three octaves of value noise at 1.35 / 2.9 / 6.3 px plus a horizontal fibre term (x/10, y/1.9), contrast `smoothstep(.16,.86)`. Final pass embosses the paper (gradient lit from top-left, strength ~0.55), less where wax has filled the tooth. Low-frequency mottling ±2%. Warm vignette.
-- **Wax adhesion (the core rule)**: every crayon layer is a Canvas2D where RGB = crayon colour and **A = pressure**. The shader deposits wax where `tooth > 1 − 1.22·pressure` (soft edge ±0.07). Light pressure = only the peaks (speckled); heavy pressure = almost solid. Heavier wax also darkens the colour slightly (×(1−0.1·p²)).
-- **Strokes**: outlines are ribbons with a hand wobble (low-frequency normal offset ~1.7 px), width variation ±15%, tapered ends, a denser inner core and 1–2 thin streaks along the stroke. Outline width ~7 px on characters, 8 px on buildings, 4–5 px for refined "adult" objects.
-- **Colouring**: back-and-forth zig-zag hatching, gap ~10.5 px, width ~11 px, every pass at a slightly different pressure (0.72–1.14×) so individual strokes read; **overshoot the outline by 0–7 px** (children colour outside the lines); cross-hatch second pass on big areas at 40–50% pressure.
-- **Palette** (12 crayons, never more): ink/indigo `#2d3263` (all outlines — never black), yellow `#f5c63c`, orange `#ec8a3c`, red `#d4483c`, pink `#ee8ea4`, peach `#f4c7a4`, brown `#7a4b31`, ochre `#e7b867`, green `#62a24c`, sky `#79acd9`, violet `#6a5aa6`, white `#fbfaf4` (wax resist). One watercolour: ultramarine, transmission `(0.15, 0.19, 0.44)`.
-- **Watercolour wash**: a separate density canvas, multiplied over the page. Pigment pools at the edges (density − mip-blurred density → darker rim), granulates in the deepest tooth pits, blooms with low-frequency noise, and is **resisted by wax**: `density × (1 − 0.93·smoothstep(.12,.55, waxCoverage))`. Brush strokes are wide bands with bristle streaks (darker/lighter lines along the stroke) and a wet leading edge that is darker while moving.
-- **Occlusion**: a front part erases the lines and colour of the parts behind it inside its outline, and characters "keep the paper white" behind them (a knock-out pass that restores paper and resets wax to 0), the way a child draws the figure first and colours the background around it.
-- **Characters**: a skilled adult imitating a child: round head (≈2.6 heads tall), dot eyes with a white-wax catchlight, round pink cheeks, simple tube limbs with mitten hands, bold hair shapes with a scalloped fringe. One colour accent that echoes the story (her yellow star hair-clip = the stars). Objects with faces (the moon) get big readable eyes, eyelids, eye-bags.
-- **Child perspective**: gable front + slanted side wall + a big roof plane; people bigger than doors; a round tree with red dots.
-
-## 4. Motion language
-
-- **Everything drawn steps at 12 fps** (on twos): characters, lines, colouring, boil seed. Camera moves, the wash's leading edge and star twinkles run at 24 fps.
-- **Boil**: every stroke re-jitters its whole-stroke offset (±0.8 px), its wobble (±0.9 px) and its hatching rows every 2 frames. Characters ×1; background *lines* ×0.6; background *colouring* does not boil (a still painted background with living characters, as in *The Snowman* — and it halves the bitrate). After the characters fall asleep, ×0.5.
-- **Drawing on**: lines reveal along their length (`draw` 0→1) in 0.4–0.9 s; colouring reveals row by row. Text is written letter by letter in 0.35 s.
-- **Acting**: substitution animation — a new drawing per pose (tossing = a scrunched face rotated 35°, on the beat). Climbing alternates two key drawings per rung. Keep poses big and simple; a child's drawing doesn't in-between.
-- **Sleep grammar**: eyelids come down as yellow scribbles, a nightcap is drawn on, a quilt is coloured up from below with the folded edge appearing first, a tiny hand tucks it in.
-
-## 5. Camera language
-
-The film is **one continuous camera over one page** (world 3200×1800; full page = scale 0.6). Every move needs a reason:
-
-| Beat | Camera |
-|---|---|
-| Opening | Locked full page, flat: the audience must see the paper before anything is drawn |
-| Title leaves | Push toward the character instead of fading the title (you can't fade crayon) |
-| Comic beat | Locked medium close-up; let substitution poses do the comedy |
-| Discovery | Tilt along a character's gaze (the camera *is* the moon looking down) |
-| Two-shot | One character peeking in from the frame edge, the other small in a lit window |
-| Brave act | Tight follow tilt; the world draws itself just ahead of the hero |
-| Wash reveal | **Hold a wide.** Let the brush and the music do the motion. Small figure, huge sky |
-| Resolution | Slow push-in on the face falling asleep, then tilt to the second sleeper |
-| Ending | Pull out until the page becomes a book on a table; page turn; glide onto "The End" |
-
-## 6. Sound
-
-- **Music first, in 3/4 at 72 BPM** (bar = 2.5 s). Music box (lead, mechanical tines), toy piano (comic waltz, one note per sheep / per rung), flute as the singing voice (instrument replaces voice), clarinet for bass and humour, glockenspiel for every star the wash uncovers. No strings, no grand piano. The lullaby theme appears in full exactly once, at the wash; the opening music-box motif is its first phrase. End with the music box **winding down** (ritardando + slight pitch droop).
-- **Silence**: a full beat of silence after the failed sheep-count; a 0.3 s breath before the song.
-- **Foley follows the material**: crayon = stick-slip band-passed noise whose grain rate follows stroke speed (colouring = rhythmic back-and-forth swishes); wet brush = soft low-passed broadband with fine bristle grain, panned with the stroke; sheep landing = felt puff; tossing = blanket swish; page turn = lift / whoosh / flap. Night = very faint crickets; the desk = warm room tone and a distant clock.
-- **Mix**: music −7 dB under narration, +4 dB for the wordless song; music-box and glockenspiel stems +3 dB with a gentle 3–7 kHz lift so the metal sparkles over flute and clarinet.
-- **Voice**: a soft, warm bedtime storyteller (Kokoro `af_heart`, speed 0.86–0.90; v3 re-voice — `bf_emma` read too bright and hard), 6–8 short lines with a breath between them. Chain: high-pass 75 Hz → **compress first** (thr 0.2, 2.5:1, 8 ms / 140 ms) → low shelf +1.5 dB @220 Hz, −2 dB dip @3.2 kHz, **high shelf −4 dB @6 kHz** → split-band de-esser (4.8–10 kHz, 4:1) → per-line RMS match → warm near-field reverb (12 ms pre-delay, early reflections, 0.7 s low-passed tail, wet ~−17 dB). Music ducks ~7 dB and foley ~4 dB under it; voice sits ~7–10 dB over the bed, never louder. Verify every line with whisper — dry *and* cut from the final mix. Avoid famous-book phrases ("Goodnight, Moon" — use "Night, night.").
-
-## 7. Subtitles & titles
-
-- Subtitles are **the book's printed words**: Patrick Hand (OFL) 54 px, indigo crayon, bottom-centre, each glyph with its own small tilt and baseline offset, boiling on twos, written on left→right in 0.35 s. Behind them, a ragged blank patch of paper (a knock-out, not a dark box), as if the child left room for the words. Hold ≥1.8 s and ≥ voice + 0.6 s; none during the song.
-- Title: hand-lettered on the page (Gaegu Bold) in two lines in a corner, written on letter by letter while the colours are scribbled in.
-- End card: the next page of the book — "The End" (Gaegu Bold), a small crescent doodle, the style name and credit in Patrick Hand.
-
-## 8. Pitfalls we hit
-
-- **White gaps between wash bands** and a sky that stopped above the ground: wash bands must overlap and the last one must reach down to the grass line; sky exists wherever there is paper.
-- **Low-frequency wavy band edges read as mountains** in the sky. Keep band edges' waviness small and high-frequency.
-- **Wide light bristle streaks** looked like hills too; keep lighter streaks thin and faint (α ≤ 0.12).
-- **Walls coloured at light pressure turn muddy blue under the wash** (the wash sinks into every gap). Anything the wash will cross needs heavier pressure (≥0.8) or cross-hatching.
-- **Titles and numbers written in the sky survive the wash** (wax resists!). Put the title in a corner the wide shot won't show, or accept it as part of the page.
-- **Outlines drawn over hair read as a headband**: outline only the visible part of the face; outline hair masses on their outer edge only.
-- **A blanket drawn as a flat violet half reads as the moon's dark side.** Give it quilt features: patchwork squares, stitch lines, star appliqués, a light turned-down edge, a draped hem that spills past the disc, and a hand that pulls it up.
-- **Knock-out layers must use a dummy canvas when drawing into a plain layer**, or the black mask gets drawn as grey crayon.
-- **Page turn with rectangle strips** shows a staircase of page edges; map each strip with an affine transform so top and bottom edges stay continuous.
-- **Double vignette/emboss at the book transition**: render the page texture with vignette 0 and ramp the desk's vignette, emboss and lamp light in from 0.
-- **Screen-fixed paper tooth made the film 190 MB** (every pixel changes whenever the camera moves). Anchor the tooth to the page, don't boil background fills, no extra ffmpeg grain, CRF 26 → 74 MB with no visible loss.
-- **The heroine disappeared into the night** because the wash sank into her colouring gaps. Composite the characters the story needs to read *after* the wash.
-- **Reverb IR built from unit-variance noise** is enormously loud (energy = decay·SR). Scale the IR so the wet level sits ~18 dB under the dry voice.
-
-## 9. Production recipe (this repo)
-
-```
-styles/crayon-book/demo/
-  gl.js      WebGL2 compositor: paper, wax adhesion, knock-out, watercolour + resist, image pass, final emboss/vignette/lamp
-  crayon.js  stroke engine: line (ribbons, taper, streaks, boil), fill (zig-zag hatching, overshoot), text, shapes
-  rig.js     parts with occlusion + knock-out, limb tubes, curves
-  chars.js   the girl (views × expressions × poses), the sheep, the moon (expressions, nightcap, quilt, crescent face)
-  world.js   the page: house, tree, grass, ladder, 250 white-wax stars, 3 wash bands
-  film.js    timeline, one-take camera, events, subtitles     end.js  book on a crayon desk, page turn, The End
-  sheet.js   model sheets (?test=model&page=girl|moon)        lines.json, mix.py, music/score.py, build.sh
-```
-
-1. `node core/render/still.mjs styles/crayon-book/demo 0.5 --q 'test=model&page=girl'` — model sheet first; iterate the character before any shot.
-2. `core/tts/tts.py lines.json voices` → `asr_check.py` until all OK.
-3. Build the timeline in `film.js`; review with `still.mjs --range 0.5:51.5:1` + `sheet.py` (two rounds minimum).
-4. `node core/render/events.mjs` → `music/score.py` (cues on the 72 BPM grid, glockenspiel from `glint` events) → `mix.py`.
-5. `node core/render/video.mjs styles/crayon-book/demo --fps 24 --workers 3` (1248 frames ≈ 80 s on an M-series Mac).
-6. `CRF=26 sh demo/tools/mux.sh out/video24.mp4 mix.wav crayon-book.mp4 24 0` — no added grain (the paper is the grain); local mux copy exposes CRF. `demo/build.sh` runs the whole chain from TTS to the finished film.
+How our demo was made (story, shots, score, end card, build): [DEMO.md](DEMO.md). Read it after your treatment exists.

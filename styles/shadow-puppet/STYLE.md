@@ -1,132 +1,122 @@
 # Shadow Puppetry — Style Prompt
 
 > Chinese shadow theatre: translucent dyed-hide puppets, carved like lace, pressed against a cotton screen and lit from behind by oil lamps.
-> Demo: *Hou Yi Shoots the Suns* (54s) · `shadow-puppet.mp4` · source in `demo/`
+> References (grammar only): Lotte Reiniger's *The Adventures of Prince Achmed* (1926) for profile acting and lace-like scenery; Shaanxi / Huayin shadow theatre for carving, colour and gong-and-drum rhythm. Never reproduce a specific historical puppet, melody or recording, and never name them in the film.
 
-You are directing a 30–60 second film in the **Shadow Puppetry** style. The user gives you a topic. You decide everything else (story, shots, timing, sound) and deliver a finished film. Follow this guide.
+## 1. Essence, and what it is not
+
+A white cloth screen; behind it, flat puppets cut from **translucent dyed hide**, lit by an **oil lamp**. Colour arrives *by transmitted light*: dyes glow like stained glass, carved holes shine brightest, overlaps go darker. Puppets are jointed with **visible thread rivets** and moved by **thin rods** (neck and hands) that show as soft grey lines just off the screen. It is live theatre, not stop-motion: the screen **flickers with the lamp**, puppets **tremble in the hand**, loose parts **swing on their rivets**.
+
+Not a black silhouette film (colour is the second protagonist), not paper-cut (the light comes *through*), not stained glass (no lead lines; pieces move and overlap), not flat vector cut-out animation.
+
+## 2. Materials & rendering
+
+**Rendering model.** Per pixel: `image = tonemap( lampLight × hideTransmission × clothTexture )`.
+- `hideTransmission`: a 2D canvas that starts **white**; every piece is drawn with `multiply`. Holes stay white, overlaps darken by themselves.
+- `lampLight`: per lamp a broad lobe plus a tight hotspot (~6 : 1), each flickering independently (a few % of ~7 Hz value noise plus a faster sine). Warm light, never white.
+- `tonemap = 1 − exp(−hdr)`, exposure ∝ `1/√(lamps lit)`: more lamps bleach the frame but keep it readable. Lamp count is a dial the story can turn.
+- **Cloth**: procedural weave (sin × sin, noise-warped), fibre speckle, low-frequency density blotches, darker edges at the frame. **Post**: warm-tinted bloom, a **warm vignette** (toward brown, never grey), slight saturation, soft S-curve, light grain; heat haze only when the story burns.
+
+**Hide and carving.** Multiply a tileable hide texture (mottling, fibres, specks) into each piece and restore its alpha with `destination-in` so holes survive. **Carving is density**: leave thin strips, cut out most of the area. Cut vocabulary: crescent rows (scales, tiles), diamond lattice, coin holes (round hole, square of hide inside), cloud collars and scrolls, tapered slits (cracks, rain, fur), strata along a ridge, leaf holes in a canopy. A dark carved outline (1.5–2.4 px) on every region. With `destination-out`, set `fillStyle = '#000'` first: fill alpha decides how much is cut.
+
+**Figures are jointed puppets**: 8–12 pieces, head ~1.2× natural with large headwear, sleeves in a different dye from the torso, round joint lobes with a rivet (dark ring + pale knot), arms by 2-bone IK from hand targets, held objects as separate pieces on the hand line. Sympathetic figures have *open-cut faces* (features as thin strips around a hole); antagonists solid faces.
+
+**Scenery** is carved set pieces on mostly empty lit cloth: one lace piece per element, a narrow carved ground strip, separate liftable strips for water or sky. Fire, smoke and moving water are carved pieces on rods, swapped and shaken, never particles.
+
+**Stage and backstage.** A lacquered frame (lintel, pillars, warm spill on its inner edges), optional blurred audience heads. Backstage = the same transmission canvas with the camera mirrored (`x → −x`), dark wood around, hanging lamps (additive flame glow; snuffed ones trailing dark smoke), hands and sleeves as **silhouettes with a warm rim** (mask minus mask shifted away from the light), rods sharp.
+
+## 3. Colour logic
+
+- All colour is **transmitted**: a dye filters warm lamplight, so nothing is brighter than the lamp and every hue leans warm.
+- 3–5 saturated dyes + **raw hide** (the neutral) + **ink** (outlines, hair, boots). Holes are the brightest value.
+- Overlap is darkness: plan which pieces cross.
+- Brightness comes from the number of lamps, not grading. Night is fewer lamps, never added blue.
+- Thin things that must read (strings, shafts, text) are dark: pale pieces vanish on a bright cloth.
+- Example sets: *court* (vermilion, ochre, malachite); *river* (indigo, jade, one ochre); *harvest* (flame orange, gold, one green).
+
+## 4. Type & subtitles
+
+- Subtitles belong to the theatre: a **storyteller's placard** (narrow dark-lacquer board, thin gold line, small carved seal), a label on a rod, or letters carved into hide. Classical OFL serif (e.g. Cormorant Garamond 600), 40–50 px, cream on dark, short slide in. Hold ≥ max(1.8 s, speech + 0.6 s).
+- **Titles are puppets**: dark hide plaques with letters cut out (`fillText` + `destination-out`, so words glow), a carved border, carried on rods, pressed on to enter, lifted off to exit.
+
+## 5. Motion quality
+
+- **24 fps continuous** for puppets and camera; only swapped effect pieces (fire, water) step at 12 fps.
+- **Hand tremor** on every puppet (a few px, ~0.02 rad, low-frequency), stronger under tension.
+- Body glides with the main rod; **legs, plumes, tassels are simulated** (damped pendulums / spring chains driven by body acceleration, pre-simulated at a fixed rate for determinism).
+- Operatic phrasing: shuffling run → hop → crouch → **freeze pose on a percussion accent** (~1 s, only loose parts quiver) → head turn.
+- Faces never change; attitude = head angle + body tilt (up = resolve, down = sorrow).
+- **Press on / lift off**: arrivals come large and blurred onto the cloth and snap sharp (~0.5 s); exits grow, blur and fade (~1 s).
+- A new lamp flares with overshoot; a snuffed lamp gutters with fast flicker.
+- Never moves: the cloth, the frame. Nothing morphs: pieces rotate on rivets, slide on rods, or are swapped.
+
+## 6. Camera grammar
+
+A vocabulary, not a route. Opening and ending come from the topic.
+
+| Move | Expresses | Can serve |
+|---|---|---|
+| Audience seat (whole stage, heads below) | "This is a show" | a legend; a lesson; a framed memory |
+| Push through the frame onto the cloth | Entering the tale | a story within a story; focus |
+| Lateral pan across a wide cloth | Extent, a place laid out | a journey; a disaster's reach; a procession |
+| Follow a puppet, slight zoom | Being with one figure | a pursuit; a working day |
+| **Crash zoom** of a few frames on a percussion hit | The drum becomes the camera | an entrance; a pose; a reveal |
+| Whip pan along a moving piece | Cause to effect | a message sent; a strike |
+| **Locked wide** | Every step of a change is seen | counting; repetition; stages |
+| Medium-close, empty cloth between two pieces | Distance, hesitation | a choice; a parting |
+| Close on a carved detail | Craft as meaning | a vow; a tool; a clue |
+| Tilt from ground strip to top of cloth | Height, hierarchy | a tower; heaven and earth |
+| Truck round to the back (mirror view) | The trick revealed | behind the scenes; who pulls the strings |
+| Pull back from cloth into the dark room | The tale becomes an object | aftermath; a story ending for the night |
+
+Puppets in profile; most of the cloth stays empty. When zoomed in, clamp the camera to the screen rectangle (no black bars); push on frame centre unless diving into a lamp. Transitions: lamps dimming, a blurred foreground pillar wipe, a piece lifting off in light, a flash to warm white; never a generic crossfade or digital wipe.
+
+## 7. Sound palette
+
+- **Percussion first, not piano and strings** (gong-and-drum pattern thinking, 锣鼓经): low barrel drum, hard high clapper drum (woodblock), cymbals, small gong with rising pitch ("tai"), big gong with falling pitch ("kuang"); also a bamboo clapper board, pellet drum, sanxian pluck, a bamboo flute for quiet.
+- **Bowed and reed voices**: a bright nasal fiddle (erhu-like: pitched up, nasal formant, pitch-curve resampling for slides and vibrato), plain pentatonic (**huan-yin**) or sorrowful microtonal (**ku-yin**: raised 4th, lowered 7th); a shrill suona-like reed (oboe + 1.2–3 kHz formant + saturation) at most once.
+- **Techniques, as options**: a single tap inside a silence; one big gong per decisive hit; a heartbeat drum under dread; accelerating rolls into an entrance; one hit per visual step; a gong scrape to change space; a hard stop (≤ 30 ms, tails included).
+- **Silence**: hard-cut the whole bed; at most one sound inside (a breath, a tap, a sizzle).
+- **Foley follows the materials**: wooden clapper (醒木), match strike, lamp "fwoomp" and "pfft" + sizzle, rod taps on cloth, dry leather flaps on lift-off, leather steps, creaks of hide and wood props, leather thwacks, cloth rustle, backstage room tone.
+- **Voice**: a storyteller, few short lines, small-theatre reverb; music ducked ~12 dB, foley ~4 dB, voice ≥ 12 dB above the bed; −14 LUFS; check each line with whisper alone and on the final mix.
+
+## 8. Native moves
+
+A menu: use the ones your story needs; put the strongest at the peak.
+
+- **The light is the world.** Lamp count drives heat and colour. *Fits content like:* city lights spreading at night; a fever rising and falling; servers switching on one by one.
+- **Off the screen = big and blurry.** A piece pulled toward the lamp grows and blurs. *Fits content like:* a rumour growing; a memory fading; a deadline pressing onto the cloth and snapping sharp.
+- **Go behind the screen.** Lamp, hands, rods. *Fits content like:* how a product is really made; who controls a market; a teacher revealing the method.
+- **Carved and translucent.** Holes glow, overlaps darken, open faces vs solid. *Fits content like:* an x-ray of a system; good and bad actors in a fable; layers of a city.
+- **Hand-held.** Tremor and swinging parts. *Fits content like:* a nervous interview; a tightrope; a toddler's first steps.
+- **Piece swap.** One carved piece on a rod replaced by another. *Fits content like:* seasons; a machine's states; weather over a harvest.
+- **Strip lift-off.** A band of scenery lifted to reveal another. *Fits content like:* geological layers; before/after a flood; an old town under a new one.
+
+## 9. Pitfalls of the medium
+
+- Flat clip-art look → hide texture, denser openwork, deeper dyes, carved outlines everywhere.
+- Figures unreadable in profile → bigger head, fuller lower body, collar piece, contrasting sleeves.
+- Radiating shapes read as saw blades or petals → flame tongues with a fat base, belly and hooked tip, alternating curl.
+- Grey corners when overexposed → warm vignette.
+- Thin pale pieces vanish → make them dark.
+- Mirror view flips pieces when rotation uses the x scale for both axes → x scale for x, y scale for y.
+- Smoke with `lighter` is invisible on bright cloth → dark wisps, warm additive only near a lamp.
+- Push-in centred on an edge lamp shoves figures out → push on frame centre.
+- Beds leaking into a silence → hard-cut them.
+- Headless screenshots time out under GPU load → retry.
+
+## 10. Engine
+
+In `demo/`: `carve.js` (piece sprites, `cut` / `cutLine` / `cutTaper`, pattern library, hide texture, rivets), `gl.js` (WebGL2 compositor: lamp field × transmission × cloth, mirror, bloom, haze, warm fade), `stage.js` (frame, audience, pillar wipe, cut-letter plaques), `backstage.js` (rim-lit silhouettes, flame, smoke), `hud.js` (placard), `scenery.js` (landscape pieces, ground strip, fire), plus the jointed rig with IK and pendulum parts; `?test=model|frame|hands` draws sheets from the real engine. A first test unlike the demo: carve a lantern-seller with a lattice basket, press it onto one lamp, light three more and watch the frame bleach.
+
+## 11. Variation space
+
+You decide the story, the figures (or none), what the lamp means, what leaves the screen, the opening, the ending, the camera path, the dyes and the pacing. All far from our demo:
+
+- Structures: **a procession** (one long pan; each figure adds a dye until the cloth is a full street); **two puppeteers** (rival hands argue through their puppets; backstage shows who is winning); **a workshop** (a puppet is carved, dyed and riveted on the cloth, then performs its own making).
+- Openings: **backstage first** (rim-lit hands and rods before the front); **one hole of light** (the screen all dark hide; one carved hole glows and widens); **mid-show** (the camera finds a performance already in full percussion).
+- Endings: **the lamp is carried away** (the cloth darkens from one side); **the puppets rest** (lifted off one by one, laid flat on a dim table); **the audience leaves** (the heads stand and go, the cloth still glowing).
 
 ---
 
-## 1. What this style is
-
-A small stage with a white cloth screen. Behind it, a puppeteer holds flat puppets cut from **translucent, dyed donkey hide** against the cloth, and an **oil lamp** lights them from behind. The audience sees colour *by transmitted light*: red, green and ochre glow like stained glass, the carved holes shine brightest, and anywhere two pieces overlap is darker. Puppets are jointed with **visible thread rivets** and moved by **three thin rods** (one at the neck, one at each hand) that show as soft grey lines because they sit just off the screen.
-
-It is live theatre, not stop-motion. The screen **flickers with the lamp**, puppets **tremble slightly in the hand**, legs and plumes **swing freely on their rivets**.
-
-Reference grammar (learn from, don't copy): Lotte Reiniger's *The Adventures of Prince Achmed* (1926) for profile acting and lace-like scenery; Shaanxi / Huayin shadow theatre for carving, colour and gong-and-drum rhythm. Never reproduce a specific historical puppet, melody or recording.
-
-## 2. Story: what fits this style
-
-Pick stories where **the medium itself tells the story**. Shadow puppetry has five native powers. Use at least three, and put the strongest one at the emotional peak:
-
-| Native power | Story use |
-|---|---|
-| **The light is the world** | The only light source is a lamp behind the cloth. Make the lamp part of the plot: more lamps = more heat/danger (the image overexposes, colours bleach); fewer lamps = calm, rich colour. In the demo, *each sun is a lamp* and each arrow puts one out, so the frame literally steps darker. |
-| **Off the screen = big and blurry** | A puppet pulled away from the cloth toward the lamp grows and blurs. Use it for arrivals (a giant soft glow presses onto the screen and snaps sharp), deaths and exits (the golden crow tumbles off the screen and dissolves into light), magic and dreams. |
-| **Go behind the screen** | The ultimate scale reveal: cut or truck around to the back and show the lamp, the puppeteer's hands and the rods. The "sky" was a cloth a metre wide, and the "sun" was a lamp. Put it after the climax as the echo. |
-| **Carved and translucent** | Heroes have *open-cut faces* (the face is a hole, with only brow, eye, nose and mouth left as thin strips of hide), so the light shines through them. Villains have solid faces. Overlaps darken, holes glow, and scenery is lace. |
-| **Hand-held, not animated** | Motion is continuous with a living tremor. Legs swing like pendulums, plumes lag behind the head, fire is a carved flame piece jiggled on a rod. |
-
-Adapting any topic: find **what the lamp is** in your story (a sun, a hearth, an idea, a lighthouse) and **what goes off the screen** (what leaves, dies, or is only imagined). A product launch → the product is the lamp that finally lights the screen. A memory → figures lift off the cloth and blur as they are forgotten.
-
-**Arc for 45–60s:** a lamp lights in the dark → a world appears on the cloth → trouble arrives (light changes) → the hero's entrance and freeze-pose → the action, set to percussion → a silent choice → the world restored → go behind the screen → end card on the cloth.
-
-## 3. Visual language
-
-**Rendering model (the heart of the style).** Composite per pixel:
-`image = tonemap( lampLight(x,y) × hideTransmission(x,y) × clothTexture(x,y) )`
-- `hideTransmission` is a 2D canvas that starts **white**; every puppet piece is drawn onto it with `globalCompositeOperation = 'multiply'`. Carved holes are transparent (stay white), so overlaps darken automatically.
-- `lampLight` = for each lamp, a broad lobe (σ ≈ 700 px) plus a tight hotspot (σ ≈ 120 px), flickering independently (≈ ±6% value noise at 7 Hz plus a small 23 Hz sine). Warm light colour `(1, .77, .46)`.
-- `tonemap`: `1 − exp(−hdr)`. Exposure is `1.75 / √(lamps lit)`, so ten lamps ≈ 3× one lamp: overexposed, hot and bleached, but still readable.
-- Cloth: fine weave (sin × sin at ~2.6 rad/px with noise warp), fibre speckle, large low-frequency density blotches, edges darkened where the cloth meets the frame.
-- Post: bloom from a 3-level blur pyramid (threshold 0.72, warm tint `(1,.82,.6)`), a **warm vignette** (darken toward `(.7,.47,.25)`, never neutral grey, or an overexposed frame turns grey), saturation ×1.1, gentle S-curve. Heat haze (UV warp drifting upward) only while the world burns. Film grain 2 in ffmpeg.
-
-**Dyes (transmission colours).** Vermilion `#b8211a`, flame `#d9541c`, ochre `#dc9d1e`, gold `#c98a26`, malachite `#236e3a`, jade `#2f8a5c`, indigo `#22647e`, raw hide `#e2bd80`, ink `#1a100a` (outlines, hair, boots). Every piece gets a **hide texture** multiplied in (mottled translucency + fibres + specks, tileable 512² noise) and its alpha restored with `destination-in`, so the holes survive.
-
-**Carving is density.** Leave thin strips of leather and cut out most of the area:
-- armour = rows of thick crescent holes ("open fish-scale"), trousers = diamond lattice, belts = coin holes (circle hole with a square of hide left in the middle), collars = four-lobed cloud collar with cloud-scroll cuts, sleeves in a different colour from the torso so arms read in silhouette;
-- every coloured region gets a dark carved outline (1.5–2.4 px at 1×);
-- court boots: tall black shaft with cut cloud scrolls, upturned toe, thick white sole carved as a single piece (grooves + a row of oval holes).
-- **Cut with an opaque fill.** With `destination-out`, the fill alpha decides how much is removed; always set `fillStyle = '#000'` first.
-
-**Character build (a jointed puppet).** 11 pieces: head+helmet, chest, skirt, two upper arms, two forearms, two hands, two legs (+ quiver, bow, pheasant plumes). The head is ~1.2× "natural" and the helmet takes about a quarter of the figure. Joints have round lobes and a visible rivet (dark ring + pale knot). Arms are posed by 2-bone IK from hand targets; the bow is drawn procedurally (limbs bend with draw, the string goes to the nocking hand, and **the nock sits on the aim line**, grip = shoulder + u·118 and nock = grip − u·(40 + 72·pull)).
-
-**Scenery = carved set pieces on an empty cloth.** Most of the screen is just lit cloth. Mountains are one piece each with wide strata cuts following the ridge and cloud holes near the peaks; the tree = a trunk piece plus a single lace canopy full of leaf-shaped holes; the ground is a narrow carved strip (meander band + coin holes) along the bottom, with cracks cut as tapered slits that widen and lengthen as the land burns through. Water is a separate indigo wave strip that can be lifted off. **Fire** is a carved piece of S-curling flame tongues (red → orange → yellow bands, spiral hooks at the tips) on a rod, swapped and shaken at 12 fps. No cartoon flames.
-
-**Suns / emblems.** A carved round piece: flame-tongue rim (alternating curl direction, teardrop holes between tongues), bead ring, translucent orange-red disc, with a separate dark silhouette (e.g. three-legged crow) on top so it can drop out.
-
-**Stage.** Red-and-black lacquer frame, carved lintel with gold cloud curls, pillars, and warm spill from the cloth on the inner edges; a few blurred children's heads along the bottom in the opening and end-card wides.
-
-**Backstage (mirror view).** Render the same transmission canvas with the camera mirrored (`x → −x`). Surround the screen with dark wood; hang lamps (dish + cords) in front of it, one lit (flame with additive glow) and the rest just snuffed, trailing smoke (dark wisps against the cloth that turn warm-white near the lit lamp). Hands and sleeves are **silhouettes with a warm rim** (mask minus mask shifted away from the light), rods sharp.
-
-## 4. Motion language
-
-- **24 fps continuous** for puppets and camera. Add a hand tremor to every puppet (≈ 3 px / 0.018 rad low-frequency noise; ×1.8 when the puppeteer is "holding tension"). Only the fire pieces step at 12 fps.
-- Body glides with the main rod; **legs and plumes are simulated** (damped pendulum / spring chain driven by the body's acceleration and head rotation, pre-simulated at 120 Hz so renders are deterministic).
-- Operatic phrasing: quick shuffling run → small hop → crouch → **freeze pose on the big gong** (hold ~1 s while only the plumes quiver) → head turns up.
-- Heads never change expression; attitude = head angle + body tilt (up = resolve, down = mercy/sorrow).
-- Arrivals press onto the cloth (scale 2.6 → 1, blur 34 → 0 over 0.55 s). Exits lift off (scale ×1.9, blur +30 px, fade over ~0.9 s).
-- Lamps: a new lamp flares (overshoot to 1.5×) before settling. A snuffed lamp gutters out over 0.35 s with a fast flicker.
-
-## 5. Camera language
-
-| Beat | Camera |
-|---|---|
-| Opening | Audience seat: full stage frame with children's heads. Black until a match flares behind the cloth. Very slow push. |
-| Into the story | Push through the frame until the cloth fills the screen. |
-| Disaster | 1.5× lateral pan across the burning land (give the disaster area). |
-| Hero entrance | 1.15× follow; on the freeze-pose gong, a 5-frame **crash zoom** (the percussion accent becomes a camera move). |
-| First action | Close on hands/bow/face, then a whip pan along the arrow to the target. |
-| Repetition | **Locked wide** so the audience sees every step of the change (here: nine lamp-steps of darkening). |
-| The choice | Medium-close with the target at the far edge: the hero at left, empty sky, the last sun at right. Music stops. |
-| Echo | Pull back to reveal the stage frame again, **truck right as a blurred foreground pillar wipes the frame**, and come out behind the screen. Slow push, then a fast dive into the flame that flashes to warm white before the end card. |
-
-When z ≥ 1, clamp the camera so it never leaves the screen rectangle (otherwise black bars appear).
-
-## 6. Sound
-
-- **Music = gong-and-drum patterns (锣鼓经), not generic piano + strings.** Big gong with a falling pitch after the strike ("kuang"), small gong with a rising pitch ("tai"), cymbals, a hard high clapper drum (woodblock), low barrel drum. A bright nasal bowed fiddle (erhu sample, pitched up, high-shelf + nasal formant, pitch-curve resampling for big slides and vibrato) in two modes: **ku-yin** (sorrowful, microtonal raised 4th / lowered 7th) for disaster, **huan-yin** (plain pentatonic) for heroism and healing. A suona-like shrill reed (oboe + 1.2–3 kHz formant + saturation) only for the climax.
-- Patterns map to the drama: opening roll → one hit per lamp, accelerating → heartbeat drum under the disaster → *jijifeng* roll accelerating into the entrance → big gong on the freeze → fast strokes with one gong per hit → **hard stop** (≤ 30 ms, reverb tails included) for the silent choice → one tiny small-gong tap for the decision → gentle fiddle theme → gong scrape to go backstage → a final big gong tail.
-- **Foley follows the materials**: wooden clapper (醒木) to open and close the show, a match strike, lamp ignition "fwoomp", bamboo rod taps on cloth, dry leather flaps when a piece lifts off, leather footsteps, bow creak (rising pitch with draw), string twang, arrow whoosh, leather thwack on hit, lamp snuff ("pfft" + sizzle), wing flaps, crackle, heat drone (hard-cut at the silence), water, a quiet backstage room tone and one breath.
-- **Voice**: a storyteller (Kokoro `am_michael`, speed 0.86–0.88), 5–6 short lines, compressed, plus a little small-theatre reverb. Duck music ~12 dB and foley ~4 dB under the voice; keep the voice ≥ 12 dB above the bed. Verify every line with whisper *and* re-check the final mix (words that pass alone can blur under music: "shadow play still" became "shadow place"; rewrite rather than fight it).
-
-## 7. Subtitles & titles
-
-- Subtitles are a **storyteller's placard**: a narrow black-lacquer board (dark brown gradient, 0.93 alpha), a thin gold inner line, a small vermilion seal with the character 说 ("tell", Ma Shan Zheng) on the left, text in Cormorant Garamond 600, 46 px, cream `#f3e2bf`, centred 58 px above the bottom. It slides up 18 px in 0.22 s. Show each line from its start until speech + 0.8 s (≥ 1.8 s), cut 0.3 s before the next.
-- Title and end card are **puppets too**: dark hide plaques with the letters cut out (`fillText` with `destination-out`, so the words glow with lamp light), red border with a meander band, green cloud-scroll corner roundels, a red seal with carved characters, carried up on two rods and lifted off the cloth to exit.
-
-## 8. Pitfalls we hit
-
-- **Flat vector look.** Uniform fills and sparse carving read as clip-art. Fix with the hide texture, much denser openwork, deeper dyes and a dark carved outline on every region.
-- **Stilt legs / egg torso / arms lost in the torso.** Enlarge the head, lengthen the skirt, widen the trousers, add a cloud collar, and colour the sleeves differently from the chest.
-- **Sun rays like a saw blade or flower petals.** Flame tongues need a fat base, a bulging belly and a hook at the tip, with alternating curl, about 40 px long × 0.78 of the arc spacing.
-- **Grey corners on an overexposed frame** from a neutral vignette. Darken warm instead.
-- **Arrow invisible.** Raw-hide colour disappears on a bright screen. Use a dark shaft (`#4a2612`, 3 px). The nock must be on the aim line or the arrow points sideways.
-- **Mirroring flips pieces upside down** if a helper builds the rotation from `C[0]` for both axes. Use `C[0]` for x terms and `C[3]` for y terms.
-- **Smoke drawn with `lighter` is invisible** against a bright cloth. Draw dark wisps normally and add a warm additive pass near the lamp only.
-- **Push-in centred on a lamp at the top edge** shoves the hands out of frame. Push on the frame centre, and move the fixed point to the flame only for the final dive.
-- **Heat/crackle beds leaking into the silence.** Hard-cut them at the stop.
-- Headless Chrome screenshots occasionally time out while 14 other renders share the GPU. Just retry.
-
-## 9. Production recipe (this repo)
-
-```
-styles/shadow-puppet/demo/
-  carve.js     cutting toolkit: piece sprites, cut/cutLine/cutTaper, pattern library, hide texture, rivets
-  gl.js        WebGL2 screen compositor (lamp field × transmission × cloth, mirror, bloom, haze, warm fade)
-  houyi.js     jointed puppet (11 pieces, IK arms, bow, plumes, rods)    poses.js  key poses
-  suns.js      carved suns + crow                     scenery.js  mountains, ground strip, river, tree, hut, fire pieces
-  stage.js     lacquer frame, audience, pillar wipe, cut-letter plaques
-  backstage.js rim-lit silhouettes (hands, lamps), lamp flame, smoke
-  story.js     timeline (single source of truth)      main.js  shots, acting, lamps, events
-  hud.js       subtitle placard    test.js  ?test=model | frame | hands | (main) poster
-  lines.json   narration   mix.py  foley + voice + music ducking   music/score.py  original gong-and-drum score
-  tools/       cues.py (SRT), mux.sh (CRF 22), probe.mjs (render timing)
-```
-
-1. `node core/render/still.mjs styles/shadow-puppet/demo 0 --q test=model`: model sheet first (character risk comes first). Then `--q test=frame&f=ten|one` style frames and `--q test=hands`.
-2. `.venv/bin/python core/tts/tts.py lines.json voices` → `core/tts/asr_check.py` (use `asr` fields for homophones).
-3. Timeline in `story.js`. Review with `still.mjs --range 0.5:54:1.5` + `core/render/sheet.py` (two rounds, offset by half a step), then frame strips from the mp4 for key actions.
-4. `node core/render/events.mjs` → `music/score.py` → `mix.py`.
-5. `node core/render/video.mjs … --fps 24 --workers 3` (1306 frames ≈ 80 s on an M-series Mac, 3 workers).
-6. `sh demo/tools/mux.sh out/video24.mp4 mix.wav shadow-puppet.mp4 24 2`. Or just `sh demo/build.sh`.
+How our demo was made (story, shots, score, end card, build): [DEMO.md](DEMO.md). Read it after your treatment exists.

@@ -2,8 +2,8 @@
 
 # Lemo-Opuscar
 
-**43 film styles, each with a short film made entirely in code.**<br>
-**43 种影片风格，每种都配一支完全用代码做出来的短片。**
+**<!--n-->43<!--/n--> film styles, each with a short film made entirely in code.**<br>
+**<!--n-->43<!--/n--> 种影片风格，每种都配一支完全用代码做出来的短片。**
 
 Pick a style, bring your own story, and let your coding agent direct the film.<br>
 选一个风格，带上你自己的故事，让你的编程 agent 来当导演。
@@ -39,7 +39,7 @@ I'm **Lemomo** ([@lemomo-ai](https://github.com/lemomo-ai)). More about me on my
 >
 > **这不是一个 awesome 合集。** 这里所有的片子都是我自己用 Claude Opus 5.5 做的。风格是按 Opus 5.5 调出来的，换成其他模型不保证能做出同样的效果。
 
-![All 43 styles · 全部 43 个风格](docs/cover.jpg)
+![All styles · 全部风格](docs/cover.jpg)
 
 Every film was directed, drawn, scored and mixed by an AI agent writing code: canvas and WebGL pages rendered frame by frame, original music from free sample libraries, local text-to-speech. No video generation, no stock footage.
 
@@ -58,9 +58,9 @@ claude plugin marketplace add lemomo-ai/lemo-opuscar
 claude plugin install lemo-opuscar@lemolab
 ```
 
-Then use it from any folder. On first use it downloads the guides, tools and style prompts (about 60 MB) to `~/lemo-opuscar`, shared by all your films. Each film's project, from source to finished video, goes in the folder you started from. For other agents, copy [`plugin/skills/lemo-opuscar/`](plugin/skills/lemo-opuscar/) into their skills folder.
+Then use it from any folder. On first use it downloads the guides, tools and style prompts (about 35 MB) to `~/lemo-opuscar`, shared by all your films. Each film's project, from source to finished video, goes in the folder you started from. For other agents, copy [`plugin/skills/lemo-opuscar/`](plugin/skills/lemo-opuscar/) into their skills folder.
 
-之后在任何目录都能用。第一次使用时，它会把指南、工具和风格提示词（约 60 MB）下载到 `~/lemo-opuscar`，所有片子共用这一份；每支片子的工程，从源码到成片，都放在你发起时所在的文件夹里。其他 agent 可以把 [`plugin/skills/lemo-opuscar/`](plugin/skills/lemo-opuscar/) 复制到它们的 skills 目录。
+之后在任何目录都能用。第一次使用时，它会把指南、工具和风格提示词（约 35 MB）下载到 `~/lemo-opuscar`，所有片子共用这一份；每支片子的工程，从源码到成片，都放在你发起时所在的文件夹里。其他 agent 可以把 [`plugin/skills/lemo-opuscar/`](plugin/skills/lemo-opuscar/) 复制到它们的 skills 目录。
 
 ### Option 2: clone the repo · 方式二：clone 仓库
 
@@ -90,12 +90,17 @@ The agent reads three guides and works like a small studio · agent 会读三份
 
 | File · 文件 | What it gives the agent · 给 agent 的东西 |
 |---|---|
-| [`DIRECTOR.md`](DIRECTOR.md) · [中文](docs/zh-CN/DIRECTOR.md) | how to direct: story, sound, rhythm, camera, performance, self-checks<br>怎么导：故事、声音、节奏、镜头、表演、自检 |
-| [`TECHNIQUE.md`](TECHNIQUE.md) · [中文](docs/zh-CN/TECHNIQUE.md) | how to build: frame-by-frame rendering, voice, music, mixing<br>怎么做：逐帧渲染、配音、配乐、混音 |
-| `styles/<style>/STYLE.md` | what the style looks and sounds like, and how our demo was made<br>这个风格长什么样、听起来什么样，以及样片是怎么做的 |
+| [`DIRECTOR.md`](DIRECTOR.md) | how to direct: story, sound, rhythm, camera, performance, self-checks<br>怎么导：故事、声音、节奏、镜头、表演、自检 |
+| [`TECHNIQUE.md`](TECHNIQUE.md) | how to build: frame-by-frame rendering, voice, music, mixing<br>怎么做：逐帧渲染、配音、配乐、混音 |
+| `styles/<style>/STYLE.md` | what the style looks and sounds like; the story is yours<br>这个风格长什么样、听起来什么样；故事由你定 |
 
-**Good to know · 提前知道**: a film takes an agent about 30–60 minutes and a fair amount of tokens. You need Node 20+, ffmpeg and Python 3.11+; the agent installs the packages and the headless browser it renders with. Big assets (voice model, sample libraries) download only when a step needs them.<br>
-一支片子 agent 大约要工作 30–60 分钟，token 用量不小。需要 Node 20+、ffmpeg 和 Python 3.11+，依赖包和渲染用的无头浏览器由 agent 自己安装；配音模型、采样库这类大文件用到时才下载。
+### Before you start · 开始之前
+
+- A film takes an agent about 30–60 minutes and a fair amount of tokens. · 一支片子 agent 大约要做 30–60 分钟，token 用量不小。
+- You need Node 20+, ffmpeg and Python 3.11+ (or [uv](https://docs.astral.sh/uv/)); the agent installs the rest. · 需要 Node 20+、ffmpeg 和 Python 3.11+（或 uv），其余由 agent 安装。
+- Disk: about 350 MB for the core tools, more only when a film needs a voice or sampled instruments. Default output 1920×1080, 24 fps; other sizes on request. · 磁盘：核心工具约 350 MB，片子需要配音或采样乐器时才再下载。默认 1920×1080、24 fps，其他尺寸可以指定。
+
+Update the skill with `claude plugin update lemo-opuscar@lemolab`; uninstall with `claude plugin uninstall lemo-opuscar@lemolab` and delete `~/lemo-opuscar`. If a step stays stuck, [open an issue](https://github.com/lemomo-ai/lemo-opuscar/issues). · 更新：`claude plugin update lemo-opuscar@lemolab`；卸载：`claude plugin uninstall lemo-opuscar@lemolab` 并删除 `~/lemo-opuscar`。一直卡住就[提个 issue](https://github.com/lemomo-ai/lemo-opuscar/issues)。
 
 ## The styles · 风格
 
@@ -230,8 +235,7 @@ Click a frame for its `STYLE.md` · 点图片看它的 `STYLE.md`。
 </table>
 <!-- styles:end -->
 
-## Credits and licence · 署名与授权
+## Licence · 授权
 
-Made by **LemoLab × Claude Opus 5.5**. Code is MIT; the guides, `STYLE.md` files and films are CC BY 4.0. Third-party samples, fonts and music keep their own licences (CC0, CC BY, OFL), listed in each demo's `CREDITS`.
-
-**LemoLab × Claude Opus 5.5** 出品。代码采用 MIT；指南、`STYLE.md` 和成片采用 CC BY 4.0。第三方采样、字体、音乐沿用各自的授权（CC0、CC BY、OFL），逐条列在每个样片的 `CREDITS` 里。
+Made by **LemoLab × Claude Opus 5.5**. MIT licensed. Third-party assets in the demos keep their own licences (see each demo's `CREDITS`); you are responsible for the materials you use in your films.<br>
+**LemoLab × Claude Opus 5.5** 出品，MIT 协议。样片中的第三方素材沿用各自的授权（见各样片的 `CREDITS`）；你在自己片子里使用的素材由你负责。

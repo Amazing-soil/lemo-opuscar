@@ -14,7 +14,7 @@ node core/render/events.mjs $D                                                # 
 $PY $D/tools/cuecheck.py                                                      # 6. cue check: picture hits vs grid + score
 $PY $D/mix.py                                                                 # 7. foley + voice + ducking + silences -> mix.wav
 node $D/tools/cues.mjs > $D/out/cues.json && $PY core/render/srt.py $D/out/cues.json $O/midcentury-toon.srt   # 8. subtitles
-node batch/tools/render_slot.mjs -- node core/render/video.mjs $D --fps 24 --workers 2 --out $D/out/video24.mp4   # 9. frames (render slot)
+node core/render/slot.mjs -- node core/render/video.mjs $D --fps 24 --workers 2 --out $D/out/video24.mp4   # 9. frames (render slot)
 sh core/render/mux.sh $D/out/video24.mp4 $D/mix.wav $O/midcentury-toon.mp4 24 4                                     # 10. -14 LUFS, light grain
 node core/render/still.mjs $D 6.0 35.8 --q nosubs=1 --prefix ns_ --out $D/out/still
 cp $D/out/still/ns_6.0.jpg $D/stills/styleframe.jpg; cp $D/out/still/ns_35.8.jpg $O/poster.jpg

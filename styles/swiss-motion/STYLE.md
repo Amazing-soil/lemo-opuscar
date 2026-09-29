@@ -1,133 +1,113 @@
 # Swiss Motion Graphics — Style Prompt
 
-> International Typographic Style in motion: a modular grid, one typeface, one signal red, and movement as exact as a printing press.
-> Demo: *Five Rules for a Poster* (44s) · `swiss-motion.mp4` · source in `demo/`
+> International Typographic Style in motion: a modular grid, one typeface, one signal colour, and movement as exact as a printing press.
+> References (grammar only): 1950s–70s Zurich posters (Müller-Brockmann, Hofmann, Gerstner, Crouwel) for the grid, flush-left type, scale contrast and "designing programmes"; modern identity systems in motion (Experimental Jetset, Pentagram) for snaps on the beat. Never copy a specific historical poster's composition (no concentric-circle or fan layouts lifted from Müller-Brockmann), never use Helvetica or Akzidenz font files, never name a real institution on a poster.
 
-You are directing a 30–60 second film in the **Swiss Motion Graphics** style. The user gives you a topic. You decide everything else (story, layout system, timing, score, sound) and deliver a finished film. Follow this guide.
+## 1. Essence, and what it is not
+
+- **Pure 2D graphic design animated on a grid**: flat paper, black type and bars, a very light grey and **one** saturated signal colour.
+- **Every element snaps to the grid, every move lands on a beat, nothing bounces.**
+- **Rigor with one exception**: the whole frame obeys a system, so the one element that doesn't becomes a character.
+- **Extreme scale contrast**: a giant numeral next to tiny technical notes.
+
+Not a keynote (no gradients, no glow, no device renders), not kinetic typography for a lyric video (words don't fly, spin or bounce), not data visualisation (bars have mass as graphic form, not as charted quantities, unless the grid gives them that meaning), not a Bauhaus pastiche of primary shapes.
+
+## 2. Materials & rendering
+
+- **Frame grid**: 1920×1080, 12 columns, ~96 px side margins, 24 px gutters, 24 px baseline. The frame can act as a **spread**: a left page (the programme: numeral, rule text, notes) and a right page (the artifact).
+- **Artifact grid** derived from the content (Gerstner): what the columns and rows *mean* is a design decision. **Choose module sizes that give the elements mass**; too many thin columns make a layout look like a chart.
+- **Surfaces**: page, paper, ink, signal colour, grid lines in two or three light greys (on page, while building, on paper). No gradients, no shadows, no particles, no grain (mux grain 0).
+- **Bars and blocks** are flat rects; consecutive cells of one unit merge into one bar, overdrawn 1 px at seams (antialiasing shows hairlines, especially when rotated or scaled).
+- **A secondary voice** can be light-grey elements under the black ones: depth without a second colour.
+- **A 2D camera matrix** (centre, scale, rotation) for all moves.
+
+## 3. Colour logic
+
+- **Paper, ink, greys, and one signal colour.** Only one thing carries the signal colour; that makes it the protagonist. It is the only thing allowed to be inexact.
+- Overprint is allowed: black type on the signal colour.
+- The signal colour can be red, orange, ultramarine or green; choose it for the topic, then never add a second.
+- Examples: `#EAE9E5` page, `#FFFFFF` paper, `#111111` ink, signal `#E30613`; or `#F2F0EA` / `#141414` / signal `#FF5A00`; or `#E9ECEF` / `#0B0B0B` / signal `#1F3FFF`.
+
+## 4. Type & subtitles
+
+- **One family for the whole film**, an OFL neo-grotesque (Archivo, Inter, Schibsted Grotesk, Instrument Sans…), several weights. Letter-spacing ~−2 % at ≥ 90 px. Headlines can be lowercase. Load every weight with `document.fonts.load` before drawing.
+- **Flush left, ragged right**; everything on a grid line; big white space is part of the layout. Giant numerals are **optically** flush left (subtract the glyph's left bearing).
+- **Subtitles are part of the layout**, not a bar at the bottom: each line sits at a column start in the current composition (a small grey lead-in + a large bold statement, or a caption like a museum label), each word clip-revealed on its whisper timestamp. Hold ≥ max(1.8 s, speech + 0.6 s); assert it in code.
+- **Caption rows**: small (~19 px) medium-weight notes with a 1 px rule above; technical notes in a corner (module sizes, counts, a bar counter).
+
+## 5. Motion quality
+
+- **Two curves only**: a precise ease `cubic-bezier(.7,0,.2,1)` for snaps; linear for lines being drawn, playheads and the exception. No overshoot, no spring, no bounce.
+- **Durations are note values** at the film's tempo. A snap starts one note value early and **lands on the beat**.
+- **Entrances are wipes or clip-reveals, never fades**: words rise out of a clip rect from below the baseline and leave upward; lines grow along their length; paper appears by a wipe; big numerals climb in eased steps ("one module at a time").
+- **Deletions are knife cuts**: a thin line crosses the element, then the element collapses to its midline.
+- **Ripples are ordered by distance** from their cause, a couple of units per subdivision.
+- **The exception moves differently**: linear, unsnapped, perhaps pausing mid-flight; a coordinate readout beside it can turn from "on grid" to "off grid".
+- Smooth 24 fps, no stepping: digital precision, not hand-made.
+
+## 6. Camera grammar
+
+A vocabulary, not a route. The camera moves only with the precise ease and only on beats. Opening and ending come from the topic.
+
+| Move | What it expresses | Can serve |
+|---|---|---|
+| Locked spread | cause (left) → effect (right) | a rule applied; a before/after; a comparison |
+| Hard pan by one page or column | the next step in a system | a sequence; a catalogue; a timeline |
+| Rotate 90° and stop | the same thing read another way | a poster as a score; a chart as a map |
+| Pull out to a wall of artifacts | one programme, many outputs | a brand system; a product range; a series |
+| Push into one module | detail; the unit of the system | a pixel; a letter; a single data point |
+| Grid extends past the page | the system is bigger than the artifact | scale; ambition; a break from constraints |
+| Split frame into equal cells | parallel cases | options; variants; team members |
+| Vertical scroll through a column | reading; a list | a manifesto; a spec sheet; a timetable |
+
+Framing: everything on the grid; the signal element may sit off-grid only when it is being the exception. Transitions are wipes, knife cuts, camera moves and re-flows; never dissolves.
+
+## 7. Sound palette
+
+- **Music with a grid of its own**: a steady pulse whose subdivisions give snap durations. Options: motorik / krautrock kit and bass, minimal techno, marimba or vibraphone patterns, a mechanical piano ostinato, a drum machine with a glockenspiel; one instrument added per new rule is a clear build.
+- **Picture and music can share one data file** (a column → pitch, a row → onset), so a graphic can literally be the score.
+- **Techniques (options)**: drop the drums for the one moment of the exception; a near-silent bar before a reveal; thin the band during a reveal so every note is audible.
+- **Foley follows the materials of print**, dry and close, no reverb: letterpress clack, ruling pen "tss", guillotine snick, paper slap and slide, numeral thunk, block snap, felt thump for a landing, rubber stamp, typewriter carriage.
+- **The exception can be the only element that sings** (a sine glide following its position).
+- **Silence**: a hard stop of everything on a downbeat; the next snap reads as an event.
+- **Mix**: voice compressed and ≥ 6 dB above music, music ducked ~10 dB under voice, −14 LUFS.
+- **Voice**: cool, crisp, rule-like sentences; prefer voices with bright consonants.
+
+## 8. Native moves
+
+A menu: use the ones your story needs.
+
+- **The grid means something.** Columns and rows become a quantity (notes, hours, floors, years). *Fits content like:* a building's floors and rooms; a week's timetable; a city's districts.
+- **Snap = beat.** Every arrival is a percussion hit. *Fits content like:* a product's feature list; the steps of a recipe; a countdown.
+- **Programme.** Rules applied one by one to one artifact, then the same programme generating many. *Fits content like:* a brand identity; a typeface family; a set of stamps.
+- **Extreme scale contrast.** A giant element as chapter card beside tiny notes. *Fits content like:* a record statistic; a year; a price.
+- **The exception.** One element breaks the grid, linear and unsnapped. *Fits content like:* an inventor; an outlier in the data; a rebel employee.
+- **Knife cut.** An element deleted by a line. *Fits content like:* budget cuts; editing a text; removing a feature.
+- **Re-flow.** Everything else rearranges around a change, nearest first. *Fits content like:* a team reorganised; traffic after a road closes; a layout adapting to a phone.
+
+## 9. Pitfalls of the medium
+
+- Too many thin columns look like a chart → fewer, wider modules.
+- A "better" composition that isn't obviously better → one strong diagonal with long/short rhythm, a larger signal element, bleeds, type over colour. Merely tilting is not enough.
+- Rotating and labelling at once reads as noise → rotate, hold, then add labels.
+- Merged bars show seams after rotation → overdraw 1 px.
+- Elements that share the camera matrix leak into other shots → draw them only when on screen.
+- Canvas `letterSpacing` affects `measureText` → measure after setting the font.
+- Onsets that fall between frames flicker → put visual onsets on whole frames.
+- Whisper splits or merges words and pads the first word → align by letters, clamp to 0.
+
+## 10. Engine
+
+In `demo/`: `ease.js` (`cubic-bezier(.7,0,.2,1)`, `snap(t, t_arrive, dur)`, `steps()`, `track()`), `film.js` (layout system, clip-reveal text, knife cuts, bars from a score, rotation reveal, wall of artifacts, caption rows), `main.js` (fonts, whisper word times, `?nosub=1`, `?poster=1`), `score.json` (the shared data file for picture and music), `tools/words.py` and `tools/subs.py` (word timings, asserted subtitle intervals). File list and build steps: [DEMO.md](DEMO.md) "Build notes".
+
+## 11. Variation space
+
+You decide the system, what the grid means, the exception (or none), the signal colour, the opening and the ending. All far from our demo:
+
+- Structures: **a timetable** (a 24-row grid of hours fills with the topic's day, one row per beat); **an alphabet** (A to Z, each letter a module of the topic, the grid completing as a specimen sheet); **a comparison** (two systems side by side on a split spread until one element crosses the gutter).
+- Openings: **a single dot** placed on the page, then the grid growing from it; **the finished artifact** that is then dismantled into its rules; **a giant numeral** filling the frame, which turns out to be a detail of a small layout.
+- Endings: **the empty grid** after every element has been cut away; **a single word** flush left in the corner; **the exception leaves the frame** and the system closes over the space it left.
 
 ---
 
-## 1. What this style is
-
-Pure 2D graphic design animated on a grid: flat white paper, black type and bars, a very light grey and **one** saturated red. It is the language of 1950s–70s Zurich concert posters (Müller-Brockmann, Hofmann, Gerstner, Crouwel) turned into motion the way modern identity systems move (Experimental Jetset, Pentagram): **every element snaps to the grid, every move lands on a beat, nothing bounces**.
-
-The charm is **rigor with one exception**. The whole frame obeys a system, so the one element that doesn't obey it becomes a character.
-
-Never copy a specific historical poster's composition (no concentric-circle or fan compositions lifted from Müller-Brockmann). Don't use Helvetica or Akzidenz font files. Pick an OFL neo-grotesque (Archivo, Inter, Schibsted Grotesk, Instrument Sans…). Never name a real institution on a poster.
-
-## 2. Story: what fits this style
-
-Pick stories where **the system itself tells the story**. Swiss design has five native powers. Use at least three, and put the strongest one at the emotional peak:
-
-| Native power | Story use |
-|---|---|
-| **The modular grid** | The grid is the stage and the rulebook. Show it being built (lines draw on the beat), show it briefly in section gaps, and at the peak **make the grid mean something**: in the demo, 7 columns = the 7 notes of A dorian and 16 rows = 16 eighth notes, so the poster *is* the score. |
-| **Snap = beat** | Every element's arrival is a percussion hit: type clack, knife, ruling pen. Picture and music share one coordinate system, not a sync pass after the fact. |
-| **Rules generate design (programme)** | The plot is a set of rules applied one by one to one artifact. End by showing the same programme generating many artifacts (the Gerstner reveal). |
-| **Extreme scale contrast** | A 700 px numeral next to 19 px technical notes. The giant element is the chapter card, the tiny one is texture. |
-| **One signal colour** | Only one thing is red, so red = the protagonist. When it breaks a rule it is the only thing on screen that is not exact. |
-
-**Adapting any topic:** turn it into **a system plus one exception**. A product launch: the product's spec sheet assembles on a grid, then one feature breaks out of it. A company's history: each decade is a rule added to one poster. A love story: two red elements on two different grids, and the film ends when one of them leaves its grid.
-
-**Emotional arc (30–60s):** order being built (curious, crisp) → order complete (correct and a bit dull, *say it*) → hesitation (the red element twitches and snaps back) → the break (the only non-snapped, linear move in the film; drums drop out) → everything else re-flows around it, better (full band back) → the reveal (the grid means something) → scale reveal (same system, many outputs) → back to the hero artifact on the end card.
-
-## 3. Visual language
-
-- **Frame grid**: 1920×1080, 12 columns, 96 px side margins, 24 px gutters (122 px columns), 24 px baseline. Treat the frame as a **spread**: left page (cols 1–6) = the "programme" (numeral, rule text, notes); right page (cols 8–12) = the artifact (poster 706×1008, ratio 0.70 ≈ Swiss world format).
-- **Artifact grid**: derive it from the content (Gerstner). In the demo the poster has 7 columns × 91 px and 16 rows × 40 px, with a 26 px baseline grid in the text zone. I first tried 12 semitone columns: bars were only 43 px wide and the poster looked like a data chart. **Choose module sizes that give the bars mass.**
-- **Palette**: page `#EAE9E5`, paper `#FFFFFF`, ink `#111111`, signal red `#E30613`, grid lines `#CFCEC9` on the page / `#C9C8C2` while building / `#E2E1DC` on paper, secondary bars `#CFCEC9`. No gradients, no shadows, no particles, no grain (mux grain 0).
-- **Type**: one family for the whole film (demo: **Archivo** variable, weights 400–800). Letter-spacing −2.2% at ≥ 90 px. Lowercase headlines (`neue musik`). Rule numerals at ~980 px (700 px figure height), bottom-aligned with the poster's bottom edge, **optically** flush left (subtract the glyph's left bearing). Notes 19 px Medium. Always `document.fonts.load` every weight before drawing.
-- **Composition**: flush left, ragged right. Everything on a grid line. Big white spaces are part of the layout. The final composition must be **visibly bolder** than the "correct" one:
-  - one main diagonal with a strong long-short rhythm;
-  - the red element at ~2× scale;
-  - elements **bleeding** off the paper edge;
-  - type overprinting the red circle (black on red).
-  Merely tilting the correct layout is not enough.
-- **Bars as notes**: bar width = column minus 8 px; consecutive cells of one note merge into one bar (overdraw 1 px at the seams or antialiasing shows hairlines, especially when rotated).
-- **The secondary voice** (bass) is light-grey bars under the black ones. They read as a shadow diagonal and give depth without a second colour.
-
-## 4. Motion language
-
-- **Two curves only.** Precise ease `cubic-bezier(.7,0,.2,1)` for snaps, linear for lines being drawn, the playhead and the rule-breaker. No overshoot, no spring, no bounce.
-- **Durations are note values** at the film's BPM (120: 1/8 = 0.25 s, 1/16 = 0.125 s). A snap starts one note value early and **lands on the beat**.
-- **Entrances are wipes or clip-reveals, never fades.** Words rise out of a clip rect from below the baseline (1/16 note) and leave upward (1/8 note). Lines grow along their length. Paper appears by a vertical wipe. Big numerals climb in **4 eased steps** ("one module at a time").
-- **Deletions are knife cuts.** A 2 px line crosses the element in 1/16, then the element collapses vertically to its midline in 1/8.
-- **Ripples are ordered by distance** from the cause. After the red circle lands, units re-flow two at a time on sixteenths, nearest first.
-- **The exception moves differently.** It is linear, not snapped, and pauses for one eighth mid-flight (a glance back). It grows as it travels. A coordinate readout next to it turns from `col 5.00 row 0.00 · on grid` to red `off grid` with non-integer (even negative) values.
-- Everything renders at a smooth 24 fps. There's no stepping: this style is digital precision, not hand-made.
-
-## 5. Camera language
-
-The "camera" is a 2D matrix (centre, scale, rotation). It moves only with the precise ease and only on beats.
-
-| Beat | Camera |
-|---|---|
-| Opening | Locked full frame. One gesture: a red line strikes across and the grid columns grow out of it on sixteenths |
-| Building (rules) | Locked spread, so the viewer reads cause (rule, left) → effect (artifact, right) |
-| The break | Left page slides out, artifact moves to centre-left, grid lines extend across the whole frame (the grid is bigger than the page) |
-| Reveal | **Rotate the artifact 90° in 1.5 beats and stop.** Only then do labels (note names, bar numbers) wipe in, then the playhead sweeps two bars. Each bar turns red on the exact frame of its onset: put onsets on whole frames (multiples of 0.25 s at 24 fps) |
-| Scale reveal | Rotate back while pulling out to a wall of artifacts from the same system |
-| Ending | The red line strikes again and cuts the other artifacts away. Push back to the opening spread, end card on the left page, hero artifact on the right |
-
-## 6. Sound
-
-- **Music**: Motorik / krautrock, 120 BPM, A dorian (not a generic piano-and-strings bed). Layer one instrument per rule:
-  1. hats only;
-  2. + full motorik kit (`drum_kit`: kick 1, 3, 3&; snare 2, 4; closed hat eighths);
-  3. + `electric_bass` eighth-note root pulse;
-  4. + numpy saw arpeggio sixteenths with an opening filter;
-  5. + `glockenspiel` doubled by a soft numpy square lead.
-
-  **Drop the drums for the one bar of the break**, return on the landing. Before the reveal add one bar of near-silence (bass pedal + quarter-note tick). During the reveal keep only kick + bass + melody so every note is audible.
-- **The melody comes from the same JSON as the picture** (`score.json`: column → pitch, row → onset, length → duration). "The poster is the score" is true in code, not faked.
-- **Foley follows materials**, dry and close, no reverb:
-  - letterpress clack (metal transient + 3.3 / 5.1 kHz resonances + wooden tray);
-  - ruling pen "tss";
-  - guillotine (band-pass sweep + metal snick);
-  - paper slap / slide;
-  - numeral "thunk" per step;
-  - block snap;
-  - circle landing (58 Hz felt thump).
-
-  The rule-breaker is the only element that *sings*: a sine glide that follows its position.
-- **Voice**: cool, crisp female narrator, Kokoro `af_sarah` at speed 1.0. It had ~7× the 3–8 kHz consonant energy of `af_kore`. Keep lines rule-like: "Rule one. Build a grid." Check every line with whisper (write numbers as `"asr": "Rule 1, …"`).
-- **Mix**: voice compressed, music ducked ~−10 dB under voice (voice ≥ 6 dB above music), −14 LUFS.
-
-## 7. Subtitles & titles
-
-- **Subtitles are part of the layout**, not a bar at the bottom. Each line sits at column 1 on the spread's left page: the first sentence as a 30 px Medium grey lead-in, the rest as a 76 px Bold statement. Each word clip-reveals on its whisper timestamp. Non-rule lines use Regular weight ("Perfect. And a little dull."). In other shots the line sits at column 1 of that shot, at the artifact's headline baseline or under the wall like a museum label.
-- **Title card**: `Five Rules / for a Poster`, 120 px Bold, two lines flush left, sitting on the opening red line. A 19 px caption row with a 1 px rule above it (`A programme in five steps · 1961 · ♩ = 120`).
-- **Caption row + notes**: top of the left page (title / `Rule 0n / 05` / keyword); bottom of column 5: 2–3 technical notes per rule (`Columns 7 · Rows 16 · Module 91 × 40`). Bottom of column 7: a bar counter `bar 04.3`.
-- **End card**: the opening spread again. `Swiss Motion / Graphics` 120 px, red line under it, `LemoLab × Claude Opus 5.5` 36 px, notes at the bottom, hero poster on the right.
-
-## 8. Pitfalls we hit
-
-- **12 columns looked like a chart.** Grid modules must give the graphic elements mass. We used fewer, wider columns for the artifact and kept the standard 12 columns for the frame.
-- **The "better" composition wasn't obviously better.** Four small staircases → one scattered layout wasn't convincing. Fix: one main diagonal with long/short rhythm, 2× red element, bleeds, type over red.
-- **Rotation reveal needs a stop.** Rotating and labelling at the same time read as noise. Order it: rotate (1.5 beats) → hold → grid lines → labels → playhead → sweep.
-- **Merged bars showed seams** after rotation and scaling (antialiasing between adjacent rects). Overdraw 1 px where cells join.
-- **Labels overlapping the header**: hide the caption row before the rotated shot.
-- **Word timings**: whisper splits or merges words ("type face"), and `asr_check` reports the first word at −0.6 s (padding). Align by letters and clamp to 0 (`tools/words.py`).
-- **Subtitle rule** (≥ voice + 0.6 s and ≥ 1.8 s): two lines missed by 2 ms. `tools/subs.py` asserts it, so fix by nudging start times.
-- **The wall cut must follow the line**: shrink the wall board from the side the red line enters, in screen space.
-- The other posters on the wall share the camera matrix, so draw them **only** during the wall shot. Otherwise they leak into other shots at ±786 px.
-- Canvas `letterSpacing` also affects `measureText`, so compute widths after setting the font.
-
-## 9. Production recipe (this repo)
-
-```
-styles/swiss-motion/demo/
-  score.json  grid = score: stiff / final melody, bass, circle, bleeds, timeline
-  ease.js     cubic-bezier(.7,0,.2,1), snap(t, t_arrive, dur), steps(), track()
-  film.js     layout system, rules, poster, circle, reveal, wall, end card, foley events
-  main.js     loads fonts, score, lines, whisper word times; ?nosub=1, ?poster=1
-  lines.json  voice script (af_sarah)          tools/words.py  word timings → subtitle reveal
-  music/score.py  motorik score from score.json   mix.py  foley + ducked voice + music
-  tools/subs.py   subtitle intervals (asserted) → srt     build.sh  one-shot rebuild
-```
-
-1. Design the layout system first: frame grid, artifact grid, what columns and rows *mean*. Write `score.json`.
-2. `node core/render/still.mjs styles/swiss-motion/demo --range 0.5:43.5:1 --out …` then `sheet.py`. Review a 1 s overview plus dense 0.25 s strips around the break and each transition.
-3. `tts.py` → `asr_check.py` (0 mismatches) → `tools/words.py`.
-4. `music/score.py` (onsets from `score.json`; check sweep onsets ≤ 5 ms) → `events.mjs` → `mix.py` (prints voice/music/foley dB per line).
-5. `video.mjs --workers 3` (1056 frames in ~12 s) → `mux.sh … 24 0`. Or simply `sh styles/swiss-motion/demo/build.sh` (~55 s from zero).
+How our demo was made (story, shots, score, end card, build): [DEMO.md](DEMO.md). Read it after your treatment exists.

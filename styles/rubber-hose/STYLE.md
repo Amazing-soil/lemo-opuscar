@@ -1,123 +1,110 @@
 # 1930s Rubber Hose Cartoon — Style Prompt
 
 > Black-and-white hand-inked cartoons where every object is alive and swings to a hot jazz band.
-> Demo: *Coffee Cup Chase* (50s) · `rubber-hose.mp4` · source in `demo/`
+> References (grammar only): early Fleischer Studios shorts (c. 1930–33) for "the whole world dances", surreal transformation, the bouncing-ball singalong and ink-and-pen framing devices; *Cuphead* for how a modern team finishes the look and scores it with a big band. Never use an existing cartoon character, name or silhouette, and never copy designs, melodies or logos. **Avoid the "cup-head on a human body with a straw" design**: if your hero is an object, the *whole object is the body*.
 
-You are directing a 30–60 second film in the **1930s Rubber Hose** style. The user gives you a topic. You decide everything else — story, shots, timing, music, sound — and deliver a finished film. Follow this guide.
+## 1. Essence, and what it is not
 
-Reference lineage (learn the grammar, never copy characters, designs, melodies or logos): early Fleischer Studios shorts (c. 1930–33) for "the whole world dances"; *Cuphead* for how a modern team finishes the look and scores it with a big band. Never use an existing cartoon character, name or silhouette. **Avoid the "cup-head on a human body with a straw" design** — if your hero is an object, the *whole object is the body*.
+Hand-inked black-and-white animation from the early sound era: characters with **rubber-hose limbs** (equal-width tubes, no elbows, no knees), **white four-finger gloves**, **pie eyes** (black oval pupils with a wedge cut out), huge round shoes, and bodies that squash and stretch like balloons. The backgrounds are soft grey watercolour paintings; the characters are flat white, grey and ink. Everything (furniture, machines, plants, the walls) **breathes in time with the music**. The film looks like a worn 35 mm print projected in a 4:3 gate: flicker, scratches, dust, gate weave, vignette.
+
+Not a 1950s flat cartoon (no limited animation, no colour, no graphic backgrounds), not a silent film (the synchronised music is the engine), not a "retro filter" over modern animation (no joints, no rendered shading).
+
+## 2. Materials & rendering
+
+- **Frame**: 1920×1080 output with a **4:3 gate** (1440×1080 centred, black pillarbox), gate corners rounded (r ≈ 28 px), soft inner shadow on the gate edge.
+- **Characters**: flat fills, one hard-edged form-shadow band (light grey) on the side away from an upper-left light, ink outline **constant in screen space** at any zoom (transform points first, then stroke; ~6 px at 1080p), light **line boil** (±1.2 px, 3 drawings cycling at 12 fps).
+- **Anatomy kit**:
+  - Limbs: noodle tubes of constant width (about 1/20 of the character's height), one smooth bend, round caps.
+  - Gloves: palm + 3 fat fingers + thumb, flared cuff with a fold line, 3 stitch lines on the back. Outline the union only (stroke all parts thick first, then fill all).
+  - Pie eyes: white oval, big black pupil (≈ 64 % × 74 % of the eye) with a wedge cut toward the upper right; blink with an eyelid in body colour and a lid line.
+  - Mouths: smile with cheek ticks, open grin, "O", wavy (scared), pucker, tongue-out. Shoes: big black ovals with a white toe glint.
+- **Object characters**: the face sits on the body; a **secondary feature carries the mood** (steam, a flame, a lampshade tilt, a spring). A box-shaped object is a real projected 3D shape seen slightly from above, the face mapped onto its front.
+- **Backgrounds**: painted once into a cached canvas at 1.25–1.5× (push-ins stay crisp): flat wash + soft blotches (±5 %) + inner edge darkening + a thin dark-grey outline + paper grain. They never boil. Period motifs: patterned wallpaper, panelled furniture, checker floors, brick, clapboard.
+- **Film damage** (composite pass, not the scene): low-frequency gate weave (±1.2 px) with a rare jump; flicker ±4 %; 0–3 drifting vertical scratches; 3–8 dust specks per frame; an occasional hair; strong vignette; a small jump on every cut; slight blur. Grain in ffmpeg (`mux.sh` grain **3**), not in the page.
+
+## 3. Colour logic
+
+- **Strictly greyscale**: about 6 grey steps plus a separate character white. No hue anywhere, not even in the film damage.
+- **Characters own the extremes**: character whites and ink blacks are brighter and darker than anything in the background. Backgrounds live in the middle greys (walls around mid grey, furniture one or two steps darker). Add a mild contrast boost (≈ 1.1–1.15) in the final composite: 1930s prints are rich black and bright white, never flat grey.
+- Form shadow is one light-grey band, never a gradient.
+- Examples of the grey ramp's temperature: warm paper greys (our demo); cool silver-nitrate greys; a faint sepia print. Pick one and keep it for the whole film.
+
+## 4. Type & subtitles
+
+- **Subtitles are a period title card**: a small near-black plate with a white double-rule border and dot-and-ring corner ornaments; text in **IM Fell English SC** (~36 px), paper white. Drawn in the scene layer so it weaves and flickers with the film; pops on and off with no fades. Bottom by default, top when the action is low. One card may span two short voice clips; hold ≥ max(1.8 s, speech + 0.6 s).
+- **Titles**: **Shrikhand** fat retro script, white face, heavy ink outline (~14 % of the cap height), ink drop shadow down-right; letters can hop in a travelling wave on the beat. Sub-lines in **Limelight** caps.
+
+## 5. Motion quality
+
+- **Characters on twos** (12 fps); camera moves on ones (24 fps). A stepped camera reads as judder.
+- **Tempo grid**: choose a tempo where one beat is an **even whole number of frames** at 24 fps (8, 10, 12, 16 or 20 frames), so every beat lands on a drawing of the twos.
+- **Breathing**: every idle object squashes and stretches with `cos(2π·beats)`: an extreme on every beat (stretch on the beat, squash on the off-beat), sampled on twos, amplitude ~5–7 %, all props in phase. A peak of joy can raise the amplitude ×3 and squash the whole background painting around the floor line (~2.5 %).
+- **Walk**: one step per beat with a body bob (sad = smaller steps, limp arms). **Run**: legs as a windmill (feet orbit a circle), lean forward, speed lines.
+- **Anticipation–hold–action**: before every big move, crouch (squash to ~0.8), hold (let the band stop), then snap. Impacts get a squash with an exponential spring-back.
+- **Held frames are acting**: a chain of holds, each glance on an eighth note with a woodblock tick, reads as thinking.
+- **Freeze on a band stop**: when the music stops, freeze everything, background breathing included.
+
+## 6. Camera grammar
+
+A theatre camera: mostly locked, moving only to follow a runner or to land a gag. Opening and ending come from the topic.
+
+| Move | What it expresses | Can serve |
+|---|---|---|
+| Stage-wide, locked, eye level | A proscenium: the set is a stage and everyone on it performs | introducing a place; a group number; a routine |
+| Hard cut to a face close-up | The reaction is the joke | a surprise; a taste; a realisation |
+| Trucking pan beside a runner, eased start and stop | Pursuit, momentum | a chase; a race; a delivery |
+| Medium follow shot (character ≈ 1/4–1/3 of the frame height) | Every step is a note | Mickey-moused climbing, dancing, working |
+| Tilt with a fall or a rise | Gravity as rhythm | a tumble; a rocket; a lift |
+| Slightly high angle, one unbroken shot | The hazard and the answer in one frame | a danger; a stretch; a rescue |
+| Tabletop pan (flat characters in front of a model set turning in depth) | The world is a real place | a street; a carousel; a factory floor |
+| Pull-back from a close-up to a packed medium-full | One feeling spreads to everyone | a celebration; a crowd joining in |
+| Iris in / iris out (grabbable by a character) | The film is an object | a beginning; an ending; a scene change with a gag |
+
+Framing: faces must read, so no far-wide shot for a gag or a musical moment. The destination prop enters frame before the gag lands. Arcs and leaps stay inside the gate at the current zoom. Transitions: iris, a hard cut on a beat, a title card rolling up like a window shade; no dissolves.
+
+## 7. Sound palette
+
+- **1930s hot dance band / ragtime**: stride piano, clarinet, trumpet (open + plunger-mute "wah-wah"), trombone (smears), tuba oom-pah, banjo on 2 & 4, snare with brushes and rolls, xylophone, woodblocks, slide whistle, cymbal, kazoo, washboard, a pit organ. **No string pads, no modern synths.** One short original syncopated theme can be restated in different arrangements.
+- **Mickey-mouse the score, as options**: a band member "answering" a character (trombone raspberry, trumpet laugh); a stop (hard silence, reverb tails too) before a gag or on a stare; a stinger per gag; slide whistle for every stretch or fall; a prop that *is* an instrument; a solo for tenderness; a key change for a lift.
+- **Foley by material** (synthesised): porcelain and glass = hard inharmonic partials + a tiny transient; wood = woodblock; metal = bells and clanks; springs = "boing"; water = filtered noise + rising blips and bubbles; rubber = sawtooth creak through a band-pass.
+- **Voice**: a period character (a radio announcer calling the action, a vaudeville MC, a crooner), few short lines. Radio chain: HP ~260 Hz / LP ~4.6 kHz, tanh saturation, a short room, compression. Duck the music ~8 dB.
+- **Optical soundtrack pass** over music + foley: band-limit ~110 Hz–6.2 kHz, slight wow (~0.6 Hz) and flutter (~7 Hz), soft saturation; then a bed of hiss, crackle and a 24 Hz projector gate clatter, the *only* sound allowed inside a silence.
+- Loudness −14 LUFS (two-pass loudnorm in `core/render/mux.sh`).
+
+## 8. Native moves
+
+A menu: use the ones your story needs.
+
+- **Everything breathes on the beat.** The setting is a character; at the peak the *whole world* can dance in sync, walls included. *Fits content like:* a factory at shift change; a garden after rain; a city waking up.
+- **Mickey-mousing.** Every step is a note; a prop becomes an instrument. *Fits content like:* stairs as a piano; a typewriter as a drum kit; fence posts as a xylophone.
+- **Rubber-hose stretch.** Limbs reach any length in one unbroken shot. *Fits content like:* reaching a top shelf; a long-distance handshake; catching a falling baby bird.
+- **Transformation.** Anything becomes something else mid-motion (a tail into a question mark, a hose into a saxophone). *Fits content like:* an idea turning into a product; a problem into a tool; a word into an object.
+- **The bouncing-ball singalong.** Lyrics on a title card, a ball hopping from word to word on the beat. *Fits content like:* a jingle; a safety rhyme; a slogan to remember.
+- **The film is a physical object.** Title cards roll up like window shades; the iris is grabbed and pulled shut; intertitles get bumped; the frame line slips. *Fits content like:* a brand reveal; a "the end?" twist; a character escaping the cartoon.
+- **The ink bottle.** An artist's pen draws the hero, who then argues with it. *Fits content like:* a making-of; a mascot introduction; a lesson about drawing.
+
+## 9. Pitfalls of the medium
+
+- **Flat grey frames.** Push backgrounds to mid grey, keep pure white and ink for characters, add a contrast boost.
+- **Wide shots kill gags**: a far shot makes characters tiny and Mickey-mousing unreadable. Use medium shots, and a packed medium-full for crowds.
+- "Sad" brows drawn as "angry": define brows by inner / outer end (inner = near the nose), not by left / right.
+- A limb drawn behind a body gets hidden by the silhouette (a handle, a tail): kick and reach outward past it.
+- Painted characters collide with background props at some camera positions: check every shot's last frame.
+- Smoke puffs in a row read as thought bubbles: scatter and grow them.
+- Short voice clips make subtitles flash: merge consecutive lines into one card.
+
+## 10. Engine
+
+In `demo/`: `toon.js` (constant-width ink, line boil, affine stack), `film.js` (gate and film damage, reusable as is), `chars.js` (rigs, pie eyes, gloves, shoes), `cast.js` (breathing props), `bg.js` (cached watercolour backgrounds), `ui.js` (title lettering, title-card subtitles), `mix.py` (foley, radio chain, optical ageing), `music/score.py` (big band via `core/audio/sampler.py`). File map and commands: [DEMO.md](DEMO.md#build-notes).
+
+## 11. Variation space
+
+You decide the location (or several), the cast, the structure, the opening, the ending, the camera path, the tempo and the band's line-up. All far from our demo:
+
+- Structures: **a singalong** (verse and chorus, the bouncing ball carrying the message while the set acts out each line); **a talent show** (objects take turns on a stage, the smallest wins); **a relay** (a thing passed hand to hand across a town, each hand-off a new instrument on the melody).
+- Openings: **out of the inkwell** (a pen draws the hero, who hops onto the set); **a curtain rise** (the band tuning up; a baton starts the film); **an iris on one eye** (it blinks, the iris widens to show whose eye it is).
+- Endings: **the card pulled over** (a character drags "The End" in front of itself mid-gag); **the film snaps** (the frame burns, a gloved hand splices it for one last bow); **the band packs up** (instruments leave until one note remains).
 
 ---
 
-## 1. What this style is
-
-Hand-inked black-and-white animation from the early sound era: characters with **rubber-hose limbs** (equal-width tubes, no elbows, no knees), **white four-finger gloves**, **pie eyes** (black oval pupils with a wedge cut out), huge round shoes, and bodies that squash and stretch like balloons. The backgrounds are soft gray watercolor paintings; the characters are flat white, gray and ink. Everything — furniture, pots, clocks, curtains, the walls — **breathes in time with the music**. The film looks like a worn 35 mm print projected in a 4:3 gate: flicker, scratches, dust, gate weave, vignette.
-
-## 2. Story: what fits this style
-
-Pick stories where **music and motion are the story**. Rubber hose has four native powers — use at least three, and put the strongest at the emotional peak:
-
-| Native power | Story use |
-|---|---|
-| **Everything breathes on the beat** | The setting is a character. At the climax the *whole world* dances in sync — every prop, even the walls. This is the payoff shot. |
-| **Mickey-mousing** | Every step is a note. Turn a prop into an instrument (in the demo: a stair of plates is a xylophone — the small character climbs it on rising xylophone eighths, the big one on tuba quarters). |
-| **Rubber-hose stretch** | Limbs reach any length. Use it for the turning point (the demo's arm stretches around a whirlpool and down a drain in one unbroken shot). |
-| **The film is a physical object** | Title cards roll up like window shades; the iris can be grabbed and pulled shut by a character; intertitles can be bumped. Great for openings and endings. |
-
-Adapting any topic: make the topic a **chase or a performance inside one lively location** (a kitchen, an office, a toy shop, a factory). Give the location a supporting cast of 5–8 living objects.
-
-**Emotional arc (40–55 s):** hook on frame 1 (bouncing title letters, band hit) → a small want → a chase in 3 escalating set pieces, one visual gag each → danger → the stretch → dead silence → a quiet, kind turn → release: the whole world dances → iris out with a gag. Keep one hero, one goal, one turn.
-
-## 3. Visual language
-
-- **Frame**: 1920×1080 output with a **4:3 gate** (1440×1080 centered, black pillarbox), gate corners rounded r≈28 px, soft inner shadow on the gate edge.
-- **Palette** — strictly grayscale, 6 steps + character white:
-  paper `#F1EEE6` · light `#C8C5BC` · mid `#9A978F` · dark-mid `#6B6963` · dark `#3B3A37` · ink `#0E0D0C` · character white `#FCFBF7`.
-- **Contrast rule** (important — our first style frame was too flat): characters own the extremes. Character whites and ink blacks must be brighter/darker than anything in the background. Walls sit in **mid gray** (`#8C8981`), tiles `#A29F97`, cabinets `#66635D`–`#7C7972`. Add `contrast(1.14)` in the final composite.
-- **Characters**: flat fills, one hard-edged form-shadow band (light gray) on the side away from an upper-left light, ink outline **6 px constant in screen space** at any zoom (transform points first, then stroke), light **line boil** (±1.2 px, 3 drawings cycling at 12 fps).
-- **Anatomy kit**:
-  - Limbs: noodle tubes of constant width (13 px on a 280 px character), one smooth bend, round caps.
-  - Gloves: palm + 3 fat fingers + thumb, flared cuff with a fold line, 3 stitch lines on the back. Outline the union only (stroke all parts thick first, then fill all).
-  - Pie eyes: white oval, big black pupil (64% × 74% of the eye) with a wedge cut toward the upper right; blink with an eyelid in body color and a lid line.
-  - Mouths: smile with cheek ticks, open grin with gray tongue, "O", wavy (scared), pucker (disgust), "bleh" tongue-out, beam.
-  - Shoes: big black ovals with a white toe glint.
-- **Object characters**: face on the body; a secondary feature carries the mood (the demo mug's **steam**: lazy waves / bitter zigzag / straight-up alarm / wilted droop / heart). For a cube or box, project a real 3D cube with a slight top-down view (elevation ≈0.26 rad) and map the face onto the front face with an affine transform.
-- **Backgrounds**: painted once into a cached canvas at 1.25–1.5× resolution (so camera push-ins stay crisp): flat wash + soft blurred blotches (±5% light/dark) + an inner edge-darkening stroke + thin dark-gray outline (3 px) + paper grain. Backgrounds never boil. Classic motifs: striped wallpaper with small diamonds, square tiles, paneled cabinets, black-and-white checker floor, hanging lamp.
-- **Film damage** (drawn in the composite pass, not in the scene): gate weave ±1.2 px low-frequency plus a rare 3–6 px jump; per-frame brightness flicker ±4%; 0–3 vertical scratches drifting over a few frames; 3–8 dust specks per frame; an occasional hair; strong vignette (0 → 62% black at the corners); a 3 px vertical jump on every cut; 0.55 px blur. Grain goes in ffmpeg (`mux.sh` grain **3**), not in the page.
-
-## 4. Motion language
-
-- **Characters on twos** (12 fps); camera moves on ones (24 fps). Stepped cameras read as judder.
-- **Tempo grid**: choose a BPM where one beat is an integer number of frames. **144 BPM → 1 beat = 10 frames**, so every beat lands on an even frame and twos-animation can hit it exactly.
-- **Breathing**: every idle object squashes/stretches with `cos(2π·beats)` — **an extreme on every beat** (stretch on the beat, squash on the off-beat), sampled on twos, amplitude ~5–7%. All props in phase. At the climax raise amplitude ×3 and also squash the whole background painting around the floor line (~2.5%).
-- **Walk**: one step per beat, body bob 10 px; sad walk = smaller steps (34), bob 4, limp arms. **Run**: legs as a windmill (feet orbit a circle), lean forward 0.24 rad, speed lines, steam blown back.
-- **Anticipation–hold–action**: before every big move, crouch (squash to 0.8), hold (let the band stop), then snap. Impacts get a squash with an exponential spring-back.
-- **Held frames are acting**: the demo's hesitation beat = crouch (hold) → eyes to the other character's back (hold) → eyes up to the goal (hold) → back → up + grin → small hop → leap. Each glance on an eighth note, with a woodblock tick, while the camera slowly pushes in.
-- **Freeze on a band stop**: when the music stops for a "lock eyes" beat, freeze everything, background breathing included.
-
-## 5. Camera language
-
-| Beat | Camera |
-|---|---|
-| Opening | Title card with rotating sunburst; letters hop in a wave each beat; the card rolls up like a window shade to reveal the set |
-| Establishing | **Stage-wide, locked off**, eye level. The set reads like a proscenium; props lined along the counter |
-| Reaction gag | Hard cut to a close-up of the face (the only big face shot early on) |
-| Chase | **Trucking pan** alongside the runners, eased start and stop; the destination prop enters frame before the gag |
-| Vertical set piece | Don't frame the whole set piece far away — follow each climber in a **medium shot** (character ≈1/4–1/3 of frame height) so each musical step and the plate's bounce reads; cut between climbers; then tilt down with the fall |
-| Danger | Slightly high angle so the hazard reads at a glance; **hold one unbroken shot** through the big stretch |
-| Quiet turn | Medium two-shot, then the hero's **back** walking away small in the background while the other character is big in the foreground (on a foreground counter piece) |
-| Climax | Pull back from a close-up to a **medium-full** shot (not a far wide — faces must read): hero in the middle, living props on the counter behind, and a **foreground row of bigger dancers** on a nearer counter piece. 2–3 steps by bar (sway → kicks → group squat-and-spring), then **everyone freezes in a ta-da pose on the last beat** and holds into the iris |
-| Ending | Iris closes on the heroes; a character's glove pulls it shut |
-
-## 6. Sound
-
-- **Music**: 1930s hot dance band / ragtime — stride piano, clarinet, trumpet (open + plunger-mute "wah-wah"), trombone, tuba oom-pah, banjo on 2 & 4, snare with brushes and rolls, xylophone, woodblocks, slide whistle, cymbal. **No string pads, no modern synths.** One original 4-bar syncopated theme, stated for the title, the chase, a slow solo-clarinet version for the tender beat, and a key-change full-band out-chorus for the climax.
-- **Mickey-mouse the score**: stops (hard silence including reverb tails) on the lock-eyes beat, on the suspense before a gag, and a full 2 beats of silence right after the stretch; stingers on every gag; slide whistle for every stretch/slide/fall; the xylophone *is* the plates.
-- **Foley by material** (all synthesized): porcelain = hard inharmonic partials (~2.7/4.2/6.3 kHz) + tiny transient; thick mug = lower, duller partials; sugar = high woodblock + sparse crunch; clock = 18 Hz hammer on two bells; toaster = click, eighth-note ticks, bell + spring "boing"; water = filtered noise + rising blips, drain slurp, bubble bed; rubber = sawtooth creak through a band-pass.
-- **Voice**: an old radio announcer calling the action like a horse race (Kokoro `bm_lewis`, speed 1.0), 5–7 short lines. Chain: HP 260 Hz / LP 4.6 kHz, tanh saturation, a short room, compression. Duck the music ~8 dB under the voice.
-- **Optical soundtrack pass** over music + foley: band-limit 110 Hz–6.2 kHz, slight wow (0.6 Hz) and flutter (7 Hz), soft saturation; then add a bed of hiss, crackle and a 24 Hz projector gate clatter that is the *only* sound during the silence.
-- Loudness −14 LUFS (two-pass loudnorm in `core/render/mux.sh`).
-
-## 7. Subtitles & titles
-
-- **Subtitles are "the announcer's title card"**: a small black plate (rgba(12,11,10,.92)) with a white double-rule border, dot-and-ring corner ornaments and a tiny 1930s ribbon-microphone icon; text in **IM Fell English SC** 36 px, paper white. Drawn in the scene layer so it weaves and flickers with the film. Pops on/off with no fades. Bottom (y≈986) by default, top when the action is low in frame. One card may span two voice clips; each card ≥ speech + 0.6 s.
-- **Title**: **Shrikhand** fat retro script, white face, 14% ink outline, ink drop shadow offset down-right; each letter hops in a traveling wave on the beat. Sub-line in **Limelight** caps.
-- **End card**: same sunburst, a wavy-edged sign with "The End", style name, `LemoLab × Claude Opus 5.5`, small credit lines at the bottom. Opens with an iris from black.
-
-## 8. Pitfalls we hit
-
-- **Flat, gray first style frame.** Push walls to mid gray, keep pure white/ink for characters, add a contrast filter. 30s prints are rich black + bright white.
-- **Kokoro heard "bitter" as "better"** after an ellipsis (`is... bitter!`). "And boy, is this coffee bitter!" passes. Check every line with whisper; also check the final mp4 (whisper writes "7am"/"they're" — normalize before comparing).
-- Short announcer clips → subtitles too short. Merge consecutive lines into one card.
-- **Cube read as a tall box** in pure front view — use elevation ~0.26 and prefer a slight 3/4 turn for expressions.
-- "Sad" brows drawn as "angry": define brows by inner/outer end (inner = near the nose), not by left/right.
-- Wide shots made characters tiny (reviewer note): a far shot of the plate-xylophone and of the dance climax killed both gags. Mickey-mousing needs medium shots; the climax needs a medium-full shot packed with dancers, not a room-wide view.
-- A kicking leg drawn behind a mug body gets hidden by the handle — kick outward past the silhouette.
-- Painted characters can collide with background props at certain camera positions (a pot "grew" out of the mug's head). Check every shot's final frame.
-- Smoke puffs laid out in a row read as "thought bubbles" — scatter and grow them.
-- A leap arc that's too high leaves the frame; keep arcs inside the gate at the camera's zoom.
-- `sfx`-style clips of different lengths → numpy broadcast errors. Place clips into a fixed-length buffer (`seq()` in `mix.py`).
-- zsh: `echo =====` fails (`=word` expansion) and `timeout` doesn't exist on macOS.
-- JS: `-x ** 6` is a syntax error; write `-(x ** 6)`.
-
-## 9. Production recipe (this repo)
-
-```
-styles/rubber-hose/demo/
-  toon.js    constant-width ink + line boil + affine stack      film.js   4:3 gate, weave, flicker, scratches, vignette
-  chars.js   mug & cube rigs, pie eyes, gloves, shoes, steam     cast.js   living kitchen props (all take a breath phase)
-  bg.js      cached watercolor backgrounds (kitchen, cupboard+sink)
-  story.js   144 BPM bar grid, VO times, subtitle cards, shots, key moments, music cues  (single source of truth)
-  scenes.js  every shot: camera, props, acting            events.js  foley event list → events.json
-  ui.js      title lettering, announcer title card        sheet.js   model sheets (?mode=sheet / ?mode=kitchen)
-  music/score.py  original big-band score (VSCO 2 CE / VCSL samples via core/audio/sampler.py, banjo via pluck.py)
-  mix.py     foley synthesis + radio-voice chain + ducking + optical-track aging
-  build.sh   one-command rebuild (≈9 min, mostly TTS/whisper/sample loading; frames render in ~50 s)
-```
-
-1. Write the bar grid first (`story.js`), then the cue map; score to it (a forked sub-agent can write `music/score.py` in parallel from `story.js` + the cue list).
-2. Model sheets: `node demo/tools/still.mjs demo 0 --q 'mode=sheet&w=2880&h=1620' --w 2880 --h 1620`.
-3. `core/tts/tts.py lines.json voices` → `core/tts/asr_check.py`.
-4. Review: `core/render/still.mjs demo --range a:b:1` + `core/render/sheet.py` (two full passes), and frame strips at 1/12 s on key acting beats.
-5. `node core/render/events.mjs demo` → `python music/score.py` → `python mix.py`.
-6. `node core/render/video.mjs demo --fps 24 --workers 3` → `sh core/render/mux.sh out/video24.mp4 mix.wav rubber-hose.mp4 24 3` → `python demo/tools/final_asr.py rubber-hose.mp4`.
+How our demo was made (story, shots, score, end card, build): [DEMO.md](DEMO.md). Read it after your treatment exists.

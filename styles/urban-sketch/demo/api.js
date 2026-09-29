@@ -1,4 +1,4 @@
-// STYLE.md §10 的最小示例：?api=1
+// DEMO.md（Engine reference）的最小示例：?api=1
 import { sketchShape, sparkle, penStroke, drawPen, hex } from './engine.js';
 const ctx = document.getElementById('c').getContext('2d');
 window.DUR = 1;

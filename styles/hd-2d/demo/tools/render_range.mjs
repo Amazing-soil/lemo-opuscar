@@ -1,6 +1,6 @@
 // 只渲一段时间：node styles/hd-2d/demo/tools/render_range.mjs <a> <b> [--fps 60] [--workers 2] [--q 'tilt=1'] [--out styles/hd-2d/demo/out/range.mp4]
 // 与 core/render/video.mjs 同一套逐帧截图管线（同样的 JPEG q95 → x264 crf14），只是帧号范围是 [round(a*fps), round(b*fps))。
-// 用途：改片尾字卡后只重渲最后几秒，再与原 video_tilt.mp4 的前段拼接（见 STYLE.md §9 / PRODUCTION_LOG.md）。
+// 用途：改片尾字卡后只重渲最后几秒，再与原 video_tilt.mp4 的前段拼接（见 ../../DEMO.md「Build notes」的 Partial re-render / ../PRODUCTION_LOG.md）。
 import fs from 'fs'; import path from 'path'; import { spawn, execFileSync } from 'child_process';
 import { fileURLToPath } from 'url';
 import { openDemo, closeServer } from '../../../../core/render/page.mjs';

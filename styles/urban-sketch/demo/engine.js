@@ -599,7 +599,7 @@ export function bike(place, ph, col, o = {}) {
 
 // ---------- 任意形状 → 钢笔淡彩 ----------
 // poly: 闭合多边形（世界坐标）；col: [r,g,b]；o: { ink 线宽, wash 浓度, offset 错位, reserve 留白度, color 0..1（到达程度）, p 墨线进度 }
-// 例：一颗暖橙色 #D97757 的四角光点 + 光标尾巴 —— 见 STYLE.md §10
+// 例：一颗暖橙色 #D97757 的四角光点 + 光标尾巴 —— 见 DEMO.md（Engine reference）
 export function sketchShape(ctx, poly, col, o = {}) {
   const lw = o.ink ?? 2.4, off = o.offset ?? lw * .8, seed = o.seed ?? 1;
   const prims = [{ k: 'knock', poly, a: o.reserve ?? .9 }, { k: 'wash', poly, col, a: o.wash ?? .6, dx: off, dy: off * .5, seed, j: o.jitter ?? lw * 1.2, layers: 3, edge: .35 },

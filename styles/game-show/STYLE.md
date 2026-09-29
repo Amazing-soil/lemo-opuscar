@@ -1,203 +1,116 @@
 # Game Show Flat — Style Prompt
 
-> A rhythm-game variety show in flat vector: bean-shaped mascots with 8 px ink outlines on candy-coloured stripes and sunbursts, every hit landing on a 150 BPM grid, call-and-response in every level, and a "Perfect!" at the end of each one.
-> Demo: *AI进化节拍 · Rhythm of AI 1997 → 2026* (v3, 148.8 s, 1920×1080, 30 fps) · `game-show.mp4` · source in `demo/` · engine: plain SVG DOM with a pure `render(t)`, screenshotted by Playwright + Chrome Headless Shell; original score synthesized in numpy from the picture's own `events.json`.
-> References (grammar only): rhythm-action party games in the Rhythm Heaven mould (cue → answer, level cards, judgement words), Japanese variety-show telops (thick outlined captions, stripe and sunburst sets), WarioWare-style stage cards. Never use their names, characters, UI, levels or music.
+> A rhythm-game variety show in flat vector: toy-like mascots with thick ink outlines on candy-coloured stripes and sunbursts, every hit landing on a fixed tempo grid, call-and-response patterns, and a judgement word when each round is won.
+> References (grammar only): rhythm-action party games in the Rhythm Heaven mould (cue → answer, round cards, judgement words), Japanese variety-show telops (thick outlined captions, stripe and sunburst sets), WarioWare-style stage cards. Never use their names, characters, UI, levels or music.
 
-You are directing a film in the **Game Show Flat** style. The user gives you a topic. You decide everything else (story, levels, characters, timing, music, shouts) and deliver a finished film. Follow this guide. The demo is ~2.5 minutes; the format works from 45 s (3 levels) to 3 min (8 levels).
+The format works from 45 s (three rounds) to about 3 min (eight rounds). Narration is optional: the style can carry a film on short shouts and telops alone.
 
-**Language note.** All on-screen text in the demo is **Chinese** (level names, year banners, labels, the report card, the credit card). The only audio words are short **English shouts** ("Checkmate.", "Hey!", "Question!"). There is **no narration**. To make an English version, see §7 "Switching the text to English".
+## 1. Essence, and what it is not
+
+- **Everything is on the grid.** One fixed, fast tempo. Every pop, drop, stamp, typed character and camera punch sits at a (bar, beat) and is also a sound event; the score is generated from the picture's own timeline, so they can't drift.
+- **One drawing kit, many sets.** Flat fills, one heavy ink outline, round caps, hard offset shadows; each round gets a new saturated background colour and pattern.
+- **Characters are toys.** One body construction for the whole cast, told apart by colour, a belly patch, one head accessory and a name tag. They hop on the beat, squash on hits, throw arms up on a shout.
+- **A round = a repeatable verb + a win.** The topic is split into rounds; each round has one action that can repeat on a beat, and ends on a judgement the audience reads in one glance.
+
+Not a microgame frenzy (no timer or one-verb command per 3 s game, no change of art style per round), not a mid-century cartoon (no textured painted backgrounds, no character acting), not a keynote (no slow reveals, no gradients).
+
+## 2. Materials & rendering
+
+- **Vector only**, SVG or canvas paths at 1920×1080: flat fills, one outline colour (near-black), 8 px outlines on characters and props, 5–7 px on small parts, round joins and caps.
+- **No gradients, no blur, no texture, no soft shadow.** Depth is a **hard offset shadow**: the same shape in outline colour shifted ~10 px (stickers, banners) to ~14 px (cards), then the coloured shape on top.
+- **Sets** = one saturated background + a same-hue pattern one step lighter: diagonal stripes (often scrolling slowly), offset polka dots (~20 % white), or a rotating sunburst. A darker floor band with an ink line on top grounds the characters.
+- **Characters**: a rounded bean body, stubby arms with mitten hands, oval eyes with a catch-light, a mouth that swaps to an open one. Humans share the construction; older machines or eras read through a boxier silhouette.
+- **UI kit**: round card, corner sticker banner, judgement word, burst (star + ring + speed lines), scoreboards.
+- `render(t)` is a pure function of `t`: every element's state is recomputed from `t`, never carried over from the previous frame.
+
+## 3. Colour logic
+
+- **Ink + paper + candy.** Near-black ink, white, and a warm cream for cards and paper props; around eight saturated candy hues (yellow, orange, red, pink, green, lime, sky, blue) plus two or three deep hues with darker partners for night or finale sets.
+- **One set = one hue.** The background, its pattern and the round card share a hue; the card changes colour to match the set it introduces. Neighbouring rounds never share a hue.
+- **Characters own colours.** A contestant's body colour is its identity and never changes; keep it distinct from the set it stands on (a character is never the same hue as the background).
+- Big words are white or yellow with a thick ink stroke; judgement words may be pink or yellow.
+- Set examples: tangerine ground `#FFB870` with `#FFA85A` stripes; teal with mint dots; navy with a gold sunburst.
+
+## 4. Type & subtitles
+
+- **Display**: a heavy rounded sans for Latin and numbers (e.g. Fredoka 700); a black-weight sans for CJK (e.g. Noto Sans SC 900); a hand-lettered face only for handwritten props (e.g. ZCOOL KuaiLe).
+- **Telop text**: white or yellow fill with an ink stroke ≈ 14 % of the font size painted *under* the fill (`paint-order: stroke`). Titles are built glyph by glyph so each character can pop in.
+- **The telops are the subtitles.** Round cards, corner banners, labels, prop text and judgement words carry the meaning; keep them short (≤ ~20 CJK characters on a banner line, ≤ ~12 on a plate; Latin runs ~1.6× wider). With narration, subtitles are telop plates at the bottom in the same outlined type, never a thin generic caption.
+- Hold every text ≥ max(1.8 s, speech + 0.6 s); a judgement word may be shorter because it is read at a glance.
+
+## 5. Motion quality
+
+- **Idle = hop on the beat**: a parabola per beat (8–30 px); neighbours hop on the off-beat so a crowd ripples.
+- **Hit = squash**: a damped wobble (~30 rad/s, ~0.35 s) after each hit; a small squash on every downbeat.
+- **Entrances drop from the sky** with ease-in and land exactly on their beat, so the sound lands with them. Crowds drop in one per beat or half-beat.
+- **Pops use back-ease** for anything appearing (cards, stickers, stamps, words); ease-in for exits. Nothing fades in slowly: things are either on or popping.
+- **Shout pose**: arms up + open mouth for about half a beat.
+- **Typewriter** reveals on fractions of a beat, with a click every few characters.
+- Scene changes are **hard cuts on bar lines**, with a very short white flash. A fade is saved for the very end, if at all.
+- Nothing moves off the grid: an event between beats sits on a subdivision.
+
+## 6. Camera grammar
+
+The stage is a frontal, symmetrical proscenium; the frame itself does the moving. A vocabulary, not a route. Opening and ending come from the topic.
+
+| Move | What it expresses | Can serve |
+|---|---|---|
+| Beat punch (zoom 0.8–5 % around centre, decays in ~0.16 s) | the hit, felt in the frame | any accent; a slam; a count-in |
+| Several punches in one bar | the frame breathing with the music | a chorus; an escalating pattern |
+| Locked frontal wide | the whole stage as a game board | a pattern being set up; a crowd; a scoreboard |
+| Hard cut on the bar line + flash | a new round, a new set | chapter changes; a before/after |
+| Split stage (two halves, two sets) | two sides answering each other | a rivalry; human vs machine; old vs new |
+| Shrink to thumbnail (a finished bit scales down into a slot) | memory, accumulation | a recap; "and then all of this happened" |
+| Vertical scroll of the set (floor to sky) | rising stakes or scale | a leaderboard; growth; a tower of items |
+| Snap zoom onto one prop (hard cut to a 2× framing, back on the next bar) | this detail is the joke | a price tag; a number; a face reacting |
+
+Keep the sum of simultaneous punches below ~0.06 so the frame edge never shows. Characters stand on the floor band; banners top-left, judgement words centre-top. Hard cuts only; no dissolves.
+
+## 7. Sound palette
+
+- **All synthesized** from the picture's events: a sine kick with soft saturation, band-passed noise snare and clap, hats, slap bass, detuned-saw brass stabs with a closing filter, square lead with vibrato, marimba-like pluck, music-box bell, triangle pad, square arp, cowbell.
+- **A bright major pop harmony** on a short chord loop, one chord per bar; each round gets its own flavour (funk, quiz, electro, dream, heavy…), not a new song.
+- **Event foley is toy-like and pitched**: pops, plop + boing landings, stamps, typewriter clicks, buzzers, dings, servo whirs, splats; pitched pips can spell a melody as a crowd drops in.
+- **Shouts, not sentences**: one- to three-word calls ("Hey!", a number, a verdict), placed 20–30 ms before the beat so the consonant lands on it. A crowd shout = several different voices stacked a few ms apart and panned across the stereo field.
+- Options to vary intensity (pick what the film needs): a jingle (crash + rising brass + snare roll) into each round; a transposition up for a finale; dropping to drums only for one bar before a big hit; a half-time bar for a reveal; one bar of silence broken by a single shout.
+- **Mix**: voices and foley on their own bus; music ducked from that bus's envelope; soft-clip rather than hard limit; −14 LUFS, true peak ≤ −1 dB.
+
+## 8. Native moves
+
+A menu: use the ones your story needs.
+
+- **Rounds with a card.** A 1-bar card (round number + name + a tag such as a year or a step) flies in on a jingle, then play. *Fits content like:* the steps of a recipe; the stages of a startup; the chapters of a museum tour.
+- **Call-and-response.** Anything with a turn becomes a rhythm pattern; speeding up the pattern (quarters → eighths) *is* the plot. *Fits content like:* a teacher's question and the class answer; a customer order and the barista's reply; ping-pong between two negotiators.
+- **Judgement word.** A big outlined word pops at an angle on the round's last hit. *Fits content like:* "Delivered!" on a logistics step; "Approved!" on a permit; "Personal best!" on a training plan.
+- **Stats as game UI.** Numbers become podium scores, counters racing to a target, price tags getting hammered, bar charts that grow per beat. *Fits content like:* fundraising progress; calories per dish; downloads of an app.
+- **Remix board.** One set with a timeline ribbon; each item gets a few bars centre stage, then shrinks into a slot along the bottom; in the finale all slots bounce together. *Fits content like:* a year in review; a team's release list; a festival line-up.
+- **Crowd drop.** Many contestants drop in one per beat, each with a pitched pip. *Fits content like:* every member of a club; the planets; the ingredients of a dish.
+- **Next-level tease.** Something hatches or unlocks. *Fits content like:* a next version; next season; a next grade.
+- **Report card.** A typewritten recap with a grade stamp. *Fits content like:* a quarterly review; a trip summary; a final score.
+
+## 9. Pitfalls of the medium
+
+- **Stateful updates break parallel renders**: a worker starting cold shows the initial state. Recompute every pose from `t`; compare single stills with a sequential render.
+- **Cue lists drift** when cut flashes, jingles and arrangement are separate hand lists: derive them from one table.
+- **Fixed-length audio buffers** cut the tail: size them from the duration.
+- **Text measured before fonts load** overflows plates: load fonts, then build.
+- **TTS misreads digits and symbols** in shouts: spell them out.
+- **Real products as characters**: names on tags, original mascots, no logos or UI; real people only as generic stand-ins.
+
+## 10. Engine
+
+`demo/frame_head.html` (SVG helpers: `el`, `txt`, `tf`, `op`, easing `E`, per-glyph `chars`/`charsPop`, `measure`), `demo/main_v1.js` (tempo grid `at(bar, beat)`, `ev()` sound events, `punch()`, `hopY`/`hitSq`, `gtext` telops, `stripes`/`dots`/`raysEl` sets, `burst`, `judge`, `banner`), `demo/main_b.js` (`bean()` characters + `pose()`, `human()`, `scene(t0, t1, build)`, `card()`, `dropY`, `heyAt`), `demo/music.py` + `demo/synth_lib.py` (event-driven score and SFX). The contract: `scene()` builds nodes once and returns `update(t)`, which only sets attributes. Module table and a minimal new round: [DEMO.md](DEMO.md#engine-reference).
+
+## 11. Variation space
+
+You decide the rounds and their verbs, the cast, the sets and colours, whether there is narration, the tempo, the opening, the ending and the length. The grid, the drawing kit and the telop language stay.
+
+All far from our demo:
+
+- Structures: **a tournament bracket** (two contestants per round, the winner advances, the final is a split stage); **one long round** that keeps escalating its single pattern from quarters to sixteenths as the story's pressure rises; **a quiz show** with three contestants where each question is a fact of the topic and the scoreboard is the argument.
+- Openings: **the judgement first** (a "Perfect!" pops on an empty stage, then we rewind to how it was earned); **a single contestant alone** hopping on a bare floor until the crowd drops in; **the scoreboard** showing a final number, then counting back to zero.
+- Endings: **a group photo** (everyone freezes mid-hop, a flash, the frame becomes a polaroid on a card); **a level-select map** where every finished round is a lit node; **a curtain** falling bar by bar with the last shout under it.
 
 ---
 
-## 1. What this style is
-
-A topic is staged as a **game show made of rhythm levels**. The film opens on a title set where the whole cast drops in on the beat and counts "One! Two! Three! Four!". Then comes a run of **levels**. Each level is **one bar of title card** (GAME N + name + years, flying in on a brass jingle) followed by **eight bars of play**: a pattern is set up in the first half, answered or escalated in the second, and the last beat (bar 7, beat 3) is a **slam + "Perfect!"** judgement. A **remix** level near the end piles every recent event onto one set, with a month timeline across the top and shrunken thumbnails of each finished bit parked along the bottom. The ending hatches a new character from an egg, types out a **report card** ("AI 进化史 · 成绩单") with a Superb! star, and closes on a **credit card**.
-
-What makes it work:
-- **Everything is on the grid.** At 150 BPM a beat is 0.4 s and a bar is 1.6 s. Every pop, drop, hammer, stamp, typed character and camera punch is placed with `at(bar, beat)`, and every one of them is also registered as a sound event. Picture and sound can't drift apart, because the score is generated from the picture's timeline.
-- **One look, many sets.** Every level uses the same drawing kit (flat fills, 8 px `#1B1B1B` outline, round caps, hard offset shadows) but a new background colour and pattern. The level card changes colour to match its set.
-- **Characters are toys.** Each "contestant" is the same bean body, told apart by colour, belly patch, one head accessory and a name tag. They hop on every beat, squash on every hit and throw their arms up on every "Hey!".
-
-## 2. Story: what fits this style
-
-| Native power | Story use |
-|---|---|
-| **Levels with years** | Any history or process splits into 5–8 levels, each a phase with a year range on its card. The demo: chess and Go (1997–2016), quiz show (2011), attention factory (2017–2020), AI art studio (2021–2024), chat chorus (2022–2023), thinking + price war (2024–2025), agent pipeline (2025), then a 2026 remix. |
-| **Call-and-response** | Anything with a "turn" becomes a rhythm pattern: human move / machine move (chess), question / buzzer (quiz), lead "Hey!" / crowd "Hey!" (chorus), task drops / stamp DONE (agents). The pattern speeding up *is* the plot: Go stones on eighth notes after chess on quarter notes. |
-| **Judgement words** | "Perfect!", "第 37 手！", "首超！", price tags getting hammered, "9.9 ✓" thought bubbles. Every level ends on a win that the audience can read in one glance. |
-| **Stats as game UI** | Numbers become scoreboards and counters: podium dollar scores, a users counter racing to 1,000,000, parameter counts, price tags ($60 → $2.19), a bar chart that grows by beat. |
-| **Remix / thumbnails** | For "and then everything happened at once": one set, a month ribbon, each item gets 2 bars centre stage and then shrinks (×0.27) into a slot at the bottom. In the finale all thumbnails bounce together under a giant year. |
-| **Egg → report card → credit** | The ending is a "next level" tease (NEXT egg hatches a "???" baby bot), then a typewriter recap of three lines, then the credit card. |
-
-**Story shape (proven in the demo):** cold open on the cast + count-in (4 bars) → 7 levels of 9 bars (card + 8) → 1-bar REMIX card → 16-bar remix (7 items × 2 bars + 2-bar finale) → 9-bar ending (egg 2 bars, "Hi!" 1 bar, report card 3 bars, credit 3 bars incl. 0.8 s fade). Total 93 bars = 148.8 s.
-
-**Adapting any topic:** list the 6–8 phases, give each one *one verb that can repeat on a beat* (place, buzz, pump, splat, sing, hammer, stamp), a year range and a set colour. Pick one "Perfect!" moment per level. If the topic has a crowd (many companies, products, people), make them bean contestants with name tags and let them drop in one per beat.
-
-## 3. Visual language
-
-**Canvas & line:** 1920×1080 SVG. Outline `K.ol = #1B1B1B`, width `OW = 8` px (`SO` spread: stroke, 8 px, round join and cap); 5–7 px on small parts. No gradients, no blur, no textures. Depth comes from a **hard offset shadow**: draw the same shape in `#1B1B1B` shifted +10 px (banners) or +14 px (level cards), then the coloured shape on top.
-
-**Palette (`K` in `main_v1.js`/`main.js`):**
-| Role | Colours |
-|---|---|
-| Ink / paper | `ol #1B1B1B`, `white #FFFFFF`, `cream #FFF6E5` (cards, report card) |
-| Candy primaries | `yellow #FFD23F`, `orange #FF8C42`, `red #FF5A5F`, `pink #FF8FB1`, `green #5BD68A`, `lime #C6F16D`, `sky #8ED1FC`, `blue #4D7CFE` |
-| Deep sets | `purple #6B4FBB` / `purpleD #46318F`, `teal #3FB8AF` / `tealD #2B8F88`, `navy #26264A` (ending) |
-| Props | `wood #C98A52` / `woodD #8E5530`, `gray #C3CAD9`, `chalk #2F5D50`, `skin #FFD1A8` |
-| Character hues | `gpt #19B388`, `claude #D97757`, `gem1 #4E7CF6` / `gem2 #9B6CF0`, `llama #F4E9D8`, `whale #4D6BFE`, `dblue #2B59C3` |
-
-Each set is one saturated background plus a same-hue pattern 1 step lighter: `stripes()` (diagonal bands, often slowly scrolling), `dots()` (offset polka dots at 18–25 % white), or `raysEl()` (a rotating sunburst). A darker floor band at y = 860–900 with an 8 px ink line on top grounds the characters.
-
-**Type:** Chinese = **Noto Sans SC 900** (`F.sans`) everywhere; Latin display = **Fredoka 700** (`F.round`: GAME N, years, "Perfect!", name tags, numbers); **ZCOOL KuaiLe** (`F.cute`) only for hand-written props. Big words use `gtext()`: white or yellow fill, ink stroke ≈ 14 % of the size painted *under* the fill (`paint-order: stroke`). Title text uses `chars()` so each glyph can pop in separately.
-
-**Characters (`bean()` in `main_b.js`):** a rounded bean body (160 px wide, 172 px tall at scale 1), two stubby arms with white mitten hands, two foot ovals, oval eyes with a white catch-light, pink blush, a small curved mouth that swaps to an open red mouth. Identity = body colour + belly patch + **one** head mark (antenna ball, heart, "?", moon, bolt, cloud, sprout, brush, beret, captain hat, llama wool, whale spout) + an ink name-tag pill under the feet. Gemini is two half-size beans (`twins()`). Humans (`human()`) are the same construction with a shirt, a round head, hair cap, optional glasses and a sweat drop. Machines of the 1990s–2010s are boxier robots (`robotDB`, `robotAG`, `robotT`, `robotW`), so the era reads through silhouette.
-
-**Recurring UI:**
-- **Level card** (`card()`): full-bleed set colour + scrolling stripes, a cream panel (1240×460, r 50, 10 px outline, 14 px shadow), a pill tag "GAME N", the level name auto-fitted to 720 px, the years in the set colour, an icon hopping on the left.
-- **Year banner** (`banner()`): top-left sticker: year in Fredoka + name + one-line subtitle, slides in from the left with a back-ease and lifts out upward.
-- **Judgement** (`judge()`): 120 px Fredoka word, pink/yellow with an 18 px ink stroke, pops at −6°.
-- **Burst** (`burst()`): 8-point star + expanding white ring + 8 ink speed lines, 0.3 s.
-
-## 4. Motion language
-
-- **Tempo**: `BPM = 150`, `B = 0.4 s`, `BARL = 1.6 s`. Time is always written `at(bar, beat)` (beats may be fractional: `at(5, 2.5)`).
-- **Idle = hop on the beat**: `hopY(t, h)` is a parabola per beat (h 8–30 px). Neighbours hop on the off-beat (`t + B/2`) so a crowd ripples.
-- **Hit = squash**: `hitSq(t, t0, amt)` gives a damped 30 rad/s wobble for 0.35 s after a hit; feed it to `pose({ sq })`. Every landing also squashes a little on each downbeat: `1 - 0.1*exp(-frac(t)*16)`.
-- **Entrances drop from the sky**: `dropY(t, t0, y, h, d)` falls 500–900 px with ease-in and lands exactly on `t0` (so the sound lands with it).
-- **Pops use back-ease**: `E.back` for anything appearing (cards, stickers, stamps, judgement words); `E.in` for exits. Nothing fades in slowly; things are either on or popping.
-- **Hey = arms up + open mouth** for 0.24 s (`heyAt(times, t)`).
-- **Typewriter**: the report-card lines reveal one character per 1/8 beat, with a key click per 2 characters.
-- **Scene changes are hard cuts on bar lines** (card bars, remix, ending) with a 0.08 s white flash at 50 %. The only fade in the film is the last 0.8 s to navy.
-
-## 5. Camera
-
-There is no camera travel. The stage is always a frontal, symmetrical proscenium. The one camera move is the **beat punch**: `punch(t, a)` adds a zoom of `a` (0.008 for small ticks, 0.02 for normal hits, 0.03–0.05 for slams) around frame centre that decays over 0.16 s. Several punches in a bar make the frame breathe with the music. Keep sums below ~0.06 so the frame edges never show.
-
-## 6. Sound
-
-**Everything is synthesized**; there are no samples and no narration.
-
-- **Score (`music.py` + `synth_lib.py`)**: 150 BPM, a four-chord loop F–G–Em–Am (the J-pop "royal road", one chord per bar, `CH`), two 8-note melodies `MA` / `MB`. Instruments: tanh-shaped sine kick, band-passed noise snare and clap, hats, slap bass (`slap`, patterns funk/drive/pump/soft), detuned-saw **brass stabs** with a closing filter, square lead with vibrato, pluck (marimba), bell (music box), triangle pad, square arp, cowbell. Each bar gets a mode in `PLAN` (`main`, `count`, `funk`, `quiz`, `electro`, `dream`, `film`, `pop`, `popBig`, `think`, `heavy`, `agent`, `agentFast`, `fill`, `future`, `futureBig`, `egg`, `calm`, `fanfare`, `end`), one flavour per level. Level cards get a **jingle** (crash + kick + rising brass arpeggio + snare roll into the level). The 2026 remix transposes up 2 semitones.
-- **Event-driven SFX**: `node render.mjs events` exports every `ev()` from the picture to `events.json` (474 events in the demo). `music.py` maps each event name to a sound: `tock`/`bleep` (chess), `stone` (Go), `ding`/`boop`/`buzz` (quiz), `land` (plop + boing), `pip` (pitched pop, uses `f`), `slam`/`bigslam`, `stamp`, `type`, `crack`/`hatch`, `servo`, `liftoff`, `swish`, `clap`, `drop`, `blip`, `kickhit`, `splat`, `denoise`, `cheer`. Unknown names are silently ignored.
-- **Shouts**: `v:<name>` events play `voices/<name>.wav`. Voices are macOS `say` system voices (Samantha, Fred, Zarvox, Junior, Kathy, Ralph, Superstar) at rate 170–220, pitched up ×1.0–1.35 without changing length (`asetrate` + `atempo`, see `make_voices.sh`). Zarvox (robot) says machine lines ("Checkmate.", "Move thirty seven.", "Attention!"); Samantha/Fred are hosts. The crowd "Hey!" is six different voices stacked 5–6 ms apart and panned −0.6…+0.6 (`v:crowd`, `v:heyAll`, `v:heyBig`); `v:heyVar` picks one voice per contestant. Shouts are placed 20–30 ms *before* the beat so the consonant lands on it.
-- **Mix**: voices + SFX go to their own bus; the music is ducked by up to 40 % from a 12 Hz envelope of that bus; last 0.8 s fades; peak-normalize to 1.5 then `tanh` soft-clip ×0.9 → `music.wav` (44.1 kHz). `finish.sh` then applies two-pass loudnorm to **−14 LUFS / TP −1.2** and resamples to 48 kHz AAC 256k.
-
-## 7. Subtitles & titles
-
-- **No burned-in subtitles.** On-screen words are the telops themselves: level cards, year banners, remix labels and plates, prop text, judgement words. They stay short (≤ 20 CJK characters on a banner subtitle, ≤ 12 on a plate).
-- `game-show.srt` (generated by `make_srt.py` from `events.json` + `voices/lines*.txt`) lists only the English shouts, one cue per shout, repeated crowd "Hey!"s merged.
-- **Title**: "AI 进化节拍" 200 px, white with a 26 px ink stroke, glyphs popping in 0.06 s apart; subtitle "RHYTHM OF AI · 1997 → 2026" in Fredoka. The cast drops in behind it, one per half-beat, each with a pitched pip.
-- **End credit (house rule):** the last card must carry **"LemoLab × Claude Opus 5.5"** (× is U+00D7). In the demo it is the first line of the credit card that pops in at bar 90 (144.0 s): a cream 1440×360 card (r 40, 8 px ink outline, −1.5° tilt, back-ease pop over 0.3 s) with three centred lines: `LemoLab × Claude Opus 5.5` in Fredoka 700 66 px ink (y −80), `本片由 Claude Opus 5.5 全程代码生成` in Noto Sans SC 900 60 px (y 30), `下一关：正在训练中……` 50 px in `K.claude` (y 118). It holds 4 s and fades to navy with the film. Code: the `credit` block in the ending scene of `main_b.js`. New films keep the LemoLab line and may put their own credit lines under it.
-
-**Switching the text to English:** all strings are literals in `main_b.js` (and three in `main_v1.js`):
-1. Level cards: `card(SECT.gN, 'GAME N', '<name>', '<years>', …)`; the name auto-shrinks to 720 px.
-2. Year banners: `banner(g, '<year>', '<name>', '<subtitle>', col)`; widths auto-measure.
-3. Remix: `item(i, m0, m1, '<label>', …)`, `plate(p, '<text>')`, the month ribbon `` `${m}月` `` and the finale label `'2026 · 未完待续'`, `'还没唱完 →'`.
-4. Props: quiz `QA` pairs, the Watson sign, the "9.11 和 9.9" chalkboard, the task note, the users counter label `'用户'`, report card title + `lines`, the credit text, the title `chars()` strings. In `main_v1.js`: the robot chest label `'注意力'` (`robotT`) and the sentence tokens in G3.
-5. Prefer `F.round` (Fredoka) for Latin headings and keep `F.sans` for body; `init()` preloads fonts from the page's own text, so no font list changes are needed. English runs ~1.6× wider than Chinese: check banners and plates with stills.
-6. Re-run `make_srt.py` if shouts change; the shouts are already English.
-
-## 8. Pitfalls we hit
-
-- **`render(t)` must be a pure function of `t`.** The remix thumbnails only updated while `t < t1 + 0.01`, so their final pose depended on having rendered the frames before. The 6-worker render starts worker 5 cold at 124.0 s, and in the shipped v3 film the bottom thumbnails (robot arm stack, dancing robots, bar chart, Gemini card) show their *initial* state from 124.0 s to 131.2 s. Fixed in `main_b.js` during import (the thumbnail is recomputed at `t1 − 0.001` every frame), and the film's last segment (124.0–148.8 s) was re-rendered with the fix. Test any change with stills (a still is always a cold start) against a sequential render.
-- **`main.js` and `index.html` are generated.** Edit `main_v1.js` (palette, beat helpers, banner/judge/burst, 1990s robots) or `main_b.js` (characters v2, stage, all scenes, render/init), then run `assemble.py` → `build.py`. Edits made straight into `main.js` are overwritten.
-- **`BPM` and `END_BAR` are patched by string replace** in `assemble.py` (`'const BPM = 140,'` → 150, `'const END_BAR = 61;'` → 93). If you edit those lines in `main_v1.js` the replace silently stops matching. Change the replace targets instead.
-- **Add every new shout in three places**: the `.wav` in `voices/`, a line in `voices/lines*.txt` (so it can be regenerated), and the `VO` list at the top of `music.py` (otherwise `KeyError`).
-- **Level card bars must also be listed** in `CUTS` (`init()` in `main_b.js`: the flash) and in the `jingle()` loop + `PLAN` spans of `music.py`. They are three separate lists.
-- `synth_lib.py` allocates a fixed `DUR = 150.0` s buffer. A longer film needs a bigger `DUR` or the tail is cut.
-- Fonts: `measure()` uses a canvas, so glyph widths are wrong until the webfont has loaded. `init()` loads every family for the page text before `buildAll()` and again for the built stage text. Keep that when adding text.
-- `say` pronunciation: write "A. I.", "G P T one", "Nine point eleven", "Move thirty seven" — spelled-out forms. Symbols and digits are read unpredictably.
-- **macOS system voices are licensed for personal, non-commercial use** under the macOS licence. For a commercial or public release, re-voice the shouts with Kokoro (`core/tts/`) or another cleared TTS.
-- **Real brands:** the contestants stand for real AI products (GPT, Claude, Gemini, DeepSeek, Kimi, Grok, Midjourney…). Use **names only** on name tags, original mascots, loose colour nods; never official logos, wordmarks or product UI. Keep the tone affectionate, not mocking. Real people (Kasparov, Lee Sedol, the KEN / BRAD podiums) appear only as generic cartoon stand-ins in factual banners.
-- **Facts date fast.** The 2026 remix (Sonnet 5 as default, WAIC 2026, DeepSeek V4-Pro, "GPT-6 Astra", token-volume figures) was written as current news at production time. Re-check every figure and name before reusing any of it.
-- The G7 task note on screen literally says "做一个节奏天国风格的视频" (names a real game series). In new films describe the genre, don't name it.
-- The frame template (`frame_head.html`, inherited from an earlier film) still declares `#paper`/`#fx` canvases and ink/boil filters; `init()` hides the canvases and the style doesn't use the filters. Leave them alone or delete them together.
-- zsh does not word-split `$TS`; pass timestamps as an array (`TS=(1 2 3); … $TS`) or literally.
-
-## 9. Production recipe (this repo)
-
-```
-styles/game-show/demo/
-  main_v1.js     v1 source: palette K, tempo (at/ev/punch), hop/squash helpers, stripes/dots/rays, burst, judge, banner, 1990s robots, chess board
-  main_b.js      v2/v3 source: bean characters + CAST, human, podium, stage (scene/card), props, ALL scenes (buildAll), render(t), init()
-  assemble.py    main_v1.js[0:109] (BPM→150, END_BAR→93) + main_v1 robotDB…stage + main_b.js  →  main.js
-  frame_head.html  HTML/SVG frame + base helpers (el, txt, tf, op, E, chars, charsPop, measure, bg …)
-  build.py       frame_head.html + main.js  →  index.html
-  render.mjs     events | stills | video (Playwright + Chrome Headless Shell, PNG → ffmpeg x264 crf 12 per worker)
-  music.py       score + events.json → SFX + shouts → ducked mix → music.wav      synth_lib.py  instruments & SFX
-  voices/        40 shout wavs + lines*.txt (name|voice|rate|pitch|text)          make_voices.sh  regenerate them (macOS)
-  finish.sh      concat segments + loudnorm −14 LUFS + mux → ../game-show.mp4       make_srt.py  → ../game-show.srt
-  fonts/ fonts.css   Noto Sans SC, Fredoka, ZCOOL KuaiLe (woff2 subsets)
-  historical: main.js (generated), remix2026.js (draft of the remix section, superseded by main_b.js)
-```
-
-All commands from `styles/game-show/demo/` (the scripts also `chdir` there themselves). `PY=../../../.venv/bin/python`.
-
-1. **Plan on the grid.** Fill `SECT` (first bar of each level card) in `main_b.js`, set `END_BAR` via the replace in `assemble.py`, add the card bars to `CUTS`, and write a cue list: which beats get which `ev()`.
-2. **Shouts:** add lines to `voices/lines3.txt`, then `sh make_voices.sh out/voices_new` (macOS `say` + ffmpeg), listen, copy the keepers into `voices/`, add the names to `VO` in `music.py`.
-3. **Build the page:** `$PY assemble.py && $PY build.py`.
-4. **Look at it:** `STILLS_DIR=out/check node render.mjs stills 5.5 20.4 45 78.3 116.5 145` (≈1 s for six frames). Or open `index.html?t=78.3` in a browser.
-5. **Events:** `node render.mjs events` → `events.json` (demo: 474 events, `dur 148.80`).
-6. **Score + mix:** `$PY music.py` → `music.wav` (≈2 s; deterministic, seed 7). `$PY music.py out/test.wav` writes elsewhere.
-7. **Render:** `node render.mjs video 2` → `out/seg_0..1.mp4` + `out/list.txt`. The demo used 6 workers (120 s total); on a shared machine keep 2 (≈3–4 min). `SEGS=5 node render.mjs video 6` re-renders only one of 6 equal segments.
-8. **Finish:** `sh finish.sh out/test.mp4` (concat → loudnorm → x264 slow crf 16 + AAC 256k 48 kHz). With no argument it writes `../game-show.mp4` and **overwrites the library film** (back it up first). `AUDIO_FROM=old.mp4 sh finish.sh …` skips the remix and copies the old film's audio track unchanged (used for the sign-off re-render).
-9. **Subtitles:** `$PY make_srt.py` → `../game-show.srt`.
-10. **Review:** `ffmpeg -i out/test.mp4 -vf fps=1/4,scale=384:-1,tile=6x7 -frames:v 1 out/sheet.jpg` plus stills around every slam.
-
-## 10. Engine usage
-
-**Contract.** `buildAll()` calls `scene(t0, t1, build)` once per set. `build(g, s)` creates all SVG nodes inside group `g` once and returns `update(t)`, which only sets attributes. `render(t)` shows the scenes with `t0 ≤ t < t1`, calls their `update(t)`, then applies camera punch, cut flash and final fade. `update(t)` must depend on `t` only (see §8).
-
-| Module | Function | What it does / key params |
-|---|---|---|
-| frame_head | `el(tag, attrs, parent)`, `txt(parent, str, attrs)` | create SVG nodes |
-| | `tf(e, x, y, s=1, r=0, sy)` · `op(e, o)` · `show(e, bool)` | transform / opacity / display |
-| | `seg(t, a, b)` · `lerp` · `clamp` · `E.out/in/io/back/elastic` · `rng(seed)` | timing + easing, seeded random |
-| | `chars(parent, str, {x, y, size, family, weight, fill, anchor, ls, stroke, sw})` + `charsPop(c, t, t0, stagger, d, from)` | per-glyph pop-in title |
-| | `measure(str, size, family, weight)` · `bg(parent, color)` | text width, full-frame rect |
-| main_v1 | `at(bar, beat)` · `B` · `BARL` · `frac(t)` | tempo grid (150 BPM) |
-| | `ev(t, name, {f, i})` · `punch(t, amount)` | register a sound event / a camera punch |
-| | `hopY(t, h)` · `hitSq(t, t0, amt)` · `near(t, t0)` | beat hop, hit squash |
-| | `gtext(parent, s, x, y, size, {family, weight, fill, stroke, sw, anchor})` | outlined telop text |
-| | `stripes(p, col, w, angle)` · `dots(p, col, step, r)` · `raysEl(p, n, col)` · `starPath(n, r1, r2)` | set patterns (rotate rays in `update`) |
-| | `burst(p, x, y, t0, col, size)` · `judge(p, word, x, y, t0, col, dur)` | return `f(t)`; push into `s.fx` and call each frame |
-| | `banner(p, year, name, sub, col)` + `bannerAnim(b, t, t0, t1, x=56, y=44)` | year sticker |
-| | `robotDB/robotAG/robotT(p)` · `quad(u, v)` · `pawn(p, col, king)` | era robots, perspective board |
-| main_b | `bean(p, {color, belly, antenna, name, kind, eyeFill, acc, ant, tagCol})` | a contestant; `kind` bot/llama/whale; `acc` noise/mask/beret/captain/mustache; `ant` q/bolt/moon/heart/cloud/sprout/brush |
-| | `pose(c, {hey 0..1, open, sq, lean, face 'x'/'up', blink, armsL, armsR})` · `poseAny(c, o)` | pose any bean or twins |
-| | `CAST.<key>(p, name?)` · `ALL` | 16 ready contestants (gpt, claude, gemini, llama, deepseek, ernie, qwen, mistral, kimi, grok, bert, dalle, mj, sd, sora, baby) |
-| | `human(p, shirt, glasses, hair)` + `humanFace(h, open, sweat)` + `setArm(arm, x1, y1, x2, y2)` | cartoon humans |
-| | `podium(p, col, label)` · `taskIcon(p, kind)` · `smallBot(p, col)` | props |
-| | `dropY(t, t0, y, h, d)` · `heyAt(times, t, w)` · `nearestIn(times, t)` | entrances, "Hey!" windows |
-| | `scene(t0, t1, build)` · `card(bar0, num, name, years, col, col2, icon)` | a set, a 1-bar level card |
-| music.py | `PLAN[bar] = mode`, `span(a, b, mode)`, `jingle(at(bar))` | bar-by-bar arrangement |
-| | event loop `if s == '<name>': addv(sound, t, gain, pan)` | map a picture event to a sound |
-
-**Minimal new level** (inside `buildAll()` in `main_b.js`; add `g8: 67` to `SECT` and shift later sections, add bar 67 to `CUTS`, `jingle(at(67))` + a `span(68, 75, 'funk')` in `music.py`, and raise `END_BAR`):
-
-```js
-{ const b0 = SECT.g8 + 1, T = (bar, bt = 0) => at(b0 + bar, bt);
-  card(SECT.g8, 'GAME 8', '开源接力', '2026', K.orange, '#FF9E5E',
-       (p) => { const w = el('g', { transform: 'scale(2)' }, p); pawn(w, K.white); });
-  scene(T(0), T(8), (g, s) => {
-    bg(g, '#FFB870'); stripes(g, '#FFA85A', 50, -20);
-    el('rect', { x: 0, y: 880, width: 1920, height: 200, fill: '#E08A4A' }, g);
-    const w = el('g', {}, g); const c = CAST.claude(w);
-    const calls = [T(0, 0), T(0, 1), T(1, 0), T(1, 1)], answers = [T(0, 2), T(0, 3), T(1, 2), T(1, 3)];
-    calls.forEach(t0 => { ev(t0, 'v:hey'); punch(t0, 0.015); });
-    answers.forEach(t0 => { ev(t0, 'pop', { f: 900 }); s.fx.push(burst(g, 960, 420, t0, K.yellow, 0.8)); });
-    const b1 = banner(g, '2026', '开源接力', '一拍一棒，接住就赢', K.orange);
-    s.fx.push(judge(g, 'Perfect!', 960, 300, T(7, 3), K.pink, 0.8));
-    ev(T(7, 3), 'slam'); punch(T(7, 3), 0.05);
-    return (t) => {
-      tf(w, 960, 880 + hopY(t, 20), 1);
-      poseAny(c, { hey: heyAt(answers, t) ? 1 : 0, open: heyAt(calls, t), sq: hitSq(t, nearestIn(answers, t) ?? -9) });
-      bannerAnim(b1, t, T(0), T(8));
-      s.fx.forEach(f => f(t));
-    };
-  });
-}
-```
-
-Then `assemble.py → build.py → stills → events → music.py → video → finish.sh`.
+How our demo was made (story, shots, score, end card, build): [DEMO.md](DEMO.md). Read it after your treatment exists.

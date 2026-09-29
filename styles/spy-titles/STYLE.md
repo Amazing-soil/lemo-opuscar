@@ -1,107 +1,114 @@
 # 60s Spy Title Sequence — Style Prompt
 
-> A cut-paper, four-ink opening title sequence for a spy film that never existed: silhouettes chase through sets built out of the credits themselves, every brass stab is a cut, and the title is the last thing to be assembled.
-> Demo: *The Velvet Cipher* (44 s) · `spy-titles.mp4` · source in `demo/`
+> A cut-paper, four-ink opening title sequence for a film that never existed: silhouettes move through sets built out of the credits themselves, every brass stab is a cut, and a title is assembled from the pieces.
+> References (grammar only): Saul Bass's titles for *North by Northwest*, *Anatomy of a Murder* and *Vertigo* (flat opaque inks, abstraction down to silhouettes, type as structure); the 2002 homage by Kuntzel + Deygas for *Catch Me If You Can* (a cut-paper chase through graphic sets, lateral tracking). Not a gun-barrel opening, not a tiptoeing cartoon panther, not a copy of any real title's logo, lettering, characters or shots.
 
-You are directing a 30–60 second film in the **60s Spy Title Sequence** style. The user gives you a topic. You decide everything else — story, shots, timing, sound — and deliver a finished film. Follow this guide.
+## 1. Essence, and what it is not
+
+- **Flat, opaque inks on paper**: four colours, no gradients.
+- **Hand-cut edges** on every shape; pieces layered with cut gaps and small paper shadows.
+- **Abstraction down to silhouettes**: figures in profile, all acting in outline and timing.
+- **Typography is the picture's structure**: credits are architecture, props, vehicles.
+- **Music cuts the picture**: brass stabs are edit points.
+- A title sequence is a story in itself: one goal, a few locations, one reveal.
+
+Not flat vector motion graphics (the edges are cut, the paper is physical), not a halftone print style (no dots), not a Swiss grid (diagonals, jaunty type, playful), not a spy parody with gadgets and gun barrels.
+
+## 2. Materials & rendering
+
+- **Scissor-cut edges**: every polygon resampled every ~9–10 px and displaced along its normal by low-frequency noise (amp ~1.2–2.2 px, larger for bigger shapes) plus a rare 1–2 px notch. **Cut the edge once in the piece's local space and cache it**, so a moving cutout keeps the same edge, exactly like real cutout animation (screen-space edges crawl).
+- **Paper layering**: separate pieces are separated by a ~2.4 px cut gap in the ground colour and cast a small paper shadow (offset a few px, blur ~5, alpha ~0.3). Whole figures get the gap as an outline, so a black figure reads in front of a black letter.
+- **Paper texture**: one full-frame texture multiplied on top (mottling + faint fibres), a sparse "ink void" speckle on dark ink, faint squeegee streaks; film grain in the mux (~6).
+- **Silhouette figures**: tall stylised adults (~7 heads), identity by hat, coat cut, shoes and **one colour accent** that doubles as a motion indicator (a tie or scarf streaming back when running). Pieces **merge into one outline** inside the figure, with only thin slits at shoulder, elbow, hip and knee. Hands are sharp wedges; no faces except an eye slit in close-ups.
+- **The object of the chase** sits on a black backing (an ink keyline) so it reads on any ground; it is the brightest thing in frame.
+- **Type**: a condensed OFL display face (e.g. League Gothic) for credits, glyph outlines extracted (opentype.js) and **re-cut** per letter (edge noise, ±0.8° rotation, ±1.5 px baseline jitter). A title in custom geometric cut glyphs (straight cuts + arcs, uneven weights, staggered baselines), never a real title's lettering.
+
+## 3. Colour logic
+
+- **Four inks**: ink black, paper cream, one hot colour, one warm secondary. Darker "shadow paper" variants of those inks only for depth.
+- **One dominant ground colour per scene**, changing with the location; figures and type in the other inks.
+- The hot colour is reserved for one accent on the hero and for danger; the secondary marks the object of the chase.
+- Background props go in a darker version of the ground, never in black, or they read as letters.
+- Examples: black `#1b1714` / cream `#efe4c9` / red `#d23a22` / mustard `#e2a52a`; ink `#161a22` / bone `#ece6d6` / teal `#1f8a8a` / orange `#f07a28`; black / pale pink `#f3d6cc` / cobalt `#2a46b8` / lemon `#f0d23a`.
+
+## 4. Type & subtitles
+
+- **Credits live in the set**, never in the subtitle band: one line per location, fully readable at some moment. Credits are fictional roles only, never real people's names.
+- **Subtitles** on a narrow paper strip (scissor-cut ends, slightly tilted) bottom-left, a small glyph from the film as bullet, a geometric OFL sans (e.g. League Spartan 600, ~44 px). Light strip on dark scenes, dark strip on light scenes; slides in from the left in ~0.18 s. Hold ≥ max(1.8 s, speech + 0.6 s).
+- Hold each credit long enough to read alongside a subtitle.
+
+## 5. Motion quality
+
+- **Puppets on twos** (12 fps): poses and positions of figures, hands, letters landing, vehicles. **Camera, credit slides and grid growth on ones** (24 fps): a stepped camera judders.
+- Run cycles of ~8 drawings, one step per beat, a strong lean, the accent flying back. Walks one step per beat, coats swinging.
+- Credits slide in along grid lines and **stop dead on the beat** (short ease-out); letters land with a paper slap.
+- **Stop-time**: at a stab the whole picture freezes (background scroll included) for a couple of beats in total silence, then resumes.
+- Shattering: a scene sliced into strips parallel to a cut line that slide off alternately along the diagonal.
+
+## 6. Camera grammar
+
+A vocabulary, not a route. Graphic, flat, decisive. Opening and ending come from the topic.
+
+| Move | What it expresses | Can serve |
+|---|---|---|
+| Wide on a full credit line, then truck in | reading, then action | any location built from type |
+| Lateral tracking, one screen direction | pursuit; momentum | a chase; a race; a delivery |
+| Hard cut on a brass stab | punch; a new location | montage; a reveal; a gag |
+| Graphic match cut (same shape, same position) | rhyme; acceleration | wheel → coin → pupil → moon |
+| Locked single shape on a flat ground | mystery; an icon | a cold open; a clue; a logo |
+| Silhouette against a giant circle | the hero moment | a catch; a triumph; a stand-off |
+| Diagonal split into a grid | fragmentation; many at once | a split screen; a conspiracy; a team |
+| Vertical pan down a column of type | descent; a list | a building; a roster; a countdown |
+| Push into a letter until it fills frame | a letter becomes a place | a door; a tunnel; a window |
+
+Framing: strong diagonals (~30°), big flat grounds, figures small against type. Match cuts keep circle centres and sizes identical across the cut. No dissolves.
+
+## 7. Sound palette
+
+- **1960s spy big band**: stacked staccato trumpets and trombones in octaves with crash (the stab), surf guitar low-string twang through a spring reverb, walking upright bass, brushes or sticks, bongos and shakers, vibraphone, flute, organ stabs, harpsichord. Minor keys, chromatic lines, dotted rhythms. Original motifs only: avoid the famous chromatic crawl of the most famous spy theme and its minor-major-ninth ending chord.
+- **Stabs = edit points**: place staccato brass ~8 ms early so the sample's peak hits the frame.
+- **Techniques (options)**: a cut interval that shrinks as a chase accelerates; stop-time silence; a big chord for the title followed by a short button; a solo instrument alone for a quiet scene.
+- **Foley follows the material**: paper (cut "shh", slides, card slaps for letters landing, blind flips, a tear), metal (keys, chains, locks, clicks), tape (click, hiss). Environments only hinted: a jet pass panned, train wheels in tempo, roulette ticks slowing, wind, a phone ring, footsteps on stairs.
+- **Silence**: true zero, reverb tails included; a single tape click or hiss may remain.
+- **Mix**: music ducks ~7 dB under voice; a peaky mix needs a few dB into a limiter before loudnorm to reach −14 LUFS.
+- **Voice**: a briefing through a tape chain (band-pass ~220–5200 Hz, soft saturation, slow wow, hiss rising under the voice); a few very short lines.
+
+## 8. Native moves
+
+A menu: use the ones your story needs.
+
+- **Type is the set.** Each location is one line of credits and that line is its architecture (letters as pillars, words as carriages, a letter as a lock). *Fits content like:* a conference programme as a city; a menu as a restaurant; team names as a stadium.
+- **Credits are rhythm.** Credits land on beats; stabs are cuts. *Fits content like:* a product's features; a festival line-up; an award's nominees.
+- **Graphic match cuts.** Shape rhymes, the interval shrinking as tension rises. *Fits content like:* a coin → a planet → a clock; a gear → a wheel → a sun.
+- **The diagonal grid.** A diagonal cut multiplies into a grid, and the pieces later fly back along it to assemble something. *Fits content like:* a puzzle solved; a team forming; a logo assembled.
+- **Silhouette puppets.** Profile cut-outs whose acting is outline and timing. *Fits content like:* a heist; a courier on a deadline; a detective.
+- **Stop-time gag.** Freeze on a stab, silence, resume. *Fits content like:* a near miss; a double take; a price reveal.
+- **The object of the chase is the title.** What everyone pursues becomes the last thing assembled. *Fits content like:* a product launch; a book's name; a birthday name.
+
+## 9. Pitfalls of the medium
+
+- Every internal piece outlined with a gap looks like a mannequin diagram → merge pieces in an offscreen layer, cut only joint slits (`destination-out`), outline the whole figure.
+- A `clear()` that resets the transform silently kills the camera.
+- A figure fully hidden behind a letter reads as "nobody there" → let hat, nose and accent stick out. A stiff streamer reads as a tongue → multi-segment ribbon with a travelling sine.
+- A credit only ever seen partially is uncomfortable → always open wide on the full line.
+- Black background props read as letters → darker ground colour.
+- An object in the same ink as its ground vanishes → black backing.
+- Circular props dropped into a word cover neighbouring letters → lay the word out around a gap.
+- Match cuts fail if circle centres move across the cut.
+- Flat inks + grain make huge files at low CRF → a higher CRF looks the same.
+
+## 10. Engine
+
+In `demo/`: `paper.js` (four inks, cached scissor edges, cut gaps, paper shadow, texture, silhouette layer with joint slits), `glyph.js` (League Gothic → opentype.js outlines → re-cut letters), `chars.js` (silhouette rigs, poses, run/walk cycles), `title.js` (custom cut title glyphs, diagonal split), `story.js` (tempo grid, single source of timing), `film.js` (timeline, acting, cameras, subtitles, sound events). `?sheet=1` renders a model sheet, `?frame=<scene>` a style frame. File list and build steps: [DEMO.md](DEMO.md) "Build notes".
+
+## 11. Variation space
+
+You decide what is pursued, by whom, the locations (as credits), the inks, the opening and the ending. All far from our demo:
+
+- Structures: **no chase: a countdown** (ten credits, ten locations, a bomb-clock number built from type in each); **a heist in reverse** (the object is returned, location by location, to where it belongs); **two agents, one frame** (split diagonally, each side a different ground colour, until they meet).
+- Openings: **a full-frame title** that shatters into the sequence (the reveal moved to the start); **a telephone rings** in a single cut-out room; **the hero already falling** through a column of type.
+- Endings: **the title never assembles**, one piece missing, the hero walking off with it; **a slow pull-out** showing every location was one giant credit page; **a stop-time freeze** on the final stab, held.
 
 ---
 
-## 1. What this style is
-
-The graphic grammar of late-1950s / 1960s title design (Saul Bass's *North by Northwest*, *Anatomy of a Murder*, *Vertigo*; the 2002 homage by Kuntzel + Deygas for *Catch Me If You Can*): **flat, opaque inks on paper, hand-cut edges, abstraction down to silhouettes, and typography that is part of the picture's structure**. A title sequence is a story in itself: one goal, one chase, a few locations, one reveal — and the reveal is the title.
-
-It is **not** a gun-barrel opening, not a tiptoeing cartoon panther, not a copy of any real title's logo, lettering, characters or shots. The credits contain only fictional roles ("A LEMOLAB PICTURE", "STARRING THE AGENT", "MUSIC BY THE SAMPLER") — never real names.
-
-## 2. Story: what fits this style
-
-Pick stories that are **a pursuit of something that turns out to be the film itself**. The medium has five native powers — use at least three, and put the strongest at the emotional peak:
-
-| Native power | Story use |
-|---|---|
-| **Type is the set** | Each location is exactly one line of credits, and that line *is* the architecture: letters as colonnade pillars (the hero hides behind the **I**), words as train carriages (he leaps the gaps between words), the **O** of a name as a roulette wheel, an em-dash as a roof ledge, a letter as a lock. At some moment every line must be fully readable. |
-| **Credits are rhythm** | Credits land on beats. Brass stabs = hard cuts. Hold each credit long enough to read it alongside a subtitle. |
-| **Graphic match cuts** | Abstraction makes shape rhymes cheap and powerful: wheel → roulette → pupil → moon → keyhole. Cut on the brass, and make the interval shrink (2 bars → 1.5 bars → 2 beats) as the chase accelerates. |
-| **The diagonal grid** | The opening splits along a 30° diagonal that multiplies into a grid; at the climax every fragment flies back along the same diagonals to assemble the title; the title closes along the same cut. Opening wound → closing seam. |
-| **Silhouette puppets** | Figures are flat cut paper, always in profile, animated on twos. All acting is outline and timing: run, flatten, look back, freeze. |
-
-Adapting any topic: make the topic the **MacGuffin** and the title its destination. A product launch → the product is the stolen object, and its logo is what the fragments assemble into. A lecture → the key idea is chased through four "chapters" set as credits. A birthday → the chase ends with the name assembling.
-
-**Emotional arc (35–45 s):** a cold open on one shape + one line of briefing (hook in 3 s) → the theft → pursuit through 3–4 locations, each shorter than the last → a gag (hero half-hidden; stop-time freeze) → acceleration montage of shape-match cuts → the catch in silhouette against a giant circle → the world shatters along the grid and assembles into the title → a quiet button: one beat of silence, one bongo, one deadpan line.
-
-## 3. Visual language
-
-- **Four inks, no gradients**: ink black `#1b1714`, paper cream `#efe4c9`, signal red `#d23a22`, mustard `#e2a52a`. Allowed "darker paper" variants only for depth/shadows: `#9a2a18` (dark red), `#b07e1c`, `#3a322b` (distant city). Each scene gets one dominant ground color: black (cold open, rooftop), red (grid, train, casino), cream (velvet, title), mustard (airport).
-- **Scissor-cut edges**: every polygon is resampled every ~9–10 px and displaced along its normal by low-frequency noise (amp 1.2–2.2 px, larger for bigger shapes) plus a rare 1–2 px notch. **Cut the edge once in the piece's local space and cache it** — a moving cutout keeps the same edge, exactly like real cutout animation. (Edges computed in screen space "crawl" when pieces move.)
-- **Paper layering**: separate pieces are separated by a **2.4 px cut gap in the ground color** and cast a small paper shadow (offset 2.5/3.5 px, blur 5, alpha ~0.3). Whole figures get the gap as an outline, so a black figure still reads in front of a black letter.
-- **Paper texture**: one full-frame texture multiplied on top (low-frequency mottling + faint fibers) and a sparse "ink void" speckle screened on (only shows on dark ink), plus faint horizontal squeegee streaks. Film grain in the mux at ~6. No halftone (that belongs to other styles).
-- **Silhouette figures** (see `demo/stills/modelsheet_v1.jpg`): 7-head-tall agent with narrow-brim hat (the band is a cut slit), broad-shouldered jacket, pointed shoes, **one red tie as his only color** (it streams back when he runs — the motion indicator). Villain 1.2× taller: wide flat brim, A-line coat with a red lining that only shows when he runs, a mustard key chained to his wrist so the MacGuffin is findable in every shot. Pieces **merge into one outline** inside the figure; only thin (1.7 px) slits at shoulder, elbow, hip/hem and knee. Hands are sharp wedges. No faces except a cream eye slit in close-ups.
-- **The MacGuffin** always sits on a black backing (= ink keyline) so it reads on any ground; it is the brightest thing in frame.
-- **Type**: credits in League Gothic (OFL), glyph outlines extracted with opentype.js and **re-cut** per letter (edge noise, ±0.8° rotation, ±1.5 px baseline jitter). The film title uses custom geometric cut glyphs (straight cuts + arcs, uneven weights, jaunty staggered baselines) — never a real title's lettering. Subtitles in League Spartan 600.
-
-## 4. Motion language
-
-- **Puppets on twos** (12 fps): poses *and* positions of figures, hands, letters landing, the plane. **Camera, credit slides, grid growth on ones** (24 fps) — a stepped camera reads as judder.
-- Run cycle: 8 drawings, one step per beat (cycle = 2 beats at 132 BPM), lean 0.3 rad, tie flying at ~65°. Walks: 1 step per beat, coat swinging.
-- Credits slide in along grid lines and stop dead on the beat (ease-out, 0.2 s), letters land with a paper slap.
-- **Stop-time**: at a brass stab the whole picture (background scroll included) freezes for 2 beats while the music is dead silent, then resumes — the big-band device made visual, and a wordless gag.
-- The climax: the previous scene is sliced into strips parallel to the cut line that slide off alternately along the diagonal (N×NW), while title glyphs fly in along the same diagonal and land on consecutive 16th notes.
-
-## 5. Camera language
-
-| Beat | Camera |
-|---|---|
-| Cold open | Locked, centered single shape (the keyhole) on black. It is secretly an extreme close-up of the title's **I**. |
-| Every credit-set location | Start **wide enough to read the entire credit line**, then push/truck in to the action. |
-| Chase | Lateral tracking (Catch Me grammar): screen direction always left → right, pursued ahead, pursuer behind. |
-| Montage | Hard cuts on brass stabs; circles keep the same screen position and size across the cut. |
-| Hero moment | Silhouette in front of a giant cream moon. |
-| Ending | Push in on the title's lock until the frame matches the cold open exactly, then hard-cut back to the full title on the final bongo. |
-
-## 6. Sound
-
-- **Music: 1960s spy big band** (not cool noir jazz, not ragtime), minor key, ~132 BPM. Original motif: a chromatic descent from the fifth, then a leap to the tonic (B–A♯–A–G | E), dotted rhythm. **Avoid** the famous E–F–F♯–F crawl and the Em(maj9) ending chord; end on Em6/9.
-- **Brass stabs = edit points**: `trumpet_stac` + `trombone_stac` stacked in octaves + crash, ~0.25 s, placed 8 ms early so the sample peak hits the frame. Surf guitar low-string twang (`electric_guitar`) through a home-made spring reverb (dispersive chirp echoes, ~41 ms round trip, 2 s decay). `jazz_bass` walking. Brushes early (soft snare + egg shaker), sticks for the train (16th "rail" snare). `world_perc` bongos/shakers for the casino. Big chord for the title, then a short button, **one beat of digital silence**, one dry bongo.
-- **Silence is a tool**: cold open is only a tape click; stop-time and the last beat are true zero (reverb tails included); the final line plays over nothing but tape hiss.
-- **Foley follows the material**: paper (cut "shh", slides, card slaps for every letter landing, blind flips, a tear for the shatter), metal (key jingle, chain snap, key sliding into the lock, the lock click), tape (click, hiss). Environments only hinted: jet pass (panned L→R), train rumble with wheel "ka-chunk" in tempo, roulette ball ticks slowing down, rooftop wind.
-- **Voice**: British mission-briefing male (Kokoro `bm_george`, speed 0.9–0.97) through a tape chain: band-pass 220–5200 Hz, soft saturation, 0.9 Hz wow, hiss that rises under the voice. 4–6 very short lines; the last line pays off the first ("Nobody knows what it opens." → "Now you know what it opens."). Music ducks ~−7 dB under the voice. Loudness −14 LUFS.
-
-## 7. Subtitles & titles
-
-- **Subtitles**: a narrow paper strip (scissor-cut ends, tilted −1°) bottom-left at (96, 958), a small red keyhole glyph as the bullet, League Spartan 600 44 px. Cream strip with ink text on dark scenes; ink strip with cream text on cream scenes. Slides in 60 px from the left in 0.18 s. Display ≥ max(1.8 s, voice + 0.6 s).
-- **Credits live in the set**, never in the subtitle band. One line per location.
-- **Title**: custom cut glyphs; the MacGuffin's slot is a letter (here the I of CIPHER is a black "lock plate" with a red keyhole; the key's outline fills it).
-- **End card**: small title, "60s SPY TITLE SEQUENCE" in cut League Gothic, "LemoLab × Claude Opus 5.5" in red Spartan, tiny agent tipping his hat.
-
-## 8. Pitfalls we hit
-
-- Every internal piece outlined with a gap made the figures look like wooden-mannequin diagrams. Draw each figure into an offscreen layer where pieces merge, cut only joint slits (`destination-out`), then composite with an 8-direction ground-color outline + one shadow.
-- `clear()` that resets the transform silently kills the camera → keep the camera matrix across the background fill.
-- The hero fully hidden behind the I reads as "nobody there": shift him so hat brim, nose, tie knot and the fluttering tie stick out past the pillar. The tie must wave (multi-segment ribbon with travelling sine + width wobble) or it reads as a tongue.
-- A credit that is only ever seen partially ("R R I N") is uncomfortable to read: always open wide on the full line.
-- Telegraph poles in black between word-carriages read as the letter I — push background props into a darker version of the ground color.
-- A mustard key on a mustard ground vanishes — give it a black backing.
-- A roulette wheel dropped into a space character covers neighbouring letters; lay out the two halves of the word around a gap of 2.2 × radius.
-- A near-arm drawn on top with the wheel/pupil/moon matches: keep circle centers identical across cuts or the match doesn't register.
-- Brass staccato samples need ~8 ms to peak — place them early so the hit lands on the cut.
-- A peaky mix (big stabs over quiet brushes) stops at −14.4 LUFS under the −1.2 dBTP ceiling; push ~4 dB into a limiter before loudnorm.
-
-## 9. Production recipe (this repo)
-
-```
-styles/spy-titles/demo/
-  paper.js   four inks, scissor edges (cached), cut gaps, paper shadow, texture, silhouette layer + joint slits
-  glyph.js   League Gothic → opentype.js outlines → re-cut letters
-  chars.js   agent / courier rigs (side, front, back), poses, run/walk cycles, key + keyhole
-  title.js   custom title glyphs, lock-plate I, diagonal split
-  scenes.js  keyhole, grid, velvet, intro, airport, train, wheel, casino, pupil, rooftop, title background
-  film.js    timeline, acting, cameras, subtitles, sound events     story.js  132-BPM grid (single source of truth)
-  sheet.js / frames.js   model sheet and gate-1 style frames
-  music/score.py   original big-band score (sampler)      mix.py  foley + tape voice + ducking
-```
-
-1. `node core/render/still.mjs styles/spy-titles/demo 12 20.8 --q nosub=1` — review stills (`?sheet=1&v=1`, `?frame=airport|train|title`).
-2. `core/tts/tts.py lines.json voices` → `core/tts/asr_check.py` (6/6).
-3. `python music/score.py` → `node core/render/events.mjs` → `python mix.py`.
-4. `node core/render/video.mjs styles/spy-titles/demo --fps 24 --workers 3` (1058 frames ≈ 17 s, Canvas2D).
-5. `CRF=24 sh demo/tools/mux.sh out/video24.mp4 mix.wav spy-titles.mp4 24 6` (core mux + a CRF knob: flat inks + grain at crf19 = 270 MB, at crf24 = 18.5 MB with no visible difference). Or just `sh demo/build.sh`.
+How our demo was made (story, shots, score, end card, build): [DEMO.md](DEMO.md). Read it after your treatment exists.

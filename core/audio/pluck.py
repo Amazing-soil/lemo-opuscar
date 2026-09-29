@@ -11,7 +11,8 @@
 """
 import numpy as np
 from scipy.signal import butter, sosfilt, lfilter
-from numba import njit
+try: from numba import njit
+except ImportError: raise ImportError('pluck.py needs numba: install the music tier: sh plugin/skills/lemo-opuscar/scripts/setup.sh deps music') from None
 
 try:
     from .sfx import SR

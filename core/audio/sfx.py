@@ -49,7 +49,8 @@ def crash(v=1.0):
 def whoosh(d=.35, v=1.0):
     n = noise(d); tt = t_(d); out = np.zeros_like(n)
     for i in range(0, len(n), 480):   # 扫频带通
-        f = 600 + 2600 * np.sin(np.pi * i / len(n)); seg = bp(n[max(0, i - 2000):i + 480], f * .7, f * 1.3)[-480:]; out[i:i + len(seg)] = seg
+        hi = min(len(n), i + 480)     # 最后一块不足 480 个采样时按实际长度取（d 不是 0.01 s 整数倍也不会崩）
+        f = 600 + 2600 * np.sin(np.pi * i / len(n)); seg = bp(n[max(0, i - 2000):hi], f * .7, f * 1.3)[-(hi - i):]; out[i:hi] = seg
     return norm(out * np.sin(np.pi * tt / d) ** 2) * v
 
 

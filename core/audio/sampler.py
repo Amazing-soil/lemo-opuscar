@@ -329,7 +329,8 @@ def _onset(x):
 
 
 def _yin(x, sr, guess):
-    import librosa
+    try: import librosa
+    except ImportError: raise ImportError('building the sample index needs librosa (maintainers): pip install -r requirements-dev.txt') from None
     y = x[:int(sr * 1.6)].astype(np.float64)
     if guess is None: fmin, fmax = 40.0, 2000.0
     else:
@@ -382,7 +383,7 @@ def _analyze(nm, zs):
 
 
 def build_index(names=None, force=False):
-    """扫描 + 分析所有（或指定）乐器，写 instruments/index.json（仓库已附带，一般不用跑）"""
+    """扫描 + 分析所有（或指定）乐器，写 instruments/index.json（随采样包一起下载，一般不用跑）"""
     idx = _load_index()
     for nm in (names or REG):
         if nm in idx and not force: continue
@@ -390,7 +391,7 @@ def build_index(names=None, force=False):
         idx[nm] = dict(zones=zs, octave_fix=off)
         print(f'{nm:18s} {len(zs):4d} zones  octave_fix={off:+d}', flush=True)
     tmp = INDEX + f'.{os.getpid()}.tmp'
-    json.dump(idx, open(tmp, 'w'), ensure_ascii=False, separators=(',', ':'))
+    with open(tmp, 'w', encoding='utf-8') as f: json.dump(idx, f, ensure_ascii=False, separators=(',', ':'))
     os.replace(tmp, INDEX)
     global _IDX; _IDX = idx
     return idx
@@ -402,7 +403,7 @@ _IDX = None
 def _load_index():
     global _IDX
     if _IDX is None:
-        _IDX = json.load(open(INDEX)) if os.path.exists(INDEX) else {}
+        _IDX = json.load(open(INDEX, encoding='utf-8')) if os.path.exists(INDEX) else {}
     return _IDX
 
 
@@ -410,11 +411,15 @@ def _load_index():
 class Inst:
     def __init__(self, nm):
         self.name, self.spec = nm, REG[nm]
+        src = self.spec['src']; self.lib = (src[0] if isinstance(src, tuple) else src).split('/')[0]
+        if not (os.path.isdir(os.path.join(ROOT, self.lib)) and os.path.exists(INDEX)):
+            raise RuntimeError(f'{nm}: its sample library "{self.lib}" is not downloaded. Run, from the library root: sh tools/fetch.sh instruments {self.lib}')
         idx = _load_index()
         if nm not in idx:
             zs, off = _analyze(nm, _scan(nm)); idx[nm] = dict(zones=zs, octave_fix=off)
         self.zones = [dict(z, id=i) for i, z in enumerate(idx[nm]['zones'])]
-        if not self.zones: raise RuntimeError(f'{nm}: 没有找到采样')
+        if not self.zones:
+            raise RuntimeError(f'{nm}: no samples found in {ROOT}/{self.lib}. The download looks incomplete; run again: sh tools/fetch.sh instruments {self.lib}')
         self.kind, self.rel = self.spec['kind'], self.spec.get('rel', .3)
         # 力度层 → 0..1 位置（每个变体内分别排）
         groups = {}

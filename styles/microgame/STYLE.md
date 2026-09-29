@@ -1,122 +1,120 @@
 # Microgame Frenzy — Style Prompt
 
 > A rapid-fire party-game film: one command word, a few seconds, one action. Every microgame is drawn in a completely different art style, and the film keeps getting faster.
-> Demo: *Five-Second Astronaut* (59.8 s) · `microgame.mp4` · source in `demo/`
 > Genre reference (grammar only): the WarioWare series. Never use its name, characters, UI, microgames or music.
 
-You are directing a 45–60 second film in the **Microgame Frenzy** style. The user gives you a topic. You decide everything else (story, games, styles, timing, sound) and deliver a finished film. Follow this guide.
+The format suits 45–60 s films; longer ones lose the frenzy.
+
+## 1. Essence, and what it is not
+
+- **A microgame = a shouted command word + 2.5–4 s + one action + one result** (success, or a funny failure).
+- **Each microgame uses a different visual medium** (crayon, ink wash, terminal, risograph, pixel, blueprint, Swiss type, clay, cut paper, woodcut…). The jolt of each switch is both the joke and the beat.
+- **One fixed home look** holds the film together: a show stage with a host, a lives counter and a stage number, which the film returns to between games.
+- **It keeps accelerating**: every few games tempo, game length, dwell, command hold and animation frame rate step up together.
+- **The hero survives every medium** by keeping two or three silhouette marks.
+
+Not Game Show Flat (one art style, rounds of bars, call-and-response), not a style sampler reel (every game has stakes; lives connect them), not a montage (each game has a rule grasped in under a second).
+
+## 2. Materials & rendering
+
+- **Home stage**: flat toon, thick near-black outline (~7 px), flat fills, **one hard-edged shadow** (fill in the shade colour, clip to the shape, refill shifted up-left). Fixed furniture: a frame-within-the-frame where games play (a TV, an arcade cabinet, a phone, a window), the lives board, a stage badge, a trigger prop (button, lever, bell).
+- **Each medium is a simplified re-drawing, 100–200 lines of code**, built around one channel trick that makes it read at a glance:
+  - drawn media store **pressure or wetness in a channel** (crayon: alpha = pressure against paper tooth; ink: wet and dry ink channels);
+  - print media store **plate densities** (riso: a channel per plate, additive overprint, halftone, misregistration);
+  - screen media are **low-res buffers** scaled up (pixel: indexed buffer, auto outline, dither; terminal: hand-authored glyph art, phosphor shader);
+  - technical media are **line systems** (blueprint: line weights and dimensions; Swiss: a strict grid, one sans, one signal colour).
+- **Hero translation**: the hero is redrawn from scratch in each medium, but the same marks always survive (e.g. a hat shape, one coloured dot, a number on the chest). Make a model sheet of the hero in every medium before animating.
+- **Mixed-media frames**: alpha-coverage media over a base, paper media multiplied, screen media flat and clipped to a panel. WebGL2 material shaders turn the channel buffers into each look.
+
+## 3. Colour logic
+
+- **The home stage owns a saturated party palette**: a deep ground behind a rotating sunburst, two or three loud accents, plus a fixed success colour and a fixed fail colour used by stamps and the lives board only.
+- **Each medium brings its own palette** from its tradition (wax colours, one-ink-plus-vermilion, amber phosphor, three riso plates, a limited pixel palette, white-on-blue, black-white-red). Never tint a medium with the home palette.
+- **One accent follows the hero across media** where the medium allows (a single vermilion dot in ink, an inverse glyph in a terminal, a signal-red circle in Swiss type): it is how the eye finds the hero after a switch.
+- Example home palettes: violet `#2a0f5c` with magenta `#ff2e88`, gold `#ffc928`, cyan `#1fd1d1`; teal ground with coral and lemon; black stage with hot orange and electric blue.
+
+## 4. Type & subtitles
+
+- **The command word is the subtitle**: a heavy display face (e.g. Titan One), white with a thick ink outline, a coloured drop and a burst behind it, skewed a few degrees. It slams in over ~3 frames (overshoot → settle), holds, then **shrinks into a corner tag before the first action**, so the result is never covered. One-off banners fly out instead of tagging, so tags never pile up.
+- **Other lines**: a rounded card in the home palette with the home outline and hard shadow, a friendly rounded face (e.g. Lilita One ~50 px), a small speaker icon; placed above the timer in games. Hold ≥ max(1.8 s, speech + 0.6 s), never under a big banner.
+- Inside a game, any text (replay captions, labels) uses **that medium's own typography**.
+- The command word appears in the .srt only, never burned twice.
+
+## 5. Motion quality
+
+- **The frame rate is part of the ladder**: characters step on twos or at 8 fps early, faster later, on ones at the climax. Camera moves, transitions and the timer spark always run on ones.
+- **Five things accelerate together** at each speed-up: tempo, game length, stage dwell, command hold, character frame rate.
+- **The timer is visible and on the beat**: e.g. a fuse with one knot per beat, the spark passing each knot exactly on it. It freezes in a replay.
+- **Unified transition through the frame-within-the-frame**: push into the screen to start a game (~0.25 s), shrink the game back into it to return (~0.33 s) with a ✓ / ✗ stamp. No fades, no blank frames.
+- **Failure is performed**: the action overshoots, splats, bonks or rolls off; the medium's own physics makes the joke.
+- **Instant replay** for a failure that must be understood: freeze, half speed, push-in, letterbox, a caption in the medium's type.
+- The home host has a tick on every beat; stopping it dead is the strongest emotional tool.
+
+## 6. Camera grammar
+
+A vocabulary, not a route. Opening and ending come from the topic.
+
+| Move | What it expresses | Can serve |
+|---|---|---|
+| Start inside a game, command already slamming | the rules explain themselves | throwing the viewer in |
+| Pull back out of the game screen | scale: this was one screen on a show | the first return to the stage |
+| Locked frontal home frame | the constant; only the scoreboard changes | stage beats; the host's reaction |
+| Slot reels (the stage splits into spinning strips of earlier frames, stopping one per beat) | acceleration, a summary | a speed-up; a change of round |
+| Extreme insert on the trigger prop | the start, felt | a game starting on the downbeat |
+| Lights cut to one top spot, frame unchanged | stakes; the last chance | the last life; a decision |
+| Tile flip (last frames of past games flip into pieces of a new frame) | the past becomes the material of the present | a boss or finale; a recap |
+| Push into a detail, hold | the viewer notices before the hero does | a clue; a silence |
+| Snap back to wide on one beat | release | a solution blooming; a save |
+| Split screen, two media side by side | comparison, rivalry | two players; before/after; two approaches |
+
+Framing: the game screen is a fixed fraction of the frame (around 40 % of the width); in a mixed-media frame keep **one focal chain** (A leads to B leads to C) and push info panels into a corner.
+
+## 7. Sound palette
+
+- **Music first**: a tempo grid and a cue table before any animation; every picture hit lands on a listed cue.
+- **A constant groove + one colour instrument per medium.** The groove (kit with ghost notes, slap or synth bass, brass stabs, keys) runs throughout; each medium adds its own timbre: toy piano for crayon, shakuhachi or guqin for ink, square beeps for terminals, vibes for print, pulse arpeggios for pixel, a typewriter for drafting, claves for Swiss, kalimba for clay, koto for woodcut.
+- **Foley follows the medium**: wax squeaks, wet splats, teletype relays, paper crunch, bit-crushed noise, ratchets and stamps, hollow bonks. Home stage: a spring trigger click, glass crack for a lost life, card flips, a reel whirr, sparse claps.
+- **Acceleration options** (use what fits): a rising brass run into each speed-up; the key rising a step per round; halving note values instead of changing tempo; dropping the groove to a heartbeat on the last life.
+- **Real silences**: at least one before the biggest hit (a heartbeat or one pitched note may remain). The loudest moment comes right after the longest silence.
+- **Voices**: a host who shouts every command a hair *after* the stab so brass doesn't mask it; a hero with very few words (reactions work best). Duck music ~11 dB and foley ~6 dB under voice. −14 LUFS.
+
+## 8. Native moves
+
+A menu: use the ones your story needs.
+
+- **Style switch per game.** Each task is drawn in the medium that suits it. *Fits content like:* the steps of baking bread (flour in crayon, oven dial in blueprint, crust in woodcut); a day of a nurse; a heist's roles.
+- **Command word.** One verb is script, subtitle and downbeat. *Fits content like:* SCAN! at a checkout; BREATHE! in a yoga class; SIGN! at a contract signing.
+- **Lives as UI.** The counter carries emotion without narration; 3 → 2 → 1 (blinking) builds tension alone. *Fits content like:* a phone battery; retries on a driving test; chances left on a quiz.
+- **SPEED UP.** Everything steps up together. *Fits content like:* rush hour; the last week before a deadline; a kitchen during dinner service.
+- **Failure becomes the solution.** The material of an earlier failure returns in the final game as the answer. *Fits content like:* a spilled coffee that later stains the winning map; a bug that becomes a feature; a missed train that leads to the right meeting.
+- **Boss mixes the rules.** The final game is built from pieces of earlier media. *Fits content like:* a final exam; launch day; a festival's closing night.
+- **Instant replay.** The joke explained in slow motion. *Fits content like:* a goal-line decision; a typo that shipped; a cat's leap that missed.
+
+## 9. Pitfalls of the medium
+
+- **A luminance-ramp ASCII figure is mush** → hand-authored glyph art with structural glyphs, an inverse glyph for the accent.
+- **Ink shapes read as smoke** unless their silhouette is designed (a short round blot phase, then a clear structure with seams and light edges).
+- **A failure at high tempo goes unread** → make the action overshoot and hit something, or give it an instant replay.
+- **Alpha-coverage media show the background through gaps** → a full-pressure base where it must be solid.
+- **Drawing helpers with a global context** draw on the wrong canvas when scenes render into offscreen buffers (game screen, reels, tiles) → set and restore the context.
+- **Command tags pile up** → secondary commands fly out.
+- **A 100 % white flash** reads as a blank frame → cap at ~60 %.
+- **TTS single-word commands** gain a vowel tail ("Pump!" → "Pompey") → generate a two-word phrase and cut after the first word using ASR timestamps; verify each clip, since ASR mishears 0.2 s words in a dense mix.
+
+## 10. Engine
+
+`demo/timeline.js` (tempo grid and segments, the single source of truth), `demo/toon.js` + `demo/stage.js` + `demo/hud.js` (home look, stage, timer, command word, stamps, lives, subtitle cards; call `setCtx` when drawing offscreen), `demo/chars.js` (host and hero rigs), `demo/glpass.js` (WebGL2 material shaders: riso, crayon, CRT, ink, blueprint paper), one `demo/g_<medium>.js` per medium (`sceneX(g, lt)` + the hero translation), `demo/film.js` (transitions through the TV, slot reels, tiles, events). Module map and build: [DEMO.md](DEMO.md#build-notes).
+
+## 11. Variation space
+
+You decide the tasks, which medium draws each, the home stage and its frame-within-the-frame, the host and hero, the number of rounds, where failures fall, the finale, the opening and the ending. The command → action → result unit, the medium switch and the acceleration stay.
+
+All far from our demo:
+
+- Structures: **two players, alternating** (each game is played by one of two rivals; the lives board is a tug-of-war); **one day, hour by hour** (each game is an hour, the speed-ups are the morning rush and the evening rush, the finale is midnight); **a relay** (the result of each game is the object handed into the next one, so the chain is the story).
+- Openings: **the home stage asleep** (lights off, the host wakes on the first beat); **a game-over screen** we rewind from; **the lives board alone**, a counter clicking down before we know what it counts.
+- Endings: **a high-score table** where the hero types their name letter by letter in each medium; **the credits as one more microgame** (CATCH THE NAMES!); **the home stage packs away** into the frame-within-the-frame and the screen switches off.
 
 ---
 
-## 1. What this style is
-
-A game show runs a string of **microgames**. Each one is **a shouted command word + 2.5–4 seconds + one action + one result** (success or a funny failure). Between games the film cuts back to a **home stage**: a host, a scoreboard of lives and a stage number. Every few games the whole film **SPEEDS UP**. At the end a **BOSS STAGE** runs longer, mixes all the earlier rules, and decides the story.
-
-What makes this style work: **each microgame uses a different visual medium.** Crayon, ink wash, ASCII terminal, risograph, pixel art, blueprint, Swiss typography and so on. The jolt of each style switch is both the joke and the beat. The home stage is the one fixed look that holds the film together.
-
-## 2. Story: what fits this style
-
-| Native power | Story use |
-|---|---|
-| **Style switch per game** | Any topic splits into 6–8 tiny tasks, each in the medium that suits it best. A sneeze is an ink blot. A buckle click is a terminal relay. A zipper is ticks on a dimension line. A jump is a pixel platformer. |
-| **Command word** | One verb is the whole scene: PUMP! / DON'T SNEEZE! / ZIP! It works as script, subtitle and downbeat at once. |
-| **Lives as UI** | The helmet-icon counter carries the emotion with no narration. Going 3 → 2 → 1 (blinking) builds the tension on its own. |
-| **SPEED UP** | Five things speed up together: BPM, game length, stage dwell, command-word hold and animation frame rate. The audience feels the acceleration. |
-| **Boss mixes the rules** | The final game is built from pieces of every earlier style, so the climax is literally made of the film's own past. |
-
-**Story shape (proven in the demo):** a cold open that starts *inside* a game at frame 1. A failure in round 1 that is funny. A second failure that costs the last spare life. A silent beat on the last life. **The twist: the material of an earlier failure becomes the solution in the boss stage.** In the demo, the ink-wash sneeze that lost a life blooms into an ink parachute. The echo at the end: the character redoes an earlier failed action and gets it right (the salute).
-
-Adapting any topic: list 7 verbs from the topic. Give each verb the art medium it would most naturally be drawn in. Make two of them fail. Let the boss stage reuse the failed ones. Example: a product launch becomes UNBOX! (crayon), PLUG IN! (blueprint), DON'T DROP IT! (ink), and so on; the boss stage is "SHIP IT!".
-
-## 3. Visual language
-
-**Home stage (the only constant look)**: flat toon with a **7 px near-black outline `#1a1030`**, flat fills, and **one hard-edged shadow** made by filling the shape in the shade colour, clipping to it, and refilling it shifted up-left by 9 px. Palette: stage violet `#2a0f5c` / `#3d168f` rotating sunburst, magenta `#ff2e88`, gold `#ffc928` / `#e08a00`, cyan `#1fd1d1`, success green `#3bdc5a`, fail red `#ff3b3b`. Fixed props: a marquee with chasing bulbs (the title card), a central **16:9 gold TV** (screen 768×432, exactly 1/2.5 of the frame), a lives board of helmet icons, a stage-number badge, and a podium with a big red button.
-
-**Characters** (all original):
-- *Host* = a gold **stopwatch head**. The dial is the face, the red second hand is his pointer and nose, and he **slaps his own crown button** to start every game. His hand ticks every beat, spins when he is excited, and stops dead on the last life.
-- *Hero* = a 2.3-head-tall cadet: bubble helmet, spring antenna with an orange ball (the **mood meter**, which boings on every action), and the number "05".
-- **Translation rule:** in every microgame style the hero is redrawn from scratch, but **three silhouette marks always survive**: round helmet, antenna ball, "05". See `demo/stills/modelsheet_v2_styles.jpg` for 8 renderings of one character.
-
-**Microgame media (simplified re-drawings, each about 100–200 lines of code):**
-| Style | How it is made |
-|---|---|
-| Crayon | Canvas where RGB = crayon colour and **A = pressure**. A shader deposits wax only where procedural paper tooth > 1 − 1.22·pressure. Indigo wobble outlines, zig-zag hatching that goes past the lines, and a **knock-out**: front shapes erase the wax behind them. 8 fps, with line boil on 12. |
-| Ink wash | Two channels, **R = wet ink** (blurred, with edge pigment pooling) and **G = dry ink** (broken by paper grain). Brush strokes are pressure profiles with bristle tracks; blots are noisy discs; splatter is flung blots. The one colour is a vermilion dot: the antenna ball, plus the "05" seal. |
-| ASCII terminal | **Hand-authored ASCII art for the hero** (a luminance ramp turns small figures into mush). Structural glyphs `/ \ | _ -` carry the silhouette. The antenna ball is an inverse-video `@`. Amber phosphor shader with bloom, 3 px scanlines and barrel curvature. |
-| Risograph | Canvas **R/G/B = blue/yellow/pink plate density**. `lighter` = overprint (yellow+pink = orange, yellow+blue = green); `source-over` = knockout. 7 px rotated halftone, fixed misregistration per shot, and a plate **kick** on the key action. Paper-white halo around the hero. |
-| Pixel | 240×135 indexed framebuffer ×8. Sprites are built from primitives with an **auto 1 px ink outline**; Bayer dither for glows and flames. 12 fps. |
-| Blueprint | Procedural blue paper plus white lines in 4 weights, centre / hidden dashes, dimension lines, hand lettering, and one red stamp. |
-| Swiss | 12-column grid, one sans family (Inter), black and white plus signal red `#e30613`. The hero is a black circle, a black rectangle and a **red circle** (the antenna ball). The gag is that one element leaves the grid. |
-
-**Boss frame composition:** mix up to five media, but with **one focal chain only**: the parachute leads to the capsule, which leads to the target (review lesson). Remove anything off-story, such as decorative pixel gulls. Shrink info panels (the ASCII altimeter) into a corner. Layering: crayon renders in alpha mode (wax coverage = alpha, with a full-pressure white base where it must be opaque). Ink and riso render on white and are drawn with `multiply`. The CRT panel is rendered flat and clipped to its box.
-
-**The ink parachute (climax):** it must *read as a parachute*, not smoke. It grows in three stages: a jet of ink from the capsule hatch (0.15 s), a **round** drop spreading (short, 0.3 s), then **9 gores fanning out**. Gore fill is a vertical gradient (dense at the crown, light at the hem) with alternating ±7 % tone, thin paper-white seams, and a scalloped hem (each gore bulges down). There is one loaded brush arc along the crown, dry-brush flying white along the hem, and dry thin cords to the hatch.
-
-## 4. Motion language
-
-- **Speed ladder** (demo): 120 → 140 → 160 BPM. Round-1 games are 2 bars (4.0 s) and round 2 is 1.5 bars (2.57 s). Stage dwell goes 1 bar → 2 beats. The command word holds 0.75 s, then 0.64 s. Character stepping goes 8 fps → 12 fps → 24 fps (boss). Camera moves, transitions and the fuse spark always run on ones.
-- **Command word**: Titan One, white with a 22 px ink outline, a magenta drop and a gold burst behind it, skewed −6°. It **slams** in over 3 frames (1.9 → 0.92 → 1.0), holds, then **shrinks into a corner tag before the first action**, so the result is never covered. One-off banners ("BOSS STAGE!", "PULL!") fly out instead of becoming tags.
-- **Fuse timer**: a braided rope along the bottom with **one knot per beat**; the spark passes each knot exactly on the beat and ends at a little firecracker rocket. The fuse freezes during an instant replay and is hidden in the boss close-up.
-- **Unified transition = the TV frame**: stage → game is a camera push into the TV screen (0.25 s); game → stage is the whole frame shrinking back into the TV (0.33 s), with the ✓ / ✗ stamp slapped onto the screen. No fades and no blank frames.
-- **Failure is performed, not just shown**: the ink sneeze covers the visor and two white eyes blink out of the ink. The Swiss salute arm rotates past 90° and *grows past its module length* to swat the red ball, which bounces twice on the baseline and rolls off the grid.
-- **Instant replay** for a story-critical failure: freeze 3 frames, then play at 0.5× with a 1.4× push-in, black bars and "instant replay" in the style's own typography, then resume. It costs 2 beats; the music plays a record scratch and half-time.
-
-## 5. Camera language
-
-| Beat | Camera |
-|---|---|
-| Cold open | Frame 1 is already inside a game with the command word slamming. The rules explain themselves in 1 s. |
-| First stage | Pull back out of the TV: the scale reveal. The game was one screen on a show. |
-| Stage | Always the same frontal, symmetrical "home" frame. Only the scoreboard changes. |
-| SPEED UP (signature shot) | The stage splits into **three slot-machine reels** that spin through earlier game frames with motion smear and stop one per beat on SPEED \| UP \| !. |
-| Button | An Edgar-Wright-style **insert**: an extreme close-up of the red button as a glove smashes it on the beat. |
-| Last life | The same stage with the lights cut to a single top spot; the host goes still. |
-| BOSS STAGE | 8 tiles (7 last frames plus a BOSS card) flip in on eighth notes, then flip again to become pieces of the boss frame. |
-| Boss silence | Push into the porthole close-up; the audience sees the dust before the hero does. |
-| Climax | Snap back to wide in one beat as the ink canopy blooms. |
-| Ending | Back to the home stage; the hero stands on it for the first time and salutes; then the camera pushes into the TV for the end card. |
-
-## 6. Sound
-
-- **Music first**: write the tempo grid (`timeline.js`) before any animation. Every hit is listed in a cue table (see TREATMENT.md) and the picture lands on it. `tools/cuecheck.py` checks 57 picture events against `music/score.json` (demo max offset 4.7 ms).
-- **Score**: original funk/pop fusion. Drum kit with 16th hats and ghost notes, **synthesized slap bass** (additive pluck + band-passed thumb noise + 1.8–6.5 kHz pop + octave jumps and slides), stacked brass stabs (trumpet_stac + alto sax + trombone_stac), and a vibraphone+piano "e-piano". Drums and bass run through the whole film. On top, one **colour instrument per style**: xylophone (crayon), guqin harmonics and bends (ink), square beeps (ASCII), vibes and sax (riso), pulse arpeggio (pixel), muted trumpet (blueprint), claves and dry piano (Swiss). Each speed-up gets a rising brass run, and the key rises a whole step each round.
-- **Real silences**: 1 beat before the first sneeze, the last-life stage (heartbeat only), and the boss close-up (heartbeat + the same guqin note as the first dust mote). The biggest hit comes right after the longest silence.
-- **Foley follows the medium**: rubber squeak + air for the crayon pump, a wet splat and drips for ink, teletype clicks and a relay for ASCII, a paper thump and crunch for riso, bit-crushed noise for pixel, ratchet teeth and a stamp thunk for blueprint, a hollow bonk and small rubber boings for Swiss. Home-stage sounds: spring-loaded crown click, glass crack plus bouncing clinks for a lost life, card flips, slot-reel whirr, sparse sampled claps.
-- **Voices**: host = Kokoro `am_fenrir` (it had the widest pitch range of the voices tested), speed 1.05–1.15. The host shouts every command 0.1 s *after* the stab so the brass doesn't mask the word. Hero = `af_bella` pitched +2.5 semitones, only "Oh no." plus the "ah… ah…" and sneeze, which are treated as SFX and exempt from whisper checks. Duck the music about 11 dB and the foley about 6 dB under voice.
-- **Single-word commands in Kokoro**: "Pump!" comes out as "Pompey" and "Zip!" as "Zipper", because a vowel tail is added. Generate "Pump, now!" and cut at the end of the first word from whisper timestamps (`tools/trim_cmd.py`).
-
-## 7. Subtitles & titles
-
-- **The command word is the subtitle**: it is not burned twice, and it is listed in the .srt only.
-- Other lines use a **gold rounded card** with a 7 px ink outline and a hard shadow, Lilita One 50 px, a small stopwatch icon (host) or helmet icon (hero), placed above the fuse in games. It pops in over 2 steps at 12 fps. Hold ≥ max(1.8 s, speech + 0.6 s), and never during a big banner.
-- The title card is the home-stage marquee lighting up letter by letter (FIVE-SECOND ASTRONAUT / A MICROGAME FRENZY). The end card sits inside the TV: title, style name and "LemoLab × Claude Opus 5.5", with hero and host.
-
-## 8. Pitfalls we hit
-
-- A luminance-ramp ASCII hero is unreadable mush. Use a hand-authored template plus structural glyphs, and an inverse `@` for the antenna ball.
-- The ink canopy first read as black smoke or a storm cloud. Keep the blot phase short and round, fan out gores with a gradient and seams, add a scalloped hem, and leave the edges light.
-- The Swiss "salute fail" read as a raised hand. The arm has to *overshoot and hit* the red ball, and the failure needs an instant replay to be understood at 140 BPM.
-- A crayon layer in alpha mode shows the background through the wax gaps. Give it a full-pressure paper-white base (or render it opaque and clip) wherever it must be solid.
-- Toon drawing helpers that keep a global context (`K.g`) will draw on the wrong canvas when a scene renders into an offscreen buffer (TV screen, slot reels, tiles). Always call `setCtx` before and after.
-- `flat` is a reserved word in GLSL ES 3.
-- Uploading a 2D canvas without `UNPACK_FLIP_Y` means v = 0 is the canvas top; sample with `p/R`.
-- Command tags pile up (LAND IT! + PULL! in the same corner). Secondary commands should fly out, not tag.
-- A white impact flash at 100 % reads as a blank frame; cap it at 60 %.
-- whisper often mishears 0.2 s command words inside a dense mix, even at +16 dB SNR. Verify them per clip, and measure SNR in the 300–4 kHz band for the mix.
-- A zsh `$T` list doesn't word-split. Use the bash review helper `tools/review.sh`.
-
-## 9. Production recipe (this repo)
-
-```
-styles/microgame/demo/
-  timeline.js   tempo grid + segments (single source of truth)     film.js   assembly: stage, TV transitions, slot reels, boss tiles, end card, subs, events
-  toon.js chars.js stage.js hud.js   home style, host & hero, stage, fuse/command/stamps/lives/subtitles
-  glpass.js     WebGL2 material shaders: riso, crayon, CRT, ink, blueprint paper
-  g_crayon.js g_ink.js g_ascii.js g_riso.js g_pixel.js g_blue.js g_swiss.js g_boss.js   one module per medium (scene + hero translation)
-  frames.js     model sheets & style frames      music/score.py   original score      mix.py   foley + voices + ducking
-  tools/        trim_cmd.py cuecheck.py subs.py final_asr.py review.sh mux.sh dump_timeline.mjs
-```
-1. Write `timeline.js` (tempo grid), then the cue table, then hand the grid and cue table to a music sub-agent. Draw in parallel with it.
-2. Build the home style and characters first, then **one `sceneX(g, lt)` per medium**. Review each with `?scene=g_x.sceneX` stills.
-3. `sh demo/build.sh` rebuilds everything: TTS → trim → whisper → score → events → cue check → mix → srt → render (~25 s for 1436 frames) → mux (−14 LUFS, grain 0), about 1.5 minutes in total.
-4. Review with `bash demo/tools/review.sh out/revN 6 $(seq 0.5 1 59.5)` at least twice, plus frame strips of every key action.
+How our demo was made (story, shots, score, end card, build): [DEMO.md](DEMO.md). Read it after your treatment exists.

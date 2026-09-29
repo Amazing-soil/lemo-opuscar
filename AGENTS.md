@@ -1,18 +1,29 @@
 # Lemo-Opuscar: instructions for agents
 
-This repository is a library of film styles. Each style is a prompt (`styles/<slug>/STYLE.md`) with a demo film made entirely in code. People open an agent here, pick a style, and ask for a film about **their own** topic. Your job is to direct and produce that film.
+This repository is a library of film styles. Each style has a `styles/<slug>/STYLE.md` (what the style is) and one demo film made entirely in code (`DEMO.md` and `demo/`). People pick a style and ask for a film about **their own** topic. Your job is to direct and produce that film.
 
-## Read first
+| The request | Go to |
+|---|---|
+| A film about the user's topic (the normal case) | **Style and story**, **Workflow** below |
+| "Which styles are there?" / no style chosen | **Finding the style** below |
+| Directing: story, sound, rhythm, camera, checks, delivery | [`DIRECTOR.md`](DIRECTOR.md) |
+| Building: install, pages, voice, music, mix | [`TECHNIQUE.md`](TECHNIQUE.md) |
+| Tool commands and flags | [`core/README.md`](core/README.md) |
+| Adding a style to the library (owner only) | [`MAINTAINING.md`](MAINTAINING.md) |
 
-1. [`DIRECTOR.md`](DIRECTOR.md): how to direct (story, sound, rhythm, camera, performance, checks).
-2. [`TECHNIQUE.md`](TECHNIQUE.md): how to build it (render(t) pages, voice, music, mix, review).
-3. `styles/<slug>/STYLE.md` for the chosen style. §1–§8 define the style. §9 shows how our demo was built. The demo is a reference implementation: learn and reuse its techniques, but don't rebuild it or copy its story.
+**Films outside `styles/` are the user's: no LemoLab credit, no watermark.**
 
-**The style is fixed; the content is the user's.** From a `STYLE.md`, keep the look, the motion and camera language, the sound and music, and the directing craft. The content comes from the user's topic: the story and its shape, the characters, the settings, the data and how it is charted. Many choices in a `STYLE.md` were made for our demo's story, such as a line chart for a temperature series. When one doesn't fit the user's topic, use what fits, and don't bend the topic to match the demo. The same goes for the beat tables: the story arc in §2 and the beat-by-beat camera in §5 show how our demo used the style. Read them as grammar (which kind of move serves which kind of moment), then write a new arc and shot list from the user's story.
+## Style and story
 
-**Scene styles.** Some styles have a practical scene as their demo instead of a story: a set-up guide, a spec walkthrough, a museum plate, a trail guide. Their `STYLE.md` §2 is **Use cases** (which jobs the style does, with shot structure, information order and reading time for each), and §11 **Swap in your content** says how the demo reads every word and number from `demo/content.json`. When the user's job matches one of those use cases, start from that demo's structure and pacing and write the user's own content. Still direct it: pick the camera, the order in which information arrives and the sound for the user's material, and don't just fill in the demo's fields.
+- **`STYLE.md` is fixed**: the style's invariants (look, colour, type, motion, camera grammar, sound palette, native moves, pitfalls). Keep all of it.
+- **Everything else is yours to direct** from the user's topic: story, structure, characters, settings, shots, timings, references, how data is charted. Never bend the topic toward the demo.
+- **Treatment first, demo later.** Write your own `TREATMENT.md`, with three candidate structures and your choice (DIRECTOR.md §4), before you open `DEMO.md` or the demo code. Then use the demo only to learn techniques (a brush engine, a rig, a shader, a mix), never its story, arc, shots, props or timeline.
+- **Scene styles** (a set-up guide, a spec walkthrough, a museum plate, a trail guide) list use cases in their `STYLE.md`. Read them as grammar for the order in which information arrives and how long each part needs on screen, then build the user's content in your own structure. Swapping text into a demo's `content.json` is only a technical check, never the way to deliver.
+- Never build inside `styles/`: copy what you need into the film's project folder.
 
-**Finding the style.** Users name a style by its gallery name in English or Chinese ("Impasto Oil Painting", "油画厚涂") or by its folder (`impasto`). Look it up in [`styles/README.md`](styles/README.md), which maps every name to its folder. If nothing matches clearly, show the closest two or three and ask.
+## Finding the style
+
+Users name a style by its gallery name in English or Chinese ("Impasto Oil Painting", "油画厚涂") or by its folder (`impasto`). Look it up in [`styles/README.md`](styles/README.md). If nothing matches clearly, show the closest two or three and ask.
 
 If the user hasn't picked a style:
 - Suggest two or three that fit their topic.
@@ -35,39 +46,25 @@ All 43 styles · 全部风格:
 
 ## Workflow
 
-1. **Brief.** Make sure the style and the topic are clear. Then ask the user once, in a single message (DIRECTOR.md §1). If the style is unclear, that question goes in the same message:
+1. **Brief.** Make sure the style and the topic are clear, then ask the user once, in a single message (DIRECTOR.md §1):
    - anything about the topic you can't decide yourself (facts; names, logos or products that must appear);
-   - whether they have material of their own: a voice recording or a preferred voice, music, photos, logos, fonts. Whatever they don't provide, you make;
-   - whether they want to review a storyboard before production. The default is no: you go straight to the finished film.
+   - whether they have material of their own: a voice recording or a preferred voice, music, photos, logos, fonts;
+   - the film's language, if it isn't obvious (default: the language they write in, for voice and subtitles);
+   - whether they want to review a storyboard first (default: no);
+   - anything missing on their machine: first run `sh plugin/skills/lemo-opuscar/scripts/setup.sh deps` from the library root (core only) and include what it reports. Add the voice and music tiers later, only if the film needs them (TECHNIQUE.md §1).
 
-   Skip any question their request already answers. Wait for the reply, then fill every other gap with a sensible default, sum up the brief in a few lines, and start. Don't come back with more questions later.
-2. **Treatment.** Write `films/<name>/TREATMENT.md` (DIRECTOR.md §4).
-3. **Look.** Render a model sheet or style frames with the real drawing code and check them yourself against the `STYLE.md` (DIRECTOR.md §5).
-4. **Storyboard, only if the user asked for it.** Show the key shots rendered in the style, with durations and lines, plus the logline (DIRECTOR.md §5).
-   **Stop and wait for approval.** If they didn't ask for it, don't stop.
-5. **Produce.** Voice → check → score (can run in parallel) → animation → mix → render.
-6. **Self-check** (DIRECTOR.md §11), then deliver `films/<name>/<name>.mp4`, `.srt`, `poster.jpg` and the source with `build.sh`.
+   Skip what their request already answers. Wait for the reply, fill every other gap with a sensible default, sum up the brief in a few lines and start. Don't come back with more questions.
+2. **Treatment.** Write `TREATMENT.md` in the project folder (DIRECTOR.md §4), before you open the demo.
+3. **Look.** Render style frames or a model sheet with the real drawing code and check them against `STYLE.md` (DIRECTOR.md §5).
+4. **Storyboard, only if the user asked for it** (DIRECTOR.md §5). **Stop and wait for approval.** Otherwise don't stop.
+5. **Produce.** Voice → check → score (can run in parallel) → animation → mix → render (TECHNIQUE.md).
+6. **Self-check and deliver** (DIRECTOR.md §11).
 
-A user's film carries no LemoLab credit and no watermark. The "LemoLab × Claude Opus 5.5" end card in the `STYLE.md` files belongs to our demos only.
-
-Report progress in the user's language. The film's own language is whatever the user asks for (default: the language they write in).
+Report progress in the user's language. If a step fails, read the error, fix the cause and retry; go back to the user only for a decision or something only they can provide.
 
 ## Where things go
 
-- Work only in `films/<name>/` (ignored by git), unless the user asks you to work in their own project.
+- The film's project folder is `films/<name>/` in a clone (ignored by git), or `<name>/` in the user's folder in skill mode (see the skill's `SKILL.md`). Wherever a guide says `films/<name>/`, read "the project folder". Work only there, unless the user asks you to work in their own project.
+- Run `node core/…` and `sh tools/…` from the library root (`$LIB` in skill mode).
 - `core/` has ready-made tools (rendering, TTS, speech check, sampler, sfx, mux). Use them or your own stack, but don't edit `core/` or `styles/` for a user's film.
-- Large assets are fetched on demand: `sh tools/fetch.sh voice | instruments | hdri`.
 - Never kill processes you didn't start. Don't leave background processes running.
-
-## Maintaining the library (repository owner only)
-
-To add a new style:
-
-1. Make it in `styles/<slug>/`: `STYLE.md` in English, following the §1–§9 structure of an existing one; `TREATMENT.md`; `demo/` with the demo's source (a reference implementation, not a rebuild kit) and `CREDITS`; `<slug>.mp4`, `<slug>.srt`, `poster.jpg`, and `demo/stills/styleframe.jpg`.
-2. Add a card to `styleboard/cards.json`: film title, one-line story in English and Chinese, and use cases.
-3. Run `sh tools/publish.sh`. It checks the repo (no files over 5 MB, no absolute paths, no secrets), uploads new or changed films to GitHub Releases, and rebuilds the gallery data.
-4. Commit and push. The gallery (GitHub Pages) rebuilds itself.
-
-The skill in `plugin/skills/lemo-opuscar/` is a thin wrapper: it fetches this repo and sends the agent to this file. Keep the workflow here, not in `SKILL.md`.
-
-Rules: back up before revising (old versions move out of the repo, not into git); only CC0, CC BY or OFL assets; every film's end card carries "LemoLab × Claude Opus 5.5"; no watermark.

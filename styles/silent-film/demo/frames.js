@@ -146,7 +146,7 @@ export function cardSheet(g, t, q) {
   });
 }
 
-// STYLE.md §10 minimal example — any shape in the silent-film manner, with "the one colour" kept through the print
+// DEMO.md "Engine reference" minimal example — any shape in the silent-film manner, with "the one colour" kept through the print
 import { drawShape, sparkPts, setFrame as setF } from './engine/ink.js';
 export function oneColour(g, t) {
   setF(t, { boil: 1 });

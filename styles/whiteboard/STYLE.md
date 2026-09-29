@@ -1,124 +1,116 @@
 # Whiteboard Explainer — Style Prompt (v2, no hands)
 
-> A science explainer drawn live on one glossy dry-erase board: single-line handwriting that is actually *written* stroke by stroke, floating markers with no hand, a magnet that can move, an eraser that can rewind time — and a camera that never leaves the board until the final pull-back shows the whole lesson hanging on the wall.
-> Demo: *Einstein in Your Pocket* (111 s) · `whiteboard.mp4` · source in `demo/`
-> References (grammar only): RSA Animate / Cognitive Media (one continuous board, the camera travels instead of cutting, final full-board reveal); minutephysics (one sentence = one drawing, the simplest geometry that carries the physics); Steve Reich's *Piano Phase* (two copies of one figure at two tempi as a structure). Never copy their drawings, characters, hands or music.
+> An explainer drawn live on one glossy dry-erase board: single-line handwriting that is actually *written* stroke by stroke, floating markers with no hand, magnets that can move, an eraser that can rewind, and a camera that travels across the board instead of cutting.
+> References (grammar only): RSA Animate / Cognitive Media (one continuous board, the camera travels instead of cutting, a full-board view); minutephysics (one sentence = one drawing, the simplest geometry that carries the idea); Steve Reich's *Piano Phase* (two copies of one figure at two tempi as a structure). Never copy their drawings, characters, hands or music.
 
-You are directing a 60–120 second explainer in the **Whiteboard Explainer** style. The user gives you a topic (usually science or "how does X work"). You decide the script, the board layout, the camera route, the sound and the score, and deliver a finished film.
+Suits explainers of 60–120 s, usually science or "how does X work".
+
+## 1. Essence, and what it is not
+
+- **One physical whiteboard.** Everything the viewer learns is drawn in dry-erase marker in front of them, in real handwriting order.
+- **The board is a map**: each idea lives in its own region; the camera travels between regions, often led by the pen. Distance on the board = distance in the argument.
+- **Real marker, not animated text**: ink pools where the nib lands, dry streaks and speckle, strokes overshoot and don't quite close, ghosts of old lessons remain, a glossy sheen drifts slower than the board, and **every stroke makes a sound**.
+- **No hands.** Markers float with a real cast shadow that grows when they lift, park outside the frame between phrases and fly back in. Magnets and the eraser move on their own. Never draw a hand, an arm or a cursor.
+
+Not Blueprint (no blue sheet, no drafting conventions), not Crayon Picture Book (no wax texture, no children's story), not a kinetic-type explainer (text is handwritten stroke by stroke, never animated as blocks).
+
+## 2. Materials & rendering
+
+- **Board**: a warm white gradient, a faint scuff and micro-scratch tile, a few dozen **ghost marks** (old words, circles, arrows) at 5–10 % in grey or pale blue, and a soft diagonal **window sheen** (white, 10–16 %) moving at ~0.35× the camera: this one detail sells "glossy".
+- **Ink**: alpha ~0.94, composited with **multiply** so overlaps darken like real marker. Width 6–11 px for drawing, ~13 % of cap height for lettering.
+- **Stroke character**: resampled every ~0.6 × width; low-frequency hand wobble along the normal (a few px, long wavelength) plus a finer tremor; chisel-tip width modulated by direction; a pressure ramp at the start and a small taper at the end; circles start at an angle and **overlap past closure**; rectangles are four strokes with small corner overshoot; a darker pooled dot *inside* the start of long strokes.
+- **Dry-marker texture**: a speckle-and-streak tile subtracted from the ink layer (destination-out), locked to board space, faded out when the camera is wide.
+- **Lettering**: a single-line (single-stroke) font written in stroke order, each glyph with small rotation, baseline and scale jitter. Missing symbols (μ ≈ → × − ✓ ² ° ±) are hand-defined.
+- **Props**: dry-erase markers (white barrel, colour band and cap in the ink colour, felt nib), a felt eraser, magnets (glossy, with specular highlight and soft cast shadow). Frame, tray and wall appear only if the camera ever goes past the board edge.
+
+## 3. Colour logic
+
+- **Three marker colours at most**, each with a meaning held for the whole film: one dark ink for things and structure, one for signals / measurement / process, one accent for the thing that matters (one accent per region).
+- **Monochrome variant**: everything in the dark ink, one element in the accent (the "only colour").
+- Ghost marks and board stay neutral; the accent never appears on props except its own marker cap and the hero magnet.
+- Example sets: black `#23262c` / blue `#2a5cb3` / orange `#d97757`; black / green `#2e8b57` / red `#c8363a`; navy `#1f2a44` / teal `#1f8a8a` / purple `#7a4fb3`.
+
+## 4. Type & subtitles
+
+- **Handwriting only**: a single-line hand (e.g. EMS Tech, OFL) for all board text; titles large (~120–200 px cap height), labels 30–70 px.
+- **Title and end card are written on the board** in the same hand.
+- **Burned subtitles**: an off-white rounded label (~90 %), a handwriting-like face (e.g. Architects Daughter ~44 px), dark text, a short accent-colour marker dash. Split at clauses, ≤ 44 characters per line, bottom ~12 % of the frame kept free for them in every shot. Hold ≥ max(1.8 s, speech + 0.6 s).
+- **Writing finishes on the word**: a term appears exactly when the narrator says it.
+- A label is fully in or fully out of every shot it appears in.
+
+## 5. Motion quality
+
+- **Hand speed**: every stroke follows a slow-fast-slow curve (`u − sin(2πu)/2π × 0.8`). Strokes are scheduled into a **time window** and the engine solves the speed, so writing always finishes on time.
+- **Pen hops** between strokes lift in proportion to distance (shadow slides and blurs); long gaps send the pen off-frame to park and back shortly before its next stroke.
+- **Magnet**: drop with a shrinking shadow; slide with a small lift; lift-off and sink possible.
+- **Eraser**: constant speed along a path, a wide band at ~90 % strength (a ghost always remains).
+- **Speed**: faster than real hands (a sped-up lesson) but never so fast the stroke order is lost: a label ~0.3–0.8 s, a title ~3 s.
+- Camera on ones with real motion blur when it moves fast.
+
+## 6. Camera grammar
+
+A 2D camera over a large board (e.g. 8000 × 4500): position, zoom interpolated in 1/z so pushes feel like dollies, a little roll. A vocabulary, not a route. Opening and ending come from the topic.
+
+| Move | What it expresses | Can serve |
+|---|---|---|
+| Pull back from a tiny drawing | scale | a surprising size; context |
+| Ride the line the pen is drawing | one idea leads to the next | a transition; a process; a path |
+| Hold still | read now | an equation; a definition; a list |
+| Whip to a new region | a new idea after a pause | a twist; a "but" |
+| Return to an earlier region | a callback, for free | reusing a result; a comparison |
+| Split view of two regions (zoomed out enough for both) | two things at once | a duet; before/after |
+| Slow push into one symbol | this term is the point | a unit; a variable; a name |
+| Track along a long diagram | sequence, time | a timeline; a pipeline; a journey |
+| Pull back past the board edge to the wall | the whole lesson as one picture | a summary; a scale jump |
+
+Motion blur: when the camera moves more than ~14 px per frame, render and average sub-frames (≤ 4 px apart). No cuts on the board; if a cut is needed, it is a whip.
+
+## 7. Sound palette
+
+- **Every stroke sounds**: band-passed felt-on-gloss noise (a hiss band ~2–7.5 kHz + body ~0.5–1.5 kHz) enveloped by the stroke's own speed curve, a tiny nib tick at the start, stick-slip grains, and on some long strokes the **dry-erase squeak** (a 1.5–2.6 kHz sine with 7–13 Hz vibrato). Each colour sounds slightly different. Pan = the stroke's screen x; closer camera = louder.
+- **Props**: magnet on steel = click + metal modes + a low board thump; eraser = felt rub modulated by its zig-zag; cap off/on; marker tray bounce.
+- **Room**: low room tone; a single diegetic ticker (a wall clock, a fridge hum, a projector fan) can own a silence.
+- **Music** options: a solo piano figure; a small jazz trio with brushes; plucked strings and kalimba; a synth arpeggio for tech topics; clockwork minimalism (marimba, pizzicato, woodblock, glockenspiel). Mickey-mouse details: a rising whistle for growth, pings for signals, a harp run for a fall.
+- **Techniques to pick from**: adding one instrument per step of a mechanism; a key change when the frame of reference changes; a full stop into silence before a surprise; the previous cue reversed and squeezed for a rewind; two copies of one figure at two tempi (phasing) for anything that diverges, snapping into unison when resolved.
+- **Mix**: voice on top (compressed, light room), music well under voice and ducked further under speech, foley ~11 dB under voice; −14 LUFS.
+
+## 8. Native moves
+
+A menu: use the ones your story needs.
+
+- **Writing in stroke order.** The reveal is the explanation: a formula term by term as it is spoken. *Fits content like:* compound interest; the Drake equation; a recipe's ratios.
+- **The pen leads the camera.** Transitions are drawn lines the camera rides. *Fits content like:* a nerve signal; a supply chain; the water cycle.
+- **Magnets.** The only things allowed to move on a board: give the hero to a magnet; slide, lift, drop, sink it. *Fits content like:* a delivery truck on a route; a cell in a bloodstream; a player on a pitch.
+- **The eraser rewinds.** Wiping a trail backwards reads as undoing time. *Fits content like:* an undo in software; reversing a chemical reaction; "what if we hadn't…".
+- **Two pens at once.** A live duet comparing two quantities. *Fits content like:* two savings plans; two runners; a population vs its food supply.
+- **Ghosts of the old lesson.** A faint previous drawing becomes relevant. *Fits content like:* a theory replaced; last year's forecast; a first draft.
+- **The full-board view.** Every region seen at once as one picture. *Fits content like:* a system diagram; a history; a map of a field.
+
+## 9. Pitfalls of the medium
+
+- **One pen, too many jobs** drifts later and later → give each drawing a deadline window and let overlapping jobs go to another pen.
+- **Minimum stroke duration × many dashes** makes a dashed line take seconds → dashes need their own floor.
+- **A pooled-ink dot bigger than the stroke start** leaves halos on every letter → keep it inside.
+- **Punctuation vanishes** (a font period is a 1 px stroke) → render sub-width strokes as dots.
+- **Labels half-cut by a push-in** look sloppy.
+- **Motion blur with few sub-frames** strobes text.
+- **Eraser paths** crossing labels you want to keep.
+- **Voice and phoneme set mismatch** (a British voice with US phonemes) mispronounces → match the language code to the voice; ASR-check.
+
+## 10. Engine
+
+`demo/engine/wb.js`: hand-drawn shapes (`line`, `curve`, `poly`, `arc`, `circle`, `rect`, `arrow`, `dashed`, `hatch`), `text()` in writing order from a single-line font (`loadFont`), `Stroke`, floating `Pen`s, `Timeline.draw(pen, shapes, t, {by})` (solves hand speed to a deadline), `Timeline.erase`, `Timeline.cue`, keyed `Camera`, `Board` (ink multiply, dry texture, erasers, sheen, props), prop drawers. API table and a minimal example that draws something new: [DEMO.md](DEMO.md#engine-reference).
+
+## 11. Variation space
+
+You decide the topic's object, the board layout, the colours within the logic, the voice, the music family, the camera route, the opening, the ending and the length.
+
+All far from our demo:
+
+- Structures: **a proof** (one claim at the top, the board fills downward step by step, each step boxed when proven); **a debate** (two pens, two halves of the board, each drawing its side until the drawings meet in the middle); **a timeline** (one long horizontal line ridden left to right, with events hanging off it).
+- Openings: **a question mark** drawn huge in the centre, then shrunk to become a dot in the first diagram; **an erased board** where the ghost of a wrong answer is still visible; **a magnet dropping** onto an empty board with a clack.
+- Endings: **the answer circled** twice and the pen capped; **the board wiped** except for one line that survives; **a push into the smallest symbol** on the board, which becomes the title.
 
 ---
 
-## 1. What this style is
-
-A lesson on **one physical whiteboard**. Everything the viewer learns is drawn in dry-erase marker in front of them, in real handwriting order. The board is a *map*: each idea lives in its own region, and the camera travels between regions, usually **led by the pen** (the pen draws a line, the camera rides it). At the end the camera pulls back and the viewer sees that the whole explanation was one picture.
-
-What makes it feel real rather than "animated text": ink that pools where the nib lands, dry streaks and speckle, strokes that overshoot and don't quite close, ghosts of old lessons that were never fully wiped, a glossy sheen that drifts slower than the board, and a sound for **every** stroke.
-
-**This version has no hands.** Markers float (with a real cast shadow that grows when they lift), park outside the frame between phrases and fly back in. Physical props (magnets, eraser) move on their own. Don't draw a hand, an arm, or a cursor.
-
-## 2. Story: what fits this style
-
-| Native power | Story use |
-|---|---|
-| **Writing in stroke order** | The reveal *is* the explanation: an equation appears term by term exactly when the narrator says the term. |
-| **One board, one camera** | Distance on the board = distance in the argument. Returning to an earlier drawing is a free callback (the demo returns to its first equation to compute 38 μs × c ≈ 11 km). |
-| **The pen leads the camera** | Transitions are drawn: an orbit, a signal line, a trail. The camera follows the line to the next idea. |
-| **Magnets** | The only objects allowed to *move* on a whiteboard. Give the hero (the "you are here" pin) to a magnet; it can be lifted off, dropped, slid, sunk. |
-| **The eraser rewinds** | Wiping a trail backwards reads as undoing time. Use it once, right after the joke. |
-| **Two pens at once** | A duet: two quantities compared live (the demo: ground clock vs orbit clock ticking at two tempi). |
-| **Full-board reveal** | The ending: pull back past the frame to the wall and the pen tray. Every earlier scene reappears at once. |
-
-**Story shape (proven in the demo):** hook on one tiny object (the pin) → scale reveal → title on the first downbeat → mechanism in 3 steps → **silence + "But, there's a catch."** → the twist explained with a visual duet → a joke that shows the consequence (the pin drifts one day per beat into the sea) → the eraser rewinds → the fix, in sync → pull back to the whole board → end card written under the title.
-
-Adapting any topic: find **one object the viewer owns** (the phone, a loaf, a lightbulb), one number that surprises, and one consequence you can *walk* across the board. Put the surprise in the middle, after a silence.
-
-## 3. Visual language
-
-- **Board**: warm white `#fbfbf9 → #eeede9` gradient, a faint scuff/micro-scratch tile, ~46 **ghost marks** (old words, circles, arrows) at 5–10 % in grey `#9aa0a8` / pale blue `#8aa0c8`. A soft diagonal **window sheen** (white, 10–16 %) that moves at 0.35× the camera — this one detail sells "glossy".
-- **Ink**: black `#23262c`, blue `#2a5cb3`, orange `#d97757`, alpha 0.94, composited with **multiply** so overlaps darken like real marker. Width 6–11 px for drawing, 13 % of cap height for lettering.
-  - Colour semantics: **black** = things and structure, **blue** = signals, light, measurement, **orange** = you / time / the thing that matters (one accent per scene). Monochrome variant: keep one element orange (the "only colour").
-- **Stroke character**: resampled every ~0.6 × width; low-frequency hand wobble along the normal (±2.6 px, wavelength ~220 px) plus a finer tremor; chisel-tip width modulation by direction (0.8–1.0); pressure ramp at the start (0.72 → 1) and a 12 % taper at the end; circles start at an angle and **overlap past closure**; rectangles are 4 strokes with small corner overshoot; a darker pooled dot just inside the start of every long stroke.
-- **Dry-marker texture**: a 512 px tile of speckles and short streaks subtracted from the ink layer (destination-out), locked to board space, faded out when the camera is wide.
-- **Lettering**: single-line font **EMS Tech** (OFL, a single-stroke version of Architects Daughter), every glyph with ±2° rotation, ±3.5 % baseline and scale jitter. Missing glyphs (μ ≈ → × − ✓ ² ↓ ° ± .) are hand-defined in the engine. Title 200 / 120 px cap height, labels 30–70 px.
-- **Props**: dry-erase markers (white barrel, colour band and posted cap in the ink colour, felt nib), a charcoal felt eraser with a small orange label, one glossy orange **map-pin magnet** (radial gradient, white dot, specular highlight, soft cast shadow). Aluminium frame and pen tray only appear in the final wide shot, on a warm grey wall `#d8d3ca`.
-
-## 4. Motion language
-
-- **Hand speed**: every stroke follows `u − sin(2πu)/2π × 0.8` — slow landing, fast middle, slow lift. Strokes are scheduled into a **time window** (the engine solves the speed), so writing always finishes on the word.
-- **Pen hops** between strokes: lift proportional to distance (shadow slides away and blurs), 35 % of the window max. Gaps > 0.75 s: the pen flies off to a parking spot outside the frame and returns 0.42 s before its next stroke.
-- **Magnet**: drop = 0.3 s with lift → 0 and a big shadow shrinking; slide = smoothstep per step with a small lift; sink = tilt 0.5 rad and drop 40 px.
-- **Eraser**: follows a path at constant speed, wipes a 90–230 px band at 90 % strength (a 10 % ghost always remains).
-- **Speed**: title 3 s, a label 0.3–0.8 s, a full satellite ~1 s. Faster than real hands — this is a sped-up lesson — but never so fast that the stroke order is lost.
-
-## 5. Camera language
-
-- A 2D camera over an 8000 × 4500 board: position, zoom (interpolated in 1/z so pushes feel like dollies), a little roll.
-- **Grammar**: (1) pull back to reveal scale; (2) ride the line the pen is drawing; (3) hold still whenever the viewer must read; (4) one whip into a new idea after a silence; (5) one final pull-back beyond the frame.
-- Real 180° **motion blur**: when the camera moves more than 14 px per frame, render up to 12 sub-frames and average them.
-- Keep the bottom 12 % of the frame for subtitles in every shot.
-
-## 6. Sound
-
-- **Every stroke sounds**: band-passed felt-on-gloss noise (2.2–7.5 kHz hiss + 0.5–1.5 kHz body) with the stroke's own speed curve as envelope, a 4 ms nib tick at the start, random stick-slip grains, and on ~28 % of long strokes the **dry-erase squeak** (a 1.5–2.6 kHz sine with 7–13 Hz vibrato). Blue marker slightly darker, orange slightly brighter. Pan = the stroke's screen x; closer camera = louder.
-- **Props**: magnet on a steel board = click + metal modes (830/1370/2210/3120 Hz) + 140 Hz board thump; eraser = 250–2600 Hz felt rub modulated by its zig-zag; tray = plastic bounces + aluminium ring; cap off/on.
-- **Room**: low room tone and a **wall clock that ticks the ground clock's seconds** — it is the only sound during the silence.
-- **Score**: clockwork minimalism at 120 BPM, D major / B minor: marimba 8th-note arpeggio, cello + bass pizzicato, woodblock tick on every beat, glockenspiel theme, shaker/claps only in loud sections. Signals get glockenspiel pings, a falling signal gets a harp run, a drifting object gets a staccato march (tuba + bassoon, chromatic descent). For any "two quantities that diverge" moment, run **the same figure at two tempi** (phasing), then snap them into unison at the fix. Rewind = the previous cue reversed and squeezed.
-- **Mix**: VO on top (compressed, light room), score 6.5 dB under VO RMS and ducked another 9 dB under speech, foley ~11 dB under VO; −14 LUFS.
-
-## 7. Subtitles & titles
-
-- Title and end card are **written on the board** in the same single-line hand; the end card is written under the title so the film ends where it began.
-- Burned subtitles: off-white rounded label (90 %), Architects Daughter 44 px, dark ink text, a short orange marker dash bottom-left. Split at clauses, ≤ 44 chars per line, short clauses merged, two lines above 1250 px.
-
-## 8. Pitfalls we hit
-
-- **One pen, too many jobs**: a single pen scheduled back-to-back drifts later and later (satellites arrived 12 s late). Give every drawing a window (`by:`) and let overlapping jobs go to another pen.
-- **Minimum stroke duration × dashes**: a 60-dash line with a 0.09 s floor takes 6 s. Dashes need their own tiny floor.
-- **Pooled-ink dot bigger than the stroke start** → grey halos on every letter. Keep the dot inside the stroke.
-- **Punctuation vanishes**: a font period is a 1 px stroke. Render sub-width strokes as dots.
-- **Labels half-cut by a push-in** look sloppy: a label must be either fully in or fully out of every shot it appears in.
-- **Motion blur with few sub-frames** strobes text. Step ≤ 4 px between sub-frames.
-- **British voice + US phonemes**: Kokoro `bm_george` with `lang: en-us` said "clocks" like "Clarks". Use `en-gb` for British voices; check with `medium.en`.
-- Keep eraser paths off labels you want to keep (it wiped half of "orbit" once).
-
-## 9. Production recipe (this repo)
-
-1. Write the script as short lines (`demo/lines.json`), synthesize with `core/tts/tts.py` (voice `bm_george`, `lang: en-gb`), check with `demo/tools/asr_check.py` (`WM=medium.en`) → `voices/words.json` word times.
-2. Lay out the board (regions for each idea), then write `demo/film.js`: VO start times, drawings hung on spoken words with `at(id, word)`, pens, camera keys.
-3. `node core/render/events.mjs demo` → `events.json` (every stroke, wipe, magnet, cue anchors).
-4. `music.py` (reads the same events) → `mix.py` (foley generated from events + VO + ducked score).
-5. `node core/render/video.mjs demo --fps 24` → `core/render/mux.sh … 24 2`. Whole film renders in ~30 s.
-6. `demo/build.sh` does steps 3–5 plus subtitles, poster and stills; `--vo` also redoes step 1.
-
-## 10. Engine usage (`demo/engine/wb.js`)
-
-| Function | What it does |
-|---|---|
-| `loadFont(name, url)` | Load a single-line font converted by `demo/tools/svgfont2json.py` (`'tech'` = EMS Tech) |
-| `line / curve / poly / arc / circle / rect / roundRect / arrow / dashed / hatch` | Hand-drawn shapes → `Stroke` / `Stroke[]`. Options: `w`, `color`, `jitter`, `over` (overshoot), `bow`, `lap` (circle overlap), `clip` (rounded rect), `alpha` |
-| `text(str, x, y, {h, align, w, color, font})` | Handwritten text as strokes in writing order (`h` = cap height) |
-| `new Stroke(points, opts)` | Any path (flat `[x,y,…]`) in marker style |
-| `new Pen(id, color, {park})` | A floating marker; `park` = its off-frame spot in screen px |
-| `Timeline.draw(pen, shapes, t, {by, speed, minGap, maxGap})` | Schedule strokes; with `by` the hand speed is solved to finish on time |
-| `Timeline.erase(path, t, dur, {width, strength})` | Felt eraser along a path (leaves a ghost) |
-| `Timeline.cue(t, type, extra)` | Extra sound/music anchors exported to `events.json` |
-| `new Camera([[t, x, y, zoom, roll, ease], …])` | Keyed 2D camera; ease `io` `i` `o` `l` `s` |
-| `new Board(tl, {ghosts})` · `board.render(ctx, t, cam)` | Board, ink (multiply + dry texture + erasers), sheen, `objs` (world props) and `overlays` (screen) |
-| `penPose / drawMarker / drawEraser / drawPinMagnet` | The physical props |
-
-Minimal call — draw a warm-orange four-point sparkle with a short cursor tail, in marker:
-
-```js
-import * as W from './engine/wb.js';
-await W.loadFont('tech', 'fonts/EMSTech.json');
-const tl = new W.Timeline(), O = new W.Pen('orange', '#D97757');
-const star = [], cx = 960, cy = 540, R = 120, r = 26;
-for (let i = 0; i <= 8; i++) { const a = i * Math.PI / 4 - Math.PI / 2, q = i % 2 ? r : R; star.push([cx + Math.cos(a) * q, cy + Math.sin(a) * q]); }
-tl.draw(O, [W.poly(star, { w: 10 }), W.line(cx + 150, cy + 60, cx + 150, cy + 150, { w: 10 })], 0.5, { by: 1.6 });
-tl.draw(O, W.text('ready', cx + 190, cy + 150, { h: 60 }), 1.7, { by: 2.4 });
-tl.end();
-const board = new W.Board(tl), cam = new W.Camera([[0, 960, 540, 1]]);
-board.objs.push({ draw: (ctx, t, c) => W.drawMarker(ctx, O, W.penPose(O, t, cam), c, t) });
-window.render = t => board.render(ctx, t, cam);           // ctx = your 1920×1080 canvas 2D context
-```
-Single-colour variant: draw everything with the black pen and give only the element that matters `{ color: '#D97757' }`.
+How our demo was made (story, shots, score, end card, build): [DEMO.md](DEMO.md). Read it after your treatment exists.

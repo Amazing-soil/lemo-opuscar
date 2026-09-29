@@ -3,9 +3,9 @@
 给 Lemo-Opuscar 各风格短片写**原创配乐**用。全部 numpy/soxr 离线合成，**48 kHz**，和 `sfx.py` 同一套约定（`SR`、`add()`、`limit()`）。
 目标是"听起来像真乐器"：能用采样就用采样（97 件，真人录音），采样库里没有的民族拨弦（古琴、琵琶、三味线……）用物理建模补上（11 个预设）。
 
-- 试听：`core/audio/demo_instruments.wav`（85 秒，按"弦乐 → 木管 → 铜管 → 色彩打击 → 键盘 → 拨弦/民族 → 物理建模拨弦 → 打击 → 鼓组"的顺序，每件乐器弹一个根音-五度-八度的小动机）
-- 采样库：`core/audio/instruments/`（1.35 GB，FLAC 无损；每个库保留原 LICENSE/README）。不在 git 里，用 `sh tools/fetch.sh instruments` 下载
-- 索引：`core/audio/instruments/index.json`（随采样包一起下载：每个采样的音高、力度层、起音点、电平；导入即用，不用重建）
+- 试听：仓库里没有现成的试听文件（`core/audio/*.wav` 不进 git，也不在采样包里）。下载采样包后，用下面第 1 节的写法给每件乐器弹一个根音-五度-八度的小动机，自己渲一段听
+- 采样库：`core/audio/instruments/`（FLAC 无损；每个库保留原 LICENSE/README）。不在 git 里，按库下载，只下片子用到的：`sh tools/fetch.sh instruments <lib>`（`vsco2ce` 395 MB、`vcsl` 271 MB、`salamander` 218 MB、`freepats` 397 MB、`karoryfer` 74 MB），或 `instruments all`（约 1.4 GB）。第 5 节的「来源」列就是所在的库：VSCO 2 CE → `vsco2ce`，VCSL → `vcsl`，Salamander → `salamander`，FreePats 和 MuldjordKit → `freepats`，Karoryfer → `karoryfer`
+- 索引：`core/audio/instruments/index.json`（每个库的包里都带一份：每个采样的音高、力度层、起音点、电平；导入即用，不用重建）
 
 ---
 
@@ -50,7 +50,7 @@ sf.write('cue.wav', mix, SR)
 | `credits(names)` | 按你用到的乐器列表，生成片尾 CREDITS 行（CC BY 必写的原文 + CC0 致谢） |
 | `info(name=None)` / `instruments(fam=None)` | 打印概况 / 列名字（`fam` 取 弦乐/木管/铜管/打击/键盘/拨弦/民族） |
 | `midi(p)` / `hz(p)` / `name(m)` / `seed(n)` | 音名工具；`seed` 固定轮换随机（同样调用顺序 → 同样结果） |
-| `build_index(names=None, force=False)` | 重扫采样并重建 `index.json`（换了/加了采样才需要；~15 s） |
+| `build_index(names=None, force=False)` | 重扫采样并重建 `index.json`（换了/加了采样才需要；~15 s；要 librosa：`requirements-dev.txt`） |
 
 **它在背后做了什么**
 - **选采样**：同时考虑"离目标音最近"和"力度层最接近"（代价 = 半音距离 + 4×力度差，向上移调略加罚），同一格里的多个 round-robin 随机轮换，避免机关枪效应。
@@ -314,14 +314,14 @@ Drums: "MuldjordKit" by Lars Muldjord (drumgizmo.org), FreePats version, license
 ## 8. 已做的自检（我听不到声音，全部靠数据）
 
 **验证了什么**
-1. **音高**：全部 97 件采样乐器的每个采样都用 yin 测过基频，写进 `index.json`；按八度一致性投票修正了文件名的八度约定（VSCO/VCSL 多数 +12，Karoryfer −12，定音鼓用频谱主振动模）。`demo_instruments.wav` 里 61 件乐器的首音**单独渲染后用 librosa.pyin 抽查：59/61 在 ±50 音分内，通过者中位偏差 +3.7 音分、最大 16 音分**；2 个“失败”都是已知且核对过的：管钟（虚拟音高，频谱 2:3:4 分音确认击音正确）、`organ`（16′ 音栓，基频低八度）。在成片混音里直接抽查同样 61 个首音：57/61 通过，另外 4 个（钟琴、管钟、二胡、班卓）是被上一件乐器的余音干扰或虚拟音高，单独渲染/频谱核对均正确（钟琴单独渲染频谱峰 = D6 +12 音分）。
+1. **音高**：全部 97 件采样乐器的每个采样都用 yin 测过基频，写进 `index.json`；按八度一致性投票修正了文件名的八度约定（VSCO/VCSL 多数 +12，Karoryfer −12，定音鼓用频谱主振动模）。61 件乐器的首音**单独渲染后用 librosa.pyin 抽查：59/61 在 ±50 音分内，通过者中位偏差 +3.7 音分、最大 16 音分**；2 个“失败”都是已知且核对过的：管钟（虚拟音高，频谱 2:3:4 分音确认击音正确）、`organ`（16′ 音栓，基频低八度）。在成片混音里直接抽查同样 61 个首音：57/61 通过，另外 4 个（钟琴、管钟、二胡、班卓）是被上一件乐器的余音干扰或虚拟音高，单独渲染/频谱核对均正确（钟琴单独渲染频谱峰 = D6 +12 音分）。
 2. **物理建模**：11 个预设 × 2–3 个音高全部 pyin 命中（±1 音分内）；古琴 `bend` 的 pyin 轨迹与设定一致（0.8→1.4 s 从 50 滑到 52）；泛音音高正确；琵琶轮指实测 13.3 次/秒（设定 14）；三味线 sawari 开/关的持续段频谱重心 2030 Hz / 1500 Hz；衰减时间 guqin≈4.3 s、pipa≈2.1 s、shamisen≈0.9 s、banjo≈1.0 s（-30 dB 外推的 T60）。
 3. **成片数值**：85.5 s、48 kHz 立体声、无 NaN/Inf、峰值 −2.0 dBFS、0 个削波样本；0.5 s RMS 中位 −24 dBFS。
 4. **长音延长**：小提琴组/大提琴组/长笛/小号/圆号/单簧管/双簧管/手风琴/风笛/二胡/萨克斯/管风琴渲染 14–25 s 长音，延长段无静音洞、电平与原录音一致（见上条数据）。
 5. **所有乐器**都实际加载并渲染过一次（无异常、无 NaN），所有打击变体各打一次，峰值已按变体归一到 ~0.4。
 
 **没法验证的**
-- 主观音色是否"像"、混音是否好听、力度层切换是否平滑、延长拼接处是否有可闻的相位/音色跳变——只能靠数据间接判断，建议第一次用时自己耳朵听一下 `demo_instruments.wav`。
+- 主观音色是否"像"、混音是否好听、力度层切换是否平滑、延长拼接处是否有可闻的相位/音色跳变——只能靠数据间接判断，建议第一次用时自己耳朵听一下（每件乐器弹一个小动机即可）。
 - 物理建模的"民族味"（古琴的松沉、三味线的 sawari 质感）只按物理参数和频谱趋势调过，没有和真实录音做听感对比。
 - 微分音、超出采样音域 ±6 半音以上的移调音色。
 
@@ -333,7 +333,6 @@ Drums: "MuldjordKit" by Lars Muldjord (drumgizmo.org), FreePats version, license
 core/audio/
   sampler.py            采样乐器引擎（本文件第 2 节）
   pluck.py              物理建模拨弦 + 模态合成（第 3 节）
-  demo_instruments.wav  85 秒试听
   instruments/
     index.json          音高/力度/电平索引（build_index() 可重建）
     vsco2ce/            VSCO 2 CE 精选（弦乐/木管/铜管/打击/立式钢琴/管风琴）  395 MB
@@ -345,4 +344,4 @@ core/audio/
 
 来源链接：VSCO 2 CE https://github.com/sgossner/VSCO-2-CE · VCSL https://github.com/sgossner/VCSL · Salamander https://freepats.zenvoid.org/Piano/acoustic-grand-piano.html · FreePats https://freepats.zenvoid.org/ · Karoryfer https://github.com/sfzinstruments （aliexpress-erhu / karoryfer.sneakybass / karoryfer.weresax）
 
-STATUS: READY
+可用性：采样库要先下载（`sh tools/fetch.sh instruments <lib>`，见文首）。用到没下载的库时，`sampler` 报错并给出要跑的那条命令。`sampler.py` 只需核心层 Python 包；`pluck.py` 需要 numba（`setup.sh deps music`）。

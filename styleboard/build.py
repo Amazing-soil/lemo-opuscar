@@ -1,60 +1,85 @@
-# Lemo-Opuscar 风格影展：STYLES.md + cards.json → catalog.json → index.html（并刷新 README 里的风格清单）
-# 本地：python3 styleboard/build.py          GitHub Pages：python3 styleboard/build.py --site _site
+# Lemo-Opuscar gallery: styles/*/style.json → catalog.json, index.html, and the generated parts of README.md, styles/README.md, AGENTS.md
+# Local:          python3 styleboard/build.py                 (also refreshes each style.json "dur" from its mp4)
+# GitHub Pages:   python3 styleboard/build.py --site _site
+# README frames:  python3 styleboard/build.py --frames <slug>… (docs/frames/<slug>.jpg at the style's frame_sec)
 import argparse, json, re, html, os, glob, shutil, subprocess
 HERE = os.path.dirname(os.path.abspath(__file__))
-cards = json.load(open(os.path.join(HERE, 'cards.json'), encoding='utf-8'))   # 卡片文案：英文片名、一句话故事、适用场景
-
-CN = {'pixel-rpg': '16-bit 像素 RPG', 'brick-toy': '积木玩具', 'paper-popup': '纸片立体书', 'halftone-dossier': '复古半调案卷',
-      'game-show': '综艺节奏扁平', 'editorial-minimal': '东方杂志排版', 'dark-keynote': '暗色科技发布', 'living-screencast': '活体实机录屏', 'watercolor': '水彩笔刷',
-      'photo-parallax': '照片视差纪念片', 'crayon-book': '蜡笔儿童绘本', 'risograph': 'Risograph 丝网印刷', 'rubber-hose': '1930s 橡皮管卡通',
-      'ink-wash': '中国水墨', 'shadow-puppet': '皮影戏', 'ukiyoe': '浮世绘', 'felt-knit': '毛毡针织', 'felt-knit-2d': '毛毡针织 · 2D 版',
-      'tilt-shift': '移轴微缩', 'lowpoly-island': '低多边形等距', 'film-noir': '黑色电影', 'glass-product': '玻璃质感产品',
-      'origami': '折纸', 'backrooms': '后室 / 新怪谈', 'blueprint': '蓝图 / 工程制图', 'microgame': '微游戏快闪（瓦里奥制造式）', 'synthwave': '霓虹合成波', 'swiss-motion': '瑞士动态排版', 'voxel': '体素', 'gameboy': 'Game Boy 四色',
-      'cardboard': '瓦楞纸板', 'dunhuang': '敦煌壁画', 'papercut-red': '红色窗花剪纸', 'impasto': '油画厚涂', 'one-line': '一笔画',
-      'stained-glass': '彩色玻璃窗', 'silent-film': '1920s 默片', 'spy-titles': '60s 间谍片头', 'ascii-crt': 'ASCII / CRT 终端',
-      'dataviz': '数据叙事', 'whiteboard': '白板讲解', 'iso-infographic': '等距信息图', 'hd-2d': 'HD-2D', 'urban-sketch': '钢笔淡彩', 'cel-anime-80s': '80 年代赛璐璐动画', 'scifi-toon': '科幻情景喜剧卡通', 'art-deco': '装饰艺术', 'woodcut': '木刻版画', 'pop-art': '波普漫画', 'paper-lantern': '纸雕灯影', 'pictogram-motion': '象形运动图形', 'midcentury-toon': '50s 扁平卡通', 'hologram-hud': '科幻全息界面', 'engraving': '铜版画', 'silkscreen-poster': '丝印旅行海报'}
-
-REPO = 'lemomo-ai/lemo-opuscar'                                   # GitHub 仓库
-FILMS_URL = f'https://github.com/{REPO}/releases/download/films'   # 成片放在 Release「films」里，文件名 <slug>.mp4
-BLOB_URL = f'https://github.com/{REPO}/blob/main'
 ROOT = os.path.join(HERE, '..')
-CATALOG = os.path.join(HERE, 'catalog.json')   # 公开的风格目录（STYLES.md 不进仓库，CI 和 README 都读它）
+CATALOG = os.path.join(HERE, 'catalog.json')   # generated; CI and tools/release.py read it
+
+REPO = 'lemomo-ai/lemo-opuscar'
+FILMS_URL = f'https://github.com/{REPO}/releases/download/films'   # full films live on the "films" release as <slug>.mp4
+BLOB_URL = f'https://github.com/{REPO}/blob/main'
+
+# The nine categories, in gallery order. A style.json must name one of them (both languages, exactly).
+CATEGORIES = [('手绘与绘画', 'Hand-drawn & Painting'), ('东方传统', 'East Asian Traditions'), ('印刷与版画', 'Print & Printmaking'),
+              ('图形与排版', 'Graphic & Type'), ('信息与发布', 'Information & Keynote'), ('卡通与动画', 'Cartoon & Anime'),
+              ('游戏', 'Games'), ('电影与时代', 'Cinema & Eras'), ('材质与 3D', 'Materials & 3D')]
+FIELDS = ('slug', 'num', 'en', 'cn', 'category_en', 'category_cn', 'film', 'line', 'line_cn', 'uses', 'frame_sec', 'dur')
 
 
-def parse_styles_md():
-    """本地维护：从 STYLES.md + cards.json 生成风格目录（带成片时长）。"""
-    md = open(os.path.join(ROOT, 'STYLES.md'), encoding='utf-8').read()
-    out, cat, cat_en = [], '', ''
-    for block in re.split(r'\n(?=##+ )', md):
-        head = block.split('\n', 1)[0]
-        mb = re.match(r'## (.+?) · (.+)', head)
-        if mb: cat, cat_en = mb.group(1).strip(), mb.group(2).strip(); continue
-        m = re.match(r'### \[(x)\] (\d+[A-Z]?) · (.+?) · `([\w-]+)`', head)
-        if not m: continue
-        _, num, en, slug = m.groups()
-        c = cards.get(slug, {})
-        s = dict(slug=slug, num=num, en=en, cn=CN.get(slug, en), cat=cat, cat_en=cat_en,
-                 film=c.get('film', ''), line=c.get('line', ''), line_cn=c.get('line_cn', ''), uses=c.get('uses', []), dur=0)
+def film_seconds(mp4):
+    """Length of a film in seconds, or None when ffprobe can't read it (a half-rendered file, no ffprobe installed)."""
+    try:
+        d = float(subprocess.run(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', mp4], capture_output=True, text=True).stdout)
+    except (ValueError, OSError): return None
+    return d if d > 0 else None
+
+
+def load_styles(refresh_dur):
+    """Every styles/<slug>/style.json (folders starting with _ are templates). Fails loudly on a missing field or an unknown category.
+    With refresh_dur, "dur" is re-read from styles/<slug>/<slug>.mp4 and written back when it changed; without the mp4
+    (another machine, CI) or when ffprobe can't read it, the stored value is kept, never zeroed (0 = no video in the gallery)."""
+    out, bad = [], []
+    for p in sorted(glob.glob(os.path.join(ROOT, 'styles', '*', 'style.json'))):
+        slug = os.path.basename(os.path.dirname(p))
+        if slug.startswith('_'): continue
+        j = json.load(open(p, encoding='utf-8'))
+        miss = [f for f in FIELDS if f not in j]
+        if miss: bad.append(f'styles/{slug}/style.json: missing {", ".join(miss)}'); continue
+        if j['slug'] != slug: bad.append(f'styles/{slug}/style.json: slug is "{j["slug"]}", folder is "{slug}"')
+        if (j['category_cn'], j['category_en']) not in CATEGORIES:
+            bad.append(f'styles/{slug}/style.json: unknown category "{j["category_en"]} / {j["category_cn"]}" (see CATEGORIES in styleboard/build.py)')
         mp4 = os.path.join(ROOT, 'styles', slug, slug + '.mp4')
-        if os.path.exists(mp4):
-            try: s['dur'] = round(float(subprocess.run(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', mp4], capture_output=True, text=True).stdout), 1)
-            except ValueError: pass
-        out.append(s)
+        if refresh_dur and os.path.exists(mp4):
+            d = film_seconds(mp4)
+            if d is None:
+                print(f'WARNING: styles/{slug}/{slug}.mp4 exists but ffprobe cannot read its duration (half-rendered? no ffprobe?); keeping dur={j["dur"]}')
+            elif round(d, 1) != j['dur']:
+                j['dur'] = round(d, 1)
+                open(p, 'w', encoding='utf-8').write(json.dumps(j, ensure_ascii=False, indent=1) + '\n')
+        out.append(dict(slug=slug, num=j['num'], en=j['en'], cn=j['cn'], cat=j['category_cn'], cat_en=j['category_en'],
+                        film=j['film'], line=j['line'], line_cn=j['line_cn'], uses=j['uses'], dur=j['dur'], frame_sec=j['frame_sec']))
+    if bad: raise SystemExit('styleboard/build.py:\n  ' + '\n  '.join(bad))
+    order = {c: i for i, c in enumerate(CATEGORIES)}
+    out.sort(key=lambda s: (order.get((s['cat'], s['cat_en']), 99), int(re.match(r'\d+', s['num']).group()), s['num']))
     return out
+
+
+def grab_frames(styles, slugs):
+    """docs/frames/<slug>.jpg for the README grid: one frame of the film at the style's frame_sec."""
+    by = {s['slug']: s for s in styles}
+    os.makedirs(os.path.join(ROOT, 'docs', 'frames'), exist_ok=True)
+    for slug in slugs:
+        s = by.get(slug) or exit(f'no style "{slug}"')
+        mp4 = os.path.join(ROOT, 'styles', slug, slug + '.mp4')
+        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', str(s['frame_sec']), '-i', mp4, '-frames:v', '1', '-vf', 'scale=800:450', '-q:v', '3',
+                        os.path.join(ROOT, 'docs', 'frames', slug + '.jpg')], check=True)
+        print(f'docs/frames/{slug}.jpg ← {slug}.mp4 @ {s["frame_sec"]}s')
 
 
 ap = argparse.ArgumentParser()
 ap.add_argument('--site', help='build the GitHub Pages site into this folder (films from Releases)')
+ap.add_argument('--frames', nargs='+', metavar='SLUG', help='only re-grab docs/frames/<slug>.jpg from the film at frame_sec, then stop')
 args = ap.parse_args()
-
-if os.path.exists(os.path.join(ROOT, 'STYLES.md')):
-    styles = parse_styles_md()
-    json.dump(styles, open(CATALOG, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
-else:
-    styles = json.load(open(CATALOG, encoding='utf-8'))
-
 site = args.site
-if site:   # 公开的图鉴只收有 STYLE.md 的（做完的）风格
+
+styles = load_styles(refresh_dur=not site and not args.frames)
+if args.frames: grab_frames(styles, args.frames); raise SystemExit
+if not site:
+    json.dump([{k: v for k, v in s.items() if k != 'frame_sec'} for s in styles], open(CATALOG, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
+
+if site:   # the public gallery only lists finished styles (with a STYLE.md)
     styles = [s for s in styles if os.path.exists(os.path.join(ROOT, 'styles', s['slug'], 'STYLE.md'))]
 for s in styles:
     slug = s['slug']
@@ -74,7 +99,7 @@ for s in styles:
 esc = lambda t: html.escape(t or '')
 
 def laurel_symbol():
-    # 月桂：左右两枝，每枝 9 片叶子沿圆弧排列
+    # laurel: two branches, 9 leaves each along an arc
     import math
     leaves = []
     for side in (-1, 1):
@@ -109,7 +134,7 @@ def card(s):
             f'    <nav class="links">{"".join(links)}</nav>\n'
             f'  </div>\n</article>')
 
-cats = list(dict.fromkeys((s['cat'], s['cat_en']) for s in styles))
+cats = [c for c in CATEGORIES if any((s['cat'], s['cat_en']) == c for s in styles)]
 sections, tabs = [], []
 for i, (cn, en) in enumerate(cats, 1):
     group = [s for s in styles if s['cat'] == cn]
@@ -137,7 +162,7 @@ for k, v in {'{{LAUREL}}': laurel_symbol(), '{{SECTIONS}}': '\n'.join(sections),
 out_dir = site or HERE
 os.makedirs(out_dir, exist_ok=True)
 open(os.path.join(out_dir, 'index.html'), 'w', encoding='utf-8').write(page)
-if site:   # Pages 站点：页面 + 风格帧 + 海报
+if site:   # Pages site: page + style frames + posters
     shutil.copytree(os.path.join(HERE, 'img'), os.path.join(site, 'img'), dirs_exist_ok=True)
     os.makedirs(os.path.join(site, 'posters'), exist_ok=True)
     for s in styles:
@@ -145,7 +170,7 @@ if site:   # Pages 站点：页面 + 风格帧 + 海报
 
 
 def readme_grid():
-    """README 里 <!-- styles:start --> … <!-- styles:end --> 之间：按类别的图片网格（docs/frames/<slug>.jpg），中英双语。"""
+    """README, between <!-- styles:start --> and <!-- styles:end -->: image grid by category (docs/frames/<slug>.jpg), both languages."""
     out = []
     for cn, en in cats:
         group = [x for x in styles if x['cat'] == cn and x['stylemd']]
@@ -168,13 +193,15 @@ for fn in ('README.md',):
     if not os.path.exists(p) or site: continue
     t = open(p, encoding='utf-8').read()
     t2 = re.sub(r'(<!-- styles:start -->\n).*?(<!-- styles:end -->)', lambda m: m.group(1) + readme_grid() + m.group(2), t, flags=re.S)
+    t2 = re.sub(r'<!--n-->\d+<!--/n-->', f'<!--n-->{sum(1 for x in styles if x["stylemd"])}<!--/n-->', t2)    # the headline count
     if t2 != t: open(p, 'w', encoding='utf-8').write(t2)
 
+
 def style_index():
-    """styles/README.md：风格名（英文 / 中文）→ 文件夹。agent 按用户说的风格名在这里查到对应的 STYLE.md。"""
+    """styles/README.md: style name (English / Chinese) → folder. Agents look up the STYLE.md for the name a user gives here."""
     out = ['# Style index · 风格索引', '',
            'Users may name a style in English, in Chinese, or by its folder. Find it here, then read `styles/<folder>/STYLE.md`.',
-           '用户可能用英文名、中文名或文件夹名来指定风格。在这里查到文件夹，再读 `styles/<文件夹>/STYLE.md`。', '<!-- generated by styleboard/build.py from styleboard/catalog.json; do not edit by hand -->', '']
+           '用户可能用英文名、中文名或文件夹名来指定风格。在这里查到文件夹，再读 `styles/<文件夹>/STYLE.md`。', '<!-- generated by styleboard/build.py from styles/*/style.json; do not edit by hand -->', '']
     for cn, en in cats:
         group = [x for x in styles if x['cat'] == cn and x['stylemd']]
         if not group: continue
@@ -185,7 +212,7 @@ def style_index():
 
 
 def style_list():
-    """AGENTS.md 里 <!-- style-list:start --> … <!-- style-list:end --> 之间：用户没选风格时，agent 原样给用户看的完整清单。"""
+    """AGENTS.md, between <!-- style-list:start --> and <!-- style-list:end -->: the full list an agent shows a user who has not picked a style."""
     out = [f'All {sum(1 for x in styles if x["stylemd"])} styles · 全部风格:', '']
     for cn, en in cats:
         group = [x for x in styles if x['cat'] == cn and x['stylemd']]
@@ -205,4 +232,4 @@ if not site:
 print(f'{len(styles)} styles ({n_vid} with film, {minutes:.0f} min) → {os.path.relpath(os.path.join(out_dir, "index.html"), ROOT)}')
 for s in styles:
     if not s['imgs']: print('  no image:', s['slug'])
-    if not s.get('line'): print('  no card copy (cards.json):', s['slug'])
+    if not s.get('line'): print('  no card copy (style.json line):', s['slug'])
