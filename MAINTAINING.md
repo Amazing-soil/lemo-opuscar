@@ -17,17 +17,23 @@ Work in `styles/<slug>/` (lowercase letters, digits, hyphens; unique). Start fro
 
 Assets are CC0, CC BY or OFL only, each in `demo/CREDITS`. No watermark on any film. Real people, brands and events appear only in an unofficial fan film; its `DEMO.md` says so.
 
+## Register
+
+1. **Number.** `num` in `style.json` is the next free number after the highest in `styles/*/style.json` (two digits as a string, e.g. `"55"`); it orders the gallery within a category.
+2. `python3 styleboard/build.py` reads every `styles/*/style.json` and rewrites the gallery data, the README grid and counts, `styles/README.md` and the style list in `AGENTS.md`. Never edit those generated parts by hand. Then `python3 styleboard/build.py --frames <slug>` (the README grid frame at `frame_sec`) and `sh styleboard/frames.sh <slug>` (the gallery card from `demo/stills/styleframe.jpg`).
+3. `sh tools/web_cuts.sh` makes the 720p web cut in `.release/web/` (only for films that are new or changed).
+
 ## Gates
 
 - **Human:** approve the style frame before production, and the finished film.
-- **Machine:** `asr_check.py` passes on every line; loudness about −14 LUFS; `readcheck.mjs` passes; `python3 tools/release.py check --strict` is clean.
+- **Machine:** `asr_check.py` passes on every line; `mux.sh` reports about −14 LUFS and no warning; `readcheck.mjs` passes; `python3 tools/release.py check --strict <slug>` is clean (it needs the Register steps above).
+- **Real events and products:** every fact on screen and in the voice-over comes from an official source, kept in `demo/FACTS.md` (claim, URL, quoted wording); check the final script against it before the last render.
 
-## Register and publish
+## Publish
 
-1. `python3 styleboard/build.py` reads every `styles/*/style.json` and rewrites the gallery data, the README grid and counts, `styles/README.md` and the style list in `AGENTS.md`. Never edit those generated parts by hand. `--frames <slug>` makes the README grid frame at `frame_sec`; `sh styleboard/frames.sh` makes the gallery card images.
-2. `sh tools/publish.sh` uploads the full films (`films` release) and the 720p web cuts (`web` release, used by the gallery), then verifies them. Per-demo resource packs are no longer published.
-3. `git status --short`, `git add -A`, commit.
-4. Push `main`, then watch CI (`gh run watch`): the gallery build fails when a card links a film that isn't on the `web` release.
+1. `sh tools/publish.sh` uploads the full films (`films` release) and the 720p web cuts (`web` release, used by the gallery), then verifies them. Per-demo resource packs are no longer published.
+2. `git status --short`, `git add -A`, commit.
+3. Push `main`, then watch CI (`gh run watch`): the gallery build fails when a card links a film that isn't on the `web` release.
 
 Don't push before the upload has finished, and don't commit `tools/assets.json` from a failed run.
 

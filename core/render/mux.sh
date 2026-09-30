@@ -1,7 +1,8 @@
 #!/bin/sh
 # 合成成片：mux.sh video.mp4 mix.wav out.mp4 [fps] [grain]
 # 视频按目标帧率输出（定格片段自动复制帧）；grain = 颗粒强度（默认 2，0 = 不加；像素/矢量风格用 0）
-# 音频两遍 loudnorm → −14 LUFS / TP −1.2（单遍会偏 0.5 LU 左右）；最后打印实测的 I / LRA / 真峰值
+# 音频两遍 loudnorm → −14 LUFS / TP −1.2（单遍会偏 0.5 LU 左右）；最后打印实测的 I / LRA / 真峰值，没达标（响度偏出 ±1 LU 或峰值高于 −1 dB）就警告
+# （混音本身削波或峰值极高时，loudnorm 的动态模式两个目标都会错过，实测 −20 LUFS / +5 dBTP）
 # 任何一步 ffmpeg 失败都以非 0 退出，并且不留半个文件；只有成品存在且非空才打印它的路径。
 # 静音 / 极轻（低于 −70 LUFS，loudnorm 量不出来）的音频：只有"成功解码、量出来确实静音"才跳过响度归一并警告，仍然出片。
 # 不是音频、没有音频流、或者文件坏了：以 1 退出，不出片。"坏"按实际解码出来的东西来判断，不是看到报错字样就算：
@@ -89,5 +90,11 @@ ffmpeg -y -loglevel error -i "$V" -i "$A" \
   || { rm -f "$O"; die "ffmpeg failed while writing '$O' (its message is above)"; }
 [ -s "$O" ] || { rm -f "$O"; die "no output was written to '$O'"; }
 echo "$O"
-ffmpeg -hide_banner -nostats -i "$O" -af ebur128=peak=true -f null - 2>&1 | grep -E "^\s+(I|LRA|Peak):" | head -3
+R=$(ffmpeg -hide_banner -nostats -i "$O" -af ebur128=peak=true -f null - 2>&1 | grep -E "^\s+(I|LRA|Peak):" | head -3)
+echo "$R"
+if [ "$NORM" = 1 ]; then
+  OI=$(echo "$R" | awk '$1 == "I:" { print $2 }'); OP=$(echo "$R" | awk '$1 == "Peak:" { print $2 }')
+  awk -v i="$OI" -v p="$OP" 'BEGIN { exit !(i + 0 < -15 || i + 0 > -13 || p + 0 > -1) }' \
+    && echo "mux.sh: warning: the film missed the target (-14 LUFS, true peak <= -1.2 dB): measured $OI LUFS, peak $OP dB. The mix is probably clipping or has very hot peaks: lower it and tame the peaks, then mux again" >&2
+fi
 exit 0
